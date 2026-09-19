@@ -87,15 +87,18 @@
                             </div>
 
                             <div>
-                                <label for="client_id" class="block text-sm font-medium mb-1.5">Cliente</label>
-                                <select id="client_id" name="client_id" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent">
-                                    <option value="">Selecciona un cliente</option>
+                                <label for="client_search" class="block text-sm font-medium mb-1.5">Cliente</label>
+                                @php
+                                    $selectedClientId = old('client_id', $package->client_id ?? '');
+                                    $selectedClient = $clients->firstWhere('id', $selectedClientId);
+                                @endphp
+                                <input id="client_search" name="client_search" type="text" list="clients_list" value="{{ $selectedClient?->nombre ?? old('client_search', '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="Escribe para buscar un cliente" autocomplete="off">
+                                <input id="client_id" name="client_id" type="hidden" value="{{ $selectedClientId }}">
+                                <datalist id="clients_list">
                                     @foreach ($clients as $client)
-                                        <option value="{{ $client->id }}" {{ old('client_id', $package->client_id) == $client->id ? 'selected' : '' }}>
-                                            {{ $client->nombre }}
-                                        </option>
+                                        <option value="{{ $client->nombre }}" data-id="{{ $client->id }}">{{ $client->codigo }}</option>
                                     @endforeach
-                                </select>
+                                </datalist>
                             </div>
 
                             <div>
@@ -112,7 +115,20 @@
 
                             <div>
                                 <label for="transportadora" class="block text-sm font-medium mb-1.5">Transportadora</label>
-                                <input id="transportadora" name="transportadora" type="text" value="{{ old('transportadora', $package->transportadora ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="Ej. DHL, FedEx, etc.">
+                                @php
+                                    $selectedTransportadora = old('transportadora', $package->transportadora ?? '');
+                                @endphp
+                                <select id="transportadora" name="transportadora" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+                                    <option value="">Selecciona una transportadora</option>
+                                    @if ($selectedTransportadora && ! in_array($selectedTransportadora, $transportadoras, true))
+                                        <option value="{{ $selectedTransportadora }}" selected>{{ $selectedTransportadora }} (actual)</option>
+                                    @endif
+                                    @foreach ($transportadoras as $transportadora)
+                                        <option value="{{ $transportadora }}" {{ $selectedTransportadora === $transportadora ? 'selected' : '' }}>
+                                            {{ $transportadora }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
@@ -188,5 +204,18 @@
             @endif
         </div>
     </div>
+
+    <script>
+        const clientSearch = document.getElementById('client_search');
+        const clientId = document.getElementById('client_id');
+        const clientOptions = Array.from(document.querySelectorAll('#clients_list option'));
+
+        if (clientSearch && clientId) {
+            clientSearch.addEventListener('input', () => {
+                const selectedOption = clientOptions.find((option) => option.value === clientSearch.value);
+                clientId.value = selectedOption?.dataset.id ?? '';
+            });
+        }
+    </script>
 </body>
 </html>

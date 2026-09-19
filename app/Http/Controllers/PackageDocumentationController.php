@@ -35,8 +35,9 @@ class PackageDocumentationController extends Controller
 
         $clients = Client::orderBy('nombre')->get();
         $partners = Partner::orderBy('nombre')->get();
+        $transportadoras = ['DHL', 'FedEx', 'UPS', 'USPS', 'Amazon Logistics', 'Otra'];
 
-        return view('documentacion.index', compact('package', 'clients', 'partners', 'guiaPrincipal', 'packagesRecibidos'));
+        return view('documentacion.index', compact('package', 'clients', 'partners', 'transportadoras', 'guiaPrincipal', 'packagesRecibidos'));
     }
 
     public function store(Request $request)
@@ -68,6 +69,7 @@ class PackageDocumentationController extends Controller
             'transportadora' => $validated['transportadora'] ?? null,
             'caja_numero' => $validated['caja_numero'] ?? null,
             'total_cajas' => $validated['total_cajas'] ?? null,
+            'estado' => 'documentado',
         ]);
 
         return redirect()->route('documentacion.index', ['guia_principal' => $package->guia_principal])
