@@ -63,7 +63,7 @@
                             @if ($package->photos->isNotEmpty())
                                 <div class="mt-3 grid grid-cols-3 gap-2">
                                     @foreach ($package->photos as $photo)
-                                        <img src="{{ $photo->url }}" alt="Foto del paquete" class="w-full h-24 object-cover rounded-lg border border-slate-200">
+                                        <img src="{{ $photo->display_url }}" alt="Foto del paquete" class="w-full h-24 object-cover rounded-lg border border-slate-200">
                                     @endforeach
                                 </div>
                             @endif
@@ -75,8 +75,44 @@
     </div>
 
     <script>
+        const guiaPrincipal = document.getElementById('guia_principal');
+        const guiaSecundaria = document.getElementById('guia_secundaria');
         const input = document.getElementById('photos');
         const preview = document.getElementById('preview');
+        const photoLabel = document.querySelector('label[for="photos"]');
+        const submitButton = document.querySelector('button[type="submit"]');
+
+        window.addEventListener('load', () => {
+            guiaPrincipal.focus();
+        });
+
+        const moveToPhotoCapture = () => {
+            const value = guiaPrincipal.value.trim();
+            if (value.length > 0) {
+                photoLabel.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => photoLabel.click(), 200);
+            }
+        };
+
+        guiaPrincipal.addEventListener('change', () => {
+            if (guiaPrincipal.value.trim().length > 0) {
+                moveToPhotoCapture();
+            }
+        });
+
+        guiaPrincipal.addEventListener('blur', () => {
+            if (guiaPrincipal.value.trim().length > 0) {
+                moveToPhotoCapture();
+            }
+        });
+
+        guiaPrincipal.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                moveToPhotoCapture();
+                guiaSecundaria.focus();
+            }
+        });
 
         input.addEventListener('change', function () {
             preview.innerHTML = '';
@@ -93,6 +129,11 @@
                 };
                 reader.readAsDataURL(file);
             });
+
+            setTimeout(() => {
+                submitButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                submitButton.focus();
+            }, 300);
         });
     </script>
 </body>

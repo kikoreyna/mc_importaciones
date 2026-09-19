@@ -19,8 +19,8 @@ class PackageScanTest extends TestCase
             'guia_master' => 'MASTER-001',
             'total_paquetes' => 3,
             'photos' => [
-                UploadedFile::fake()->image('photo-1.jpg', 1200, 1200),
-                UploadedFile::fake()->image('photo-2.png', 1200, 1200),
+                UploadedFile::fake()->create('photo-1.jpg', 1024, 'image/jpeg'),
+                UploadedFile::fake()->create('photo-2.png', 1024, 'image/png'),
             ],
         ]);
 
