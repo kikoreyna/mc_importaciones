@@ -47,30 +47,10 @@
             </button>
         </form>
 
-        <div class="mt-8">
-            <h2 class="text-lg font-semibold mb-3">Paquetes registrados</h2>
-
-            @if ($packages->isEmpty())
-                <p class="text-slate-600 text-sm">No hay paquetes registrados aún.</p>
-            @else
-                <div class="space-y-3">
-                    @foreach ($packages as $package)
-                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4">
-                            <p class="text-sm"><span class="font-semibold">Guía principal:</span> {{ $package->guia_principal }}</p>
-                            <p class="text-sm mt-1"><span class="font-semibold">Guía secundaria:</span> {{ $package->guia_secundaria ?? 'N/A' }}</p>
-                            <p class="text-sm mt-1"><span class="font-semibold">Estado:</span> {{ $package->estado }}</p>
-
-                            @if ($package->photos->isNotEmpty())
-                                <div class="mt-3 grid grid-cols-3 gap-2">
-                                    @foreach ($package->photos as $photo)
-                                        <img src="{{ $photo->display_url }}" alt="Foto del paquete" class="w-full h-24 object-cover rounded-lg border border-slate-200">
-                                    @endforeach
-                                </div>
-                            @endif
-                        </div>
-                    @endforeach
-                </div>
-            @endif
+        <div class="mt-6 text-center">
+            <a href="{{ route('packages.registered') }}" class="inline-block text-sm font-semibold text-blue-700 hover:text-blue-800 hover:underline">
+                Ver paquetes registrados
+            </a>
         </div>
     </div>
 

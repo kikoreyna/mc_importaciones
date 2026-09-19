@@ -9,6 +9,7 @@ Route::get('/', function () {
 
 Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
 Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
+Route::get('/paquetes-registrados', [PackageController::class, 'registeredIndex'])->name('packages.registered');
 
 Route::get('/bodega', [PackageController::class, 'bodegaIndex'])->name('bodega.index');
 Route::post('/bodega', [PackageController::class, 'bodegaStore'])->name('bodega.store');

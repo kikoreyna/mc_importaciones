@@ -14,9 +14,17 @@ class PackageController extends Controller
 
     public function index()
     {
-        $packages = Package::with('photos')->latest()->get();
+        return view('packages.index');
+    }
 
-        return view('packages.index', compact('packages'));
+    public function registeredIndex()
+    {
+        $packages = Package::with('photos')
+            ->whereDate('created_at', today())
+            ->latest()
+            ->get();
+
+        return view('packages.registered', compact('packages'));
     }
 
     public function store(Request $request)
