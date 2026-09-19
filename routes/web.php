@@ -12,3 +12,6 @@ Route::post('/packages', [PackageController::class, 'store'])->name('packages.st
 
 Route::get('/bodega', [PackageController::class, 'bodegaIndex'])->name('bodega.index');
 Route::post('/bodega', [PackageController::class, 'bodegaStore'])->name('bodega.store');
+
+Route::get('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'index'])->name('documentacion.index');
+Route::post('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'store'])->name('documentacion.store');

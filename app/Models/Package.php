@@ -13,10 +13,25 @@ class Package extends Model
         'guia_master',
         'total_paquetes',
         'estado',
+        'client_id',
+        'partner_id',
+        'transportadora',
+        'caja_numero',
+        'total_cajas',
     ];
 
     public function photos(): HasMany
     {
         return $this->hasMany(PackagePhoto::class);
+    }
+
+    public function client(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+         return $this->belongsTo(Client::class);
+    }
+
+    public function partner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Partner::class);
     }
 }
