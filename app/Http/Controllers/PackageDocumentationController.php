@@ -52,7 +52,7 @@ class PackageDocumentationController extends Controller
         ]);
 
         $package = Package::where('guia_principal', $validated['guia_principal'])
-            ->where('estado', 'recibido')
+            ->whereIn('estado', ['recibido', 'documentado'])
             ->first();
 
         if (! $package) {
@@ -79,7 +79,34 @@ class PackageDocumentationController extends Controller
             'estado' => 'documentado',
         ]);
 
-        return redirect()->route('documentacion.index', ['guia_principal' => $package->guia_principal])
-            ->with('success', 'Documentación actualizada correctamente.');
+        $nextPackage = Package::where('estado', 'recibido')
+            ->oldest()
+            ->first();
+
+        $redirect = $nextPackage
+            ? redirect()->route('documentacion.index', ['guia_principal' => $nextPackage->guia_principal])
+            : redirect()->route('documentacion.index');
+
+        return $redirect->with('success', 'Documentación actualizada correctamente.');
+    }
+
+    public function documented()
+    {
+        $packages = Package::with(['client', 'partner'])
+            ->where('estado', 'documentado')
+            ->latest()
+            ->get();
+
+        return view('documentacion.documented', compact('packages'));
+    }
+
+    public function markAsReceived(Package $package)
+    {
+        abort_unless($package->estado === 'documentado', 404);
+
+        $package->update(['estado' => 'recibido']);
+
+        return redirect()->route('documentacion.documented')
+            ->with('success', 'La guía volvió al estado recibido.');
     }
 }

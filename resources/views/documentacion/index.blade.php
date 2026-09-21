@@ -29,11 +29,17 @@
 
         <div class="grid grid-cols-1 gap-6">
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
+                <div class="mb-4 flex justify-end">
+                    <a href="{{ route('documentacion.documented') }}" class="rounded-lg border border-blue-600 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">
+                        Ver paquetes documentados
+                    </a>
+                </div>
+
                 <form action="{{ route('documentacion.index') }}" method="GET" class="space-y-4">
                     @csrf
                     <div>
                         <label for="guia_principal" class="block text-sm font-medium mb-1.5">Buscar guía recibida</label>
-                        <input id="guia_principal" name="guia_principal" type="text" value="{{ old('guia_principal', $guiaPrincipal ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escanee la guía">
+                        <input id="guia_principal" name="guia_principal" type="text" value="{{ old('guia_principal', $guiaPrincipal ?? '') }}" {{ $package ? '' : 'autofocus' }} class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escanee la guía">
                     </div>
 
                     <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
@@ -83,7 +89,7 @@
 
                             <div>
                                 <label class="block text-sm font-medium mb-1.5">Guía principal</label>
-                                <div class="w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-3 text-base font-medium">
+                                <div id="edicion-guia-principal" tabindex="0" class="w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     {{ $package->guia_principal }}
                                 </div>
                             </div>
@@ -215,6 +221,13 @@
     </div>
 
     <script>
+        const editingGuide = document.getElementById('edicion-guia-principal');
+        const guideSearch = document.getElementById('guia_principal');
+
+        window.addEventListener('load', () => {
+            (editingGuide ?? guideSearch)?.focus();
+        });
+
         const clientSearch = document.getElementById('client_search');
         const clientId = document.getElementById('client_id');
         const partnerId = document.getElementById('partner_id');
