@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\PackageController;
+use App\Http\Controllers\ClientController;
+use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,3 +19,7 @@ Route::post('/bodega', [PackageController::class, 'bodegaStore'])->name('bodega.
 
 Route::get('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'index'])->name('documentacion.index');
 Route::post('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'store'])->name('documentacion.store');
+
+Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
+Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');
+Route::resource('usuarios', UserController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['usuarios' => 'user'])->names('users');
