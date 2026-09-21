@@ -63,9 +63,16 @@ class PackageDocumentationController extends Controller
             return back()->withInput()->with('error', 'La caja no puede ser mayor que el total de cajas.');
         }
 
+        $client = $validated['client_id'] ? Client::find($validated['client_id']) : null;
+        $partnerId = $client?->partner_id;
+
+        if (! $client) {
+            $partnerId = $validated['partner_id'] ?? null;
+        }
+
         $package->update([
             'client_id' => $validated['client_id'] ?? null,
-            'partner_id' => $validated['partner_id'] ?? null,
+            'partner_id' => $partnerId,
             'transportadora' => $validated['transportadora'] ?? null,
             'caja_numero' => $validated['caja_numero'] ?? null,
             'total_cajas' => $validated['total_cajas'] ?? null,

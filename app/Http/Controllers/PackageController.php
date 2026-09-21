@@ -35,7 +35,7 @@ class PackageController extends Controller
             'guia_master' => ['nullable', 'string', 'max:255'],
             'total_paquetes' => ['nullable', 'integer', 'min:1'],
             'photos' => ['nullable', 'array'],
-            'photos.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'photos.*' => ['file', 'mimetypes:image/jpeg,image/png,image/webp,image/heic,image/heif', 'max:8192'],
         ]);
 
         $package = Package::firstOrCreate(

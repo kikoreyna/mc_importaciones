@@ -8,6 +8,8 @@
 </head>
 <body class="bg-slate-100 text-slate-900">
     <div class="max-w-md mx-auto px-4 py-6">
+        @include('components.navbar')
+
         <div class="mb-6">
             <p class="text-xs uppercase tracking-[0.2em] text-emerald-600 font-semibold">BODEGA</p>
             <h1 class="text-2xl font-bold mt-2">Recepción</h1>

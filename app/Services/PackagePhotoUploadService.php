@@ -5,6 +5,8 @@ namespace App\Services;
 use App\Models\Package;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class PackagePhotoUploadService
 {
@@ -23,7 +25,21 @@ class PackagePhotoUploadService
 
             $folder = 'packages/' . $package->id;
             $filename = time() . '-' . $this->sanitizeFilename($file->getClientOriginalName());
-            $path = $file->storeAs($folder, $filename, $disk);
+            try {
+                $path = $file->storeAs($folder, $filename, $disk);
+            } catch (Throwable $exception) {
+                Log::error('No se pudo guardar la foto del paquete.', [
+                    'package_id' => $package->id,
+                    'disk' => $disk,
+                    'error' => $exception->getMessage(),
+                ]);
+
+                continue;
+            }
+
+            if (! is_string($path) || $path === '') {
+                continue;
+            }
 
             $package->photos()->create([
                 'file_name' => $filename,

@@ -8,6 +8,8 @@
 </head>
 <body class="bg-slate-100 text-slate-900">
     <div class="max-w-md mx-auto px-4 py-6 md:max-w-4xl md:px-6">
+        @include('components.navbar')
+
         <div class="mb-6">
             <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">USA</p>
             <h1 class="text-2xl font-bold mt-2 md:text-3xl">Recepción de guía</h1>
@@ -16,6 +18,12 @@
         @if (session('success'))
             <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
                 {{ session('success') }}
+            </div>
+        @endif
+
+        @if ($errors->any())
+            <div class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+                {{ $errors->first() }}
             </div>
         @endif
 

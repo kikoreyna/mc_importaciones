@@ -8,6 +8,8 @@
 </head>
 <body class="bg-slate-100 text-slate-900">
     <div class="max-w-4xl mx-auto px-4 py-6 md:px-6">
+        @include('components.navbar')
+
         <div class="mb-6 flex items-start justify-between gap-4">
             <div>
                 <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">RECEPCIÓN</p>

@@ -8,6 +8,8 @@
 </head>
 <body class="bg-slate-100 text-slate-900">
     <div class="max-w-6xl mx-auto px-4 py-6">
+        @include('components.navbar')
+
         <div class="mb-6">
             <p class="text-xs uppercase tracking-[0.2em] text-violet-600 font-semibold">DOCUMENTACIÓN</p>
             <h1 class="text-2xl font-bold mt-2">Edición de guía</h1>
@@ -91,26 +93,33 @@
                                 @php
                                     $selectedClientId = old('client_id', $package->client_id ?? '');
                                     $selectedClient = $clients->firstWhere('id', $selectedClientId);
+                                    $selectedClientLabel = $selectedClient
+                                        ? $selectedClient->nombre . ($selectedClient->alias ? ' | ' . $selectedClient->alias : '')
+                                        : old('client_search', '');
                                 @endphp
-                                <input id="client_search" name="client_search" type="text" list="clients_list" value="{{ $selectedClient?->nombre ?? old('client_search', '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="Escribe para buscar un cliente" autocomplete="off">
+                                <div class="relative">
+                                    <input id="client_search" name="client_search" type="text" value="{{ $selectedClientLabel }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="Escribe nombre, alias o código" autocomplete="off">
+                                    <div id="clients_list" class="absolute z-20 mt-1 hidden max-h-56 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg"></div>
+                                </div>
                                 <input id="client_id" name="client_id" type="hidden" value="{{ $selectedClientId }}">
-                                <datalist id="clients_list">
+                                <div id="clients_data" class="hidden">
                                     @foreach ($clients as $client)
-                                        <option value="{{ $client->nombre }}" data-id="{{ $client->id }}">{{ $client->codigo }}</option>
+                                        <button type="button" data-id="{{ $client->id }}" data-partner-id="{{ $client->partner_id ?? '' }}" data-label="{{ $client->nombre }}{{ $client->alias ? ' | ' . $client->alias : '' }}" data-search="{{ strtolower($client->nombre . ' ' . ($client->alias ?? '')) }}">{{ $client->nombre }}{{ $client->alias ? ' | ' . $client->alias : '' }}</button>
                                     @endforeach
-                                </datalist>
+                                </div>
                             </div>
 
                             <div>
                                 <label for="partner_id" class="block text-sm font-medium mb-1.5">Socio</label>
-                                <select id="partner_id" name="partner_id" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+                                <select id="partner_selector" name="partner_selector" {{ $selectedClient?->partner_id ? 'disabled' : '' }} class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent disabled:bg-slate-100 disabled:text-slate-500">
                                     <option value="">Selecciona un socio</option>
                                     @foreach ($partners as $partner)
                                         <option value="{{ $partner->id }}" {{ old('partner_id', $package->partner_id) == $partner->id ? 'selected' : '' }}>
-                                            {{ $partner->nombre }}
+                                            {{ $partner->alias ? $partner->alias . ' | ' : '' }}{{ $partner->nombre }}
                                         </option>
                                     @endforeach
                                 </select>
+                                <input id="partner_id" name="partner_id" type="hidden" value="{{ old('partner_id', $package->partner_id) }}">
                             </div>
 
                             <div>
@@ -208,12 +217,56 @@
     <script>
         const clientSearch = document.getElementById('client_search');
         const clientId = document.getElementById('client_id');
-        const clientOptions = Array.from(document.querySelectorAll('#clients_list option'));
+        const partnerId = document.getElementById('partner_id');
+        const partnerSelector = document.getElementById('partner_selector');
+        const clientsList = document.getElementById('clients_list');
+        const clientOptions = Array.from(document.querySelectorAll('#clients_data button'));
 
-        if (clientSearch && clientId) {
+        if (clientSearch && clientId && partnerId && partnerSelector && clientsList) {
+            const hideClients = () => clientsList.classList.add('hidden');
+
+            const selectClient = (option) => {
+                clientSearch.value = option.dataset.label;
+                clientId.value = option.dataset.id;
+                partnerId.value = option.dataset.partnerId ?? '';
+                partnerSelector.value = option.dataset.partnerId ?? '';
+                partnerSelector.disabled = Boolean(option.dataset.partnerId);
+                hideClients();
+            };
+
+            const renderClients = () => {
+                const searchValue = clientSearch.value.trim().toLowerCase();
+                clientsList.innerHTML = '';
+
+                clientOptions
+                    .filter((option) => !searchValue || option.dataset.search.includes(searchValue))
+                    .forEach((option) => {
+                        const item = option.cloneNode(true);
+                        item.className = 'block w-full border-b border-slate-100 px-3 py-2 text-left text-sm text-slate-700 last:border-0 hover:bg-violet-50';
+                        item.addEventListener('click', () => selectClient(option));
+                        clientsList.appendChild(item);
+                    });
+
+                clientsList.classList.toggle('hidden', clientsList.children.length === 0);
+            };
+
+            clientSearch.addEventListener('focus', renderClients);
             clientSearch.addEventListener('input', () => {
-                const selectedOption = clientOptions.find((option) => option.value === clientSearch.value);
-                clientId.value = selectedOption?.dataset.id ?? '';
+                clientId.value = '';
+                partnerId.value = '';
+                partnerSelector.value = '';
+                partnerSelector.disabled = false;
+                renderClients();
+            });
+
+            partnerSelector.addEventListener('change', () => {
+                partnerId.value = partnerSelector.value;
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!clientSearch.contains(event.target) && !clientsList.contains(event.target)) {
+                    hideClients();
+                }
             });
         }
     </script>
