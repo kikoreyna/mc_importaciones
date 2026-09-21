@@ -4,6 +4,7 @@ use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PackageReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -21,6 +22,7 @@ Route::get('/documentacion', [\App\Http\Controllers\PackageDocumentationControll
 Route::post('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'store'])->name('documentacion.store');
 Route::get('/documentacion/documentados', [\App\Http\Controllers\PackageDocumentationController::class, 'documented'])->name('documentacion.documented');
 Route::patch('/documentacion/{package}/recibido', [\App\Http\Controllers\PackageDocumentationController::class, 'markAsReceived'])->name('documentacion.markAsReceived');
+Route::get('/reportes/paquetes', [PackageReportController::class, 'index'])->name('reports.packages');
 
 Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
 Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');
