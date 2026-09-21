@@ -11,7 +11,7 @@
         @include('components.navbar')
 
         <div class="mb-6">
-            <p class="text-xs uppercase tracking-[0.2em] text-emerald-600 font-semibold">BODEGA</p>
+            <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">BODEGA</p>
             <h1 class="text-2xl font-bold mt-2">Recepción</h1>
         </div>
 
@@ -32,10 +32,10 @@
 
             <div>
                 <label for="guia_principal" class="block text-sm font-medium mb-1.5">Escanee la guía</label>
-                <input id="guia_principal" name="guia_principal" type="text" required class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-emerald-500 focus:border-transparent" placeholder="Guía principal">
+                <input id="guia_principal" name="guia_principal" type="text" required class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Guía principal">
             </div>
 
-            <button type="submit" class="w-full bg-emerald-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-emerald-700 active:bg-emerald-800">
+            <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
                 Validar guía
             </button>
         </form>

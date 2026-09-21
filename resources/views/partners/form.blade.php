@@ -1,3 +1,43 @@
 <!DOCTYPE html>
-<html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>{{ $partner->exists ? 'Editar socio' : 'Nuevo socio' }}</title>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
-<body class="bg-slate-100 text-slate-900"><div class="max-w-xl mx-auto px-4 py-6"><div class="mb-6">@include('components.navbar')<p class="text-xs uppercase tracking-[0.2em] text-emerald-600 font-semibold">ADMINISTRACIÓN</p><h1 class="text-2xl font-bold mt-2">{{ $partner->exists ? 'Editar socio' : 'Nuevo socio' }}</h1></div>@include('components.flash-messages')<form action="{{ $partner->exists ? route('partners.update', $partner) : route('partners.store') }}" method="POST" class="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">@csrf @if($partner->exists) @method('PUT') @endif<div><label for="nombre" class="mb-1.5 block text-sm font-medium">Nombre del socio</label><input id="nombre" name="nombre" required value="{{ old('nombre', $partner->nombre) }}" class="w-full rounded-xl border border-slate-300 px-3 py-3"></div><div><label for="alias" class="mb-1.5 block text-sm font-medium">Alias del socio</label><input id="alias" name="alias" value="{{ old('alias', $partner->alias) }}" class="w-full rounded-xl border border-slate-300 px-3 py-3"></div><div class="flex gap-3 pt-2"><a href="{{ route('partners.index') }}" class="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-center text-sm font-semibold">Cancelar</a><button class="flex-1 rounded-xl bg-emerald-600 px-4 py-3 text-sm font-semibold text-white hover:bg-emerald-700">Guardar</button></div></form></div></body></html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{{ $partner->exists ? 'Editar socio' : 'Nuevo socio' }}</title>
+	@vite(['resources/css/app.css', 'resources/js/app.js'])
+</head>
+<body class="bg-slate-100 text-slate-900">
+	<div class="max-w-6xl mx-auto px-4 py-6">
+		@include('components.navbar')
+	</div>
+
+	<div class="max-w-xl mx-auto px-4 pb-6">
+		<div class="mb-6">
+			<p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">ADMINISTRACIÓN</p>
+			<h1 class="text-2xl font-bold mt-2">{{ $partner->exists ? 'Editar socio' : 'Nuevo socio' }}</h1>
+		</div>
+
+		@include('components.flash-messages')
+
+		<form action="{{ $partner->exists ? route('partners.update', $partner) : route('partners.store') }}" method="POST" class="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+			@csrf
+			@if ($partner->exists)
+				@method('PUT')
+			@endif
+
+			<div>
+				<label for="nombre" class="mb-1.5 block text-sm font-medium">Nombre del socio</label>
+				<input id="nombre" name="nombre" required value="{{ old('nombre', $partner->nombre) }}" class="w-full rounded-xl border border-slate-300 px-3 py-3">
+			</div>
+			<div>
+				<label for="alias" class="mb-1.5 block text-sm font-medium">Alias del socio</label>
+				<input id="alias" name="alias" value="{{ old('alias', $partner->alias) }}" class="w-full rounded-xl border border-slate-300 px-3 py-3">
+			</div>
+			<div class="flex gap-3 pt-2">
+				<a href="{{ route('partners.index') }}" class="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-center text-sm font-semibold">Cancelar</a>
+				<button class="flex-1 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white hover:bg-blue-700">Guardar</button>
+			</div>
+		</form>
+	</div>
+</body>
+</html>

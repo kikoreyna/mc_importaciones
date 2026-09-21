@@ -11,7 +11,7 @@
         @include('components.navbar')
 
         <div class="mb-6">
-            <p class="text-xs uppercase tracking-[0.2em] text-violet-600 font-semibold">DOCUMENTACIÓN</p>
+            <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">DOCUMENTACIÓN</p>
             <h1 class="text-2xl font-bold mt-2">Edición de guía</h1>
         </div>
 
@@ -33,10 +33,10 @@
                     @csrf
                     <div>
                         <label for="guia_principal" class="block text-sm font-medium mb-1.5">Buscar guía recibida</label>
-                        <input id="guia_principal" name="guia_principal" type="text" value="{{ old('guia_principal', $guiaPrincipal ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="Escanee la guía">
+                        <input id="guia_principal" name="guia_principal" type="text" value="{{ old('guia_principal', $guiaPrincipal ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escanee la guía">
                     </div>
 
-                    <button type="submit" class="w-full bg-violet-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-violet-700 active:bg-violet-800">
+                    <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
                         Buscar guía
                     </button>
                 </form>
@@ -51,7 +51,7 @@
                         </div>
                         <div class="space-y-2 max-h-52 overflow-y-auto">
                             @foreach ($packagesRecibidos as $index => $receivedPackage)
-                                <a href="{{ route('documentacion.index', ['guia_principal' => $receivedPackage->guia_principal]) }}" class="block rounded-lg border {{ $index === 0 ? 'border-amber-400 bg-amber-50 shadow-sm' : 'border-slate-200 bg-white' }} px-3 py-2 text-sm hover:bg-violet-50 transition">
+                                <a href="{{ route('documentacion.index', ['guia_principal' => $receivedPackage->guia_principal]) }}" class="block rounded-lg border {{ $index === 0 ? 'border-amber-400 bg-amber-50 shadow-sm' : 'border-slate-200 bg-white' }} px-3 py-2 text-sm hover:bg-blue-50 transition">
                                     <div class="flex items-center justify-between gap-2">
                                         <div class="font-medium">{{ $receivedPackage->guia_principal }}</div>
                                         @if ($index === 0)
@@ -98,7 +98,7 @@
                                         : old('client_search', '');
                                 @endphp
                                 <div class="relative">
-                                    <input id="client_search" name="client_search" type="text" value="{{ $selectedClientLabel }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="Escribe nombre, alias o código" autocomplete="off">
+                                    <input id="client_search" name="client_search" type="text" value="{{ $selectedClientLabel }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escribe nombre, alias o código" autocomplete="off">
                                     <div id="clients_list" class="absolute z-20 mt-1 hidden max-h-56 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg"></div>
                                 </div>
                                 <input id="client_id" name="client_id" type="hidden" value="{{ $selectedClientId }}">
@@ -111,7 +111,7 @@
 
                             <div>
                                 <label for="partner_id" class="block text-sm font-medium mb-1.5">Socio</label>
-                                <select id="partner_selector" name="partner_selector" {{ $selectedClient?->partner_id ? 'disabled' : '' }} class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent disabled:bg-slate-100 disabled:text-slate-500">
+                                <select id="partner_selector" name="partner_selector" {{ $selectedClient?->partner_id ? 'disabled' : '' }} class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-slate-100 disabled:text-slate-500">
                                     <option value="">Selecciona un socio</option>
                                     @foreach ($partners as $partner)
                                         <option value="{{ $partner->id }}" {{ old('partner_id', $package->partner_id) == $partner->id ? 'selected' : '' }}>
@@ -127,7 +127,7 @@
                                 @php
                                     $selectedTransportadora = old('transportadora', $package->transportadora ?? '');
                                 @endphp
-                                <select id="transportadora" name="transportadora" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent">
+                                <select id="transportadora" name="transportadora" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Selecciona una transportadora</option>
                                     @if ($selectedTransportadora && ! in_array($selectedTransportadora, $transportadoras, true))
                                         <option value="{{ $selectedTransportadora }}" selected>{{ $selectedTransportadora }} (actual)</option>
@@ -143,11 +143,11 @@
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label for="caja_numero" class="block text-sm font-medium mb-1.5">Caja #</label>
-                                    <input id="caja_numero" name="caja_numero" type="number" min="1" value="{{ old('caja_numero', $package->caja_numero ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="1">
+                                    <input id="caja_numero" name="caja_numero" type="number" min="1" value="{{ old('caja_numero', $package->caja_numero ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="1">
                                 </div>
                                 <div>
                                     <label for="total_cajas" class="block text-sm font-medium mb-1.5">Total de cajas</label>
-                                    <input id="total_cajas" name="total_cajas" type="number" min="1" value="{{ old('total_cajas', $package->total_cajas ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-violet-500 focus:border-transparent" placeholder="5">
+                                    <input id="total_cajas" name="total_cajas" type="number" min="1" value="{{ old('total_cajas', $package->total_cajas ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="5">
                                 </div>
                             </div>
 
@@ -242,7 +242,7 @@
                     .filter((option) => !searchValue || option.dataset.search.includes(searchValue))
                     .forEach((option) => {
                         const item = option.cloneNode(true);
-                        item.className = 'block w-full border-b border-slate-100 px-3 py-2 text-left text-sm text-slate-700 last:border-0 hover:bg-violet-50';
+                        item.className = 'block w-full border-b border-slate-100 px-3 py-2 text-left text-sm text-slate-700 last:border-0 hover:bg-blue-50';
                         item.addEventListener('click', () => selectClient(option));
                         clientsList.appendChild(item);
                     });

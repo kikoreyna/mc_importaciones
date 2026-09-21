@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>{{ $client->exists ? 'Editar cliente' : 'Nuevo cliente' }}</title>@vite(['resources/css/app.css', 'resources/js/app.js'])</head>
-<body class="bg-slate-100 text-slate-900"><div class="max-w-xl mx-auto px-4 py-6"><div class="mb-6">@include('components.navbar')<p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">ADMINISTRACIÓN</p><h1 class="text-2xl font-bold mt-2">{{ $client->exists ? 'Editar cliente' : 'Nuevo cliente' }}</h1></div>@include('components.flash-messages')
+<body class="bg-slate-100 text-slate-900"><div class="max-w-6xl mx-auto px-4 py-6"><div class="mb-6">@include('components.navbar')</div></div><div class="max-w-xl mx-auto px-4 pb-6"><div class="mb-6"><p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">ADMINISTRACIÓN</p><h1 class="text-2xl font-bold mt-2">{{ $client->exists ? 'Editar cliente' : 'Nuevo cliente' }}</h1></div>@include('components.flash-messages')
 <form action="{{ $client->exists ? route('clients.update', $client) : route('clients.store') }}" method="POST" class="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">@csrf @if($client->exists) @method('PUT') @endif
 <div><label for="nombre" class="mb-1.5 block text-sm font-medium">Nombre</label><input id="nombre" name="nombre" required value="{{ old('nombre', $client->nombre) }}" class="w-full rounded-xl border border-slate-300 px-3 py-3"></div>
 <div><label for="alias" class="mb-1.5 block text-sm font-medium">Alias</label><input id="alias" name="alias" value="{{ old('alias', $client->alias) }}" class="w-full rounded-xl border border-slate-300 px-3 py-3"></div>
