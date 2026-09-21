@@ -7,9 +7,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <div class="max-w-md mx-auto px-4 py-6 md:max-w-4xl md:px-6">
+    <div class="max-w-6xl mx-auto px-4 py-6">
         @include('components.navbar')
+    </div>
 
+    <div class="max-w-md mx-auto px-4 py-6 md:max-w-4xl md:px-6">
         <div class="mb-6">
             <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">USA</p>
             <h1 class="text-2xl font-bold mt-2 md:text-3xl">Recepción de guía</h1>
