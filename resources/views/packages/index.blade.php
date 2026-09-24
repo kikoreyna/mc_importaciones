@@ -76,11 +76,29 @@
         const photoLabelText = document.getElementById('photo-label');
         const photoCount = document.getElementById('photo-count');
         const selectedPhotos = new DataTransfer();
-        const selectedPhotoKeys = new Set();
+        const selectedPhotoHashes = new Set();
         let photoCapturePending = false;
-        let previewVersion = 0;
 
-        const getPhotoKey = (file) => [file.name, file.size, file.lastModified, file.type].join('|');
+        const getPhotoHash = async (file) => {
+            const buffer = await file.arrayBuffer();
+            const digest = await crypto.subtle.digest('SHA-256', buffer);
+
+            return [...new Uint8Array(digest)]
+                .map(byte => byte.toString(16).padStart(2, '0'))
+                .join('');
+        };
+
+        const renderPhotoPreview = (files) => {
+            preview.innerHTML = '';
+
+            [...files].forEach((file, index) => {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.alt = `Foto ${index + 1}`;
+                img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+                preview.appendChild(img);
+            });
+        };
 
         window.addEventListener('load', () => {
             guiaPrincipal.focus();
@@ -115,36 +133,21 @@
             }
         });
 
-        input.addEventListener('change', function () {
+        input.addEventListener('change', async function () {
             photoCapturePending = false;
 
-            [...this.files].forEach(file => {
-                if (!file.type.startsWith('image/')) return;
+            for (const file of [...this.files]) {
+                if (!file.type.startsWith('image/')) continue;
 
-                const photoKey = getPhotoKey(file);
-                if (selectedPhotoKeys.has(photoKey)) return;
+                const photoHash = await getPhotoHash(file);
+                if (selectedPhotoHashes.has(photoHash)) continue;
 
-                selectedPhotoKeys.add(photoKey);
+                selectedPhotoHashes.add(photoHash);
                 selectedPhotos.items.add(file);
-            });
+            }
 
             input.files = selectedPhotos.files;
-            preview.innerHTML = '';
-            const currentPreviewVersion = ++previewVersion;
-
-            [...selectedPhotos.files].forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    if (currentPreviewVersion !== previewVersion) return;
-
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.alt = `Foto ${index + 1}`;
-                    img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
+            renderPhotoPreview(selectedPhotos.files);
 
             const count = selectedPhotos.files.length;
             photoLabelText.textContent = 'Tomar otra foto';
