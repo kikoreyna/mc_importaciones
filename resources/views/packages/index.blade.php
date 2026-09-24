@@ -45,10 +45,10 @@
             <div>
                 <label class="block text-sm font-medium mb-2">Tomar fotos</label>
                 <label for="photos" class="flex items-center justify-center h-16 rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 text-blue-700 font-medium cursor-pointer active:scale-[0.99]">
-                    <span>Tomar fotos</span>
+                    <span id="photo-label">Tomar foto</span>
                 </label>
                 <input id="photos" name="photos[]" type="file" multiple accept="image/*" capture="environment" class="hidden">
-                <p class="text-xs text-slate-500 mt-2">Usa la cámara del móvil para capturar imágenes directamente.</p>
+                <p id="photo-count" class="text-xs text-slate-500 mt-2">Puedes tomar varias fotos antes de guardar la guía.</p>
                 <div id="preview" class="mt-3 grid grid-cols-3 gap-2"></div>
             </div>
 
@@ -71,6 +71,9 @@
         const preview = document.getElementById('preview');
         const photoLabel = document.querySelector('label[for="photos"]');
         const submitButton = document.querySelector('button[type="submit"]');
+        const photoLabelText = document.getElementById('photo-label');
+        const photoCount = document.getElementById('photo-count');
+        const selectedPhotos = new DataTransfer();
 
         window.addEventListener('load', () => {
             guiaPrincipal.focus();
@@ -110,6 +113,8 @@
             [...this.files].forEach(file => {
                 if (!file.type.startsWith('image/')) return;
 
+            selectedPhotos.items.add(file);
+
                 const reader = new FileReader();
                 reader.onload = function (event) {
                     const img = document.createElement('img');
@@ -120,10 +125,25 @@
                 reader.readAsDataURL(file);
             });
 
-            setTimeout(() => {
-                submitButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                submitButton.focus();
-            }, 300);
+            input.files = selectedPhotos.files;
+            preview.innerHTML = '';
+
+            [...selectedPhotos.files].forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = function (event) {
+                    const img = document.createElement('img');
+                    img.src = event.target.result;
+                    img.alt = `Foto ${index + 1}`;
+                    img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+
+            const count = selectedPhotos.files.length;
+            photoLabelText.textContent = 'Tomar otra foto';
+            photoCount.textContent = `${count} foto${count === 1 ? '' : 's'} seleccionada${count === 1 ? '' : 's'}.`;
+            submitButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
         });
     </script>
 </body>

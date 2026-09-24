@@ -24,7 +24,7 @@ class PackagePhotoUploadService
             }
 
             $folder = 'packages/' . $package->id;
-            $filename = time() . '-' . $this->sanitizeFilename($file->getClientOriginalName());
+            $filename = uniqid('', true) . '-' . $this->sanitizeFilename($file->getClientOriginalName());
             try {
                 $path = $file->storeAs($folder, $filename, $disk);
             } catch (Throwable $exception) {
