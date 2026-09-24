@@ -28,9 +28,13 @@
         <a href="{{ route('reports.packages') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.packages') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Reportería
         </a>
-        <a href="{{ route('reports.comparison') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.comparison') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
-            Comparativo USA-MEX
-        </a>
+        @auth
+            @if (auth()->user()->canAccessDashboard())
+                <a href="{{ route('reports.comparison') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.comparison') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                    Comparativo USA-MEX
+                </a>
+            @endif
+        @endauth
         @auth
             <span class="ml-auto rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">{{ auth()->user()->name }} · {{ auth()->user()->roleLabel() }}</span>
             <form action="{{ route('logout') }}" method="POST">

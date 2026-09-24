@@ -19,6 +19,11 @@ class User extends Authenticatable
         return in_array($this->role, ['administrador', 'supervisor'], true);
     }
 
+    public function canAccessDashboard(): bool
+    {
+        return in_array($this->role, ['administrador', 'supervisor', 'documentador'], true);
+    }
+
     public static function roleLabels(): array
     {
         return [

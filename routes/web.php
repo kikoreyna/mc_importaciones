@@ -29,7 +29,9 @@ Route::post('/documentacion', [\App\Http\Controllers\PackageDocumentationControl
 Route::get('/documentacion/documentados', [\App\Http\Controllers\PackageDocumentationController::class, 'documented'])->name('documentacion.documented');
 Route::patch('/documentacion/{package}/recibido', [\App\Http\Controllers\PackageDocumentationController::class, 'markAsReceived'])->name('documentacion.markAsReceived');
 Route::get('/reportes/paquetes', [PackageReportController::class, 'index'])->name('reports.packages');
-Route::get('/reportes/comparativo', [PackageComparisonController::class, 'index'])->name('reports.comparison');
+Route::get('/reportes/comparativo', [PackageComparisonController::class, 'index'])
+    ->middleware(['auth', 'dashboard.access'])
+    ->name('reports.comparison');
 Route::get('/reportes/comparativo/{package}/editar', [PackageComparisonController::class, 'edit'])
     ->middleware(['auth', 'package.manager'])
     ->name('reports.comparison.edit');

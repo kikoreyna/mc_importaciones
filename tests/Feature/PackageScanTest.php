@@ -85,6 +85,8 @@ class PackageScanTest extends TestCase
 
     public function test_comparison_shows_usa_and_mexico_receipts(): void
     {
+        $this->actingAs(User::factory()->create(['role' => 'documentador']));
+
         Package::create([
             'guia_principal' => 'USA-PENDIENTE',
             'total_paquetes' => 2,
