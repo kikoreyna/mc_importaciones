@@ -14,32 +14,32 @@
 @endphp
 
 <div>
-    <label for="{{ $inputId }}">{{ $label }}</label>
+    <label for="{{ $inputId }}" class="mb-1.5 block text-sm font-medium">{{ $label }}</label>
 
-    <div style="display:flex; gap:8px; margin:8px 0;">
+    <div class="my-2 flex flex-col gap-2 sm:flex-row">
         <input
             type="text"
             id="{{ $inputId }}"
             name="{{ $name }}"
-            class="form-control"
+            class="w-full flex-1 rounded-xl border border-slate-300 px-3 py-3 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500"
             autocomplete="off"
             placeholder="{{ $placeholder }}"
             value="{{ $value }}"
             required
         >
 
-        <button type="button" id="{{ $scanButtonId }}" class="btn btn-primary">
+        <button type="button" id="{{ $scanButtonId }}" class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto sm:shrink-0">
             Escanear
         </button>
     </div>
 
-    <div id="{{ $readerId }}" style="max-width:400px; display:none;"></div>
+    <div id="{{ $readerId }}" class="mt-3 max-w-[400px] overflow-hidden rounded-xl border border-slate-200 bg-slate-50" style="display:none;"></div>
 
     <button
         type="button"
         id="{{ $stopButtonId }}"
-        class="btn btn-danger"
-        style="display:none; margin-top:8px;"
+        class="mt-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+        style="display:none;"
     >
         Detener cámara
     </button>
