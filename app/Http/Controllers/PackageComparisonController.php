@@ -8,6 +8,15 @@ use Illuminate\Validation\Rule;
 
 class PackageComparisonController extends Controller
 {
+    private const STATUSES = [
+        'recibido' => 'Recibido en USA',
+        'ingreso_bodega' => 'Recibido en Bodega MEX',
+        'documentado' => 'Documentado',
+        'devuelto_cliente' => 'Devuelto a cliente',
+        'devuelto_usa' => 'Devuelto a USA',
+        'cancelado' => 'Cancelado',
+    ];
+
     public function index(Request $request)
     {
         $validated = $request->validate([
@@ -34,15 +43,7 @@ class PackageComparisonController extends Controller
         }
 
         $packages = $packagesQuery->latest()->get();
-        $statuses = [
-            'recibido' => 'Recibido en USA',
-            'ingreso_bodega' => 'Recibido en Bodega MEX',
-            'documentado' => 'Documentado',
-            'devuelto_cliente' => 'Devuelto a cliente',
-            'devuelto_usa' => 'Devuelto a USA',
-            'cancelado' => 'Cancelado',
-        ];
-
+        $statuses = self::STATUSES;
         $arrivalPercentage = $receivedInUsa > 0
             ? round(($receivedInMexico / $receivedInUsa) * 100)
             : 0;
@@ -61,10 +62,18 @@ class PackageComparisonController extends Controller
         ));
     }
 
+    public function edit(Package $package)
+    {
+        return view('reportes.editar-guia', [
+            'package' => $package,
+            'statuses' => self::STATUSES,
+        ]);
+    }
+
     public function update(Request $request, Package $package)
     {
         $validated = $request->validate([
-            'estado' => ['required', Rule::in(['recibido', 'ingreso_bodega', 'documentado', 'devuelto_cliente', 'devuelto_usa', 'cancelado'])],
+            'estado' => ['required', Rule::in(array_keys(self::STATUSES))],
         ]);
 
         $package->update(['estado' => $validated['estado']]);

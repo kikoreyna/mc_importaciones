@@ -88,7 +88,17 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($packages as $package)
                         <tr class="hover:bg-blue-50">
-                            <td class="whitespace-nowrap px-4 py-3 font-semibold">{{ $package->guia_principal }}</td>
+                            <td class="whitespace-nowrap px-4 py-3 font-semibold">
+                                @auth
+                                    @if (auth()->user()->isPackageManager())
+                                        <a href="{{ route('reports.comparison.edit', $package) }}" class="text-blue-700 hover:text-blue-900 hover:underline">{{ $package->guia_principal }}</a>
+                                    @else
+                                        {{ $package->guia_principal }}
+                                    @endif
+                                @else
+                                    {{ $package->guia_principal }}
+                                @endauth
+                            </td>
                             <td class="px-4 py-3">{{ $package->guia_secundaria ?: 'Sin guía secundaria' }}</td>
                             <td class="px-4 py-3">{{ $package->total_paquetes }}</td>
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') }}</td>
@@ -97,26 +107,7 @@
                             </td>
                             @auth
                                 @if (auth()->user()->isPackageManager())
-                                    <td class="min-w-70 px-4 py-3">
-                                        <div class="flex flex-wrap items-center gap-2">
-                                            <form action="{{ route('reports.comparison.update', $package) }}" method="POST" class="flex items-center gap-2">
-                                                @csrf
-                                                @method('PATCH')
-                                                <label for="estado-{{ $package->id }}" class="sr-only">Estado de {{ $package->guia_principal }}</label>
-                                                <select id="estado-{{ $package->id }}" name="estado" class="rounded-lg border border-slate-300 px-2 py-2 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-                                                    @foreach ($statuses as $status => $label)
-                                                        <option value="{{ $status }}" @selected($package->estado === $status)>{{ $label }}</option>
-                                                    @endforeach
-                                                </select>
-                                                <button type="submit" class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700">Guardar</button>
-                                            </form>
-                                            <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" onsubmit="return confirm('¿Eliminar esta guía? Esta acción no se puede deshacer.');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white hover:bg-red-700">Eliminar</button>
-                                            </form>
-                                        </div>
-                                    </td>
+                                    <td class="px-4 py-3 text-sm text-slate-500">Selecciona la guía para administrar</td>
                                 @endif
                             @endauth
                         </tr>

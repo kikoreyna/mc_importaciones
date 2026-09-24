@@ -30,6 +30,9 @@ Route::get('/documentacion/documentados', [\App\Http\Controllers\PackageDocument
 Route::patch('/documentacion/{package}/recibido', [\App\Http\Controllers\PackageDocumentationController::class, 'markAsReceived'])->name('documentacion.markAsReceived');
 Route::get('/reportes/paquetes', [PackageReportController::class, 'index'])->name('reports.packages');
 Route::get('/reportes/comparativo', [PackageComparisonController::class, 'index'])->name('reports.comparison');
+Route::get('/reportes/comparativo/{package}/editar', [PackageComparisonController::class, 'edit'])
+    ->middleware(['auth', 'package.manager'])
+    ->name('reports.comparison.edit');
 Route::patch('/reportes/comparativo/{package}', [PackageComparisonController::class, 'update'])
     ->middleware(['auth', 'package.manager'])
     ->name('reports.comparison.update');
