@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'required' => 'El campo :attribute es obligatorio.',
+    'string' => 'El campo :attribute debe ser texto.',
+    'max' => [
+        'string' => 'El campo :attribute no puede tener más de :max caracteres.',
+        'file' => 'El archivo :attribute no puede superar los :max kilobytes.',
+        'array' => 'El campo :attribute no puede tener más de :max elementos.',
+    ],
+    'min' => [
+        'string' => 'El campo :attribute debe tener al menos :min caracteres.',
+        'numeric' => 'El campo :attribute debe ser como mínimo :min.',
+        'file' => 'El archivo :attribute debe pesar al menos :min kilobytes.',
+    ],
+    'integer' => 'El campo :attribute debe ser un número entero.',
+    'numeric' => 'El campo :attribute debe ser un número.',
+    'email' => 'El campo :attribute debe ser un correo electrónico válido.',
+    'array' => 'El campo :attribute debe ser una lista válida.',
+    'nullable' => 'El campo :attribute puede estar vacío.',
+    'exists' => 'El valor seleccionado para :attribute no es válido.',
+    'unique' => 'La :attribute ya está registrada.',
+    'confirmed' => 'La confirmación de :attribute no coincide.',
+    'file' => 'El campo :attribute debe contener un archivo.',
+    'mimetypes' => 'El archivo :attribute tiene un formato no permitido.',
+    'in' => 'El valor seleccionado para :attribute no es válido.',
+    'attributes' => [
+        'guia_principal' => 'guía principal',
+        'guia_secundaria' => 'guía secundaria',
+        'guia_master' => 'guía máster',
+        'total_paquetes' => 'total de paquetes',
+        'client_id' => 'cliente',
+        'partner_id' => 'socio',
+        'transportadora' => 'transportadora',
+        'caja_numero' => 'número de caja',
+        'total_cajas' => 'total de cajas',
+        'name' => 'nombre',
+        'email' => 'correo electrónico',
+        'password' => 'contraseña',
+        'password_confirmation' => 'confirmación de contraseña',
+        'photos' => 'fotos',
+    ],
+];
