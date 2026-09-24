@@ -128,7 +128,7 @@ class PackageScanTest extends TestCase
             'estado' => 'devuelto_usa',
         ]);
 
-        $operator = User::factory()->create(['role' => 'operador']);
+        $operator = User::factory()->create(['role' => 'documentador']);
 
         $this->actingAs($operator)
             ->patch(route('reports.comparison.update', $package), ['estado' => 'cancelado'])

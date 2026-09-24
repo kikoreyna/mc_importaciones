@@ -9,7 +9,7 @@ class UserManagementTest extends TestCase
 {
     public function test_only_administrators_can_access_user_management(): void
     {
-        $operator = User::factory()->create(['role' => 'operador']);
+        $operator = User::factory()->create(['role' => 'documentador']);
 
         $this->actingAs($operator)
             ->get(route('users.index'))
@@ -24,7 +24,7 @@ class UserManagementTest extends TestCase
             ->put(route('users.update', $administrator), [
                 'name' => $administrator->name,
                 'email' => $administrator->email,
-                'role' => 'operador',
+                'role' => 'documentador',
             ])
             ->assertRedirect();
 

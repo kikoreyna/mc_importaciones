@@ -19,6 +19,22 @@ class User extends Authenticatable
         return in_array($this->role, ['administrador', 'supervisor'], true);
     }
 
+    public static function roleLabels(): array
+    {
+        return [
+            'administrador' => 'Administrador',
+            'supervisor' => 'Supervisor',
+            'documentador' => 'Documentador',
+            'bodega_usa' => 'Bodega USA',
+            'bodega_mex' => 'Bodega MEX',
+        ];
+    }
+
+    public function roleLabel(): string
+    {
+        return self::roleLabels()[$this->role] ?? $this->role;
+    }
+
     /**
      * The attributes that are mass assignable.
      *
