@@ -10,6 +10,13 @@ use Tests\TestCase;
 
 class PackageScanTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->actingAs(User::factory()->create(['role' => 'documentador']));
+    }
+
     public function test_can_store_a_main_guide_with_an_optional_secondary_guide_and_photos(): void
     {
         Storage::fake('local');
@@ -85,8 +92,6 @@ class PackageScanTest extends TestCase
 
     public function test_comparison_shows_usa_and_mexico_receipts(): void
     {
-        $this->actingAs(User::factory()->create(['role' => 'documentador']));
-
         Package::create([
             'guia_principal' => 'USA-PENDIENTE',
             'total_paquetes' => 2,
