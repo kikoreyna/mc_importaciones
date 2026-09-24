@@ -18,18 +18,19 @@ class PackageComparisonController extends Controller
         $fecha = $validated['fecha'] ?? today()->toDateString();
         $grupo = $validated['grupo'] ?? null;
         $baseQuery = Package::query()->when($fecha, fn ($query) => $query->whereDate('created_at', $fecha));
+        $pendingQuery = Package::query()->where('estado', 'recibido');
         $receivedInUsa = (clone $baseQuery)->count();
         $receivedInMexico = (clone $baseQuery)->whereIn('estado', ['ingreso_bodega', 'documentado'])->count();
-        $pendingInMexico = (clone $baseQuery)->where('estado', 'recibido')->count();
+        $pendingInMexico = (clone $pendingQuery)->count();
         $totalPackages = (clone $baseQuery)->sum('total_paquetes');
         $arrivedPackages = (clone $baseQuery)
             ->whereIn('estado', ['ingreso_bodega', 'documentado'])
             ->sum('total_paquetes');
-        $packagesQuery = clone $baseQuery;
+        $packagesQuery = $grupo === 'pendientes'
+            ? clone $pendingQuery
+            : clone $baseQuery;
         if ($grupo === 'mex') {
             $packagesQuery->whereIn('estado', ['ingreso_bodega', 'documentado']);
-        } elseif ($grupo === 'pendientes') {
-            $packagesQuery->where('estado', 'recibido');
         }
 
         $packages = $packagesQuery->latest()->get();

@@ -50,10 +50,10 @@
                 <p class="mt-2 text-3xl font-bold text-emerald-950">{{ $receivedInMexico }}</p>
                 <p class="mt-1 text-sm text-emerald-700">{{ $arrivedPackages }} paquetes · Ver guías</p>
             </a>
-            <a href="{{ route('reports.comparison', ['fecha' => $fecha, 'grupo' => 'pendientes']) }}" class="min-w-0 rounded-2xl border border-amber-200 bg-amber-50 p-3 transition hover:border-amber-400 hover:shadow-sm sm:p-5">
+            <a href="{{ route('reports.comparison', ['grupo' => 'pendientes']) }}" class="min-w-0 rounded-2xl border border-amber-200 bg-amber-50 p-3 transition hover:border-amber-400 hover:shadow-sm sm:p-5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Pendientes de llegada</p>
                 <p class="mt-2 text-3xl font-bold text-amber-950">{{ $pendingInMexico }}</p>
-                <p class="mt-1 text-sm text-amber-700">Guías aún en USA · Ver guías</p>
+                <p class="mt-1 text-sm text-amber-700">Todas las fechas · Ver guías</p>
             </a>
         </div>
 
