@@ -37,10 +37,13 @@
 
                 <form action="{{ route('documentacion.index') }}" method="GET" class="space-y-4">
                     @csrf
-                    <div>
-                        <label for="guia_principal" class="block text-sm font-medium mb-1.5">Buscar guía recibida</label>
-                        <input id="guia_principal" name="guia_principal" type="text" value="{{ old('guia_principal', $guiaPrincipal ?? '') }}" {{ $package ? '' : 'autofocus' }} class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escanee la guía">
-                    </div>
+                    <x-camera-scanner
+                        id="documentation-guide-scanner"
+                        name="guia_principal"
+                        label="Buscar guía recibida"
+                        placeholder="Escanee la guía"
+                        value="{{ old('guia_principal', $guiaPrincipal ?? '') }}"
+                    />
 
                     <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
                         Buscar guía
@@ -222,7 +225,7 @@
 
     <script>
         const editingGuide = document.getElementById('edicion-guia-principal');
-        const guideSearch = document.getElementById('guia_principal');
+        const guideSearch = document.getElementById('documentation-guide-scanner-input');
 
         window.addEventListener('load', () => {
             (editingGuide ?? guideSearch)?.focus();

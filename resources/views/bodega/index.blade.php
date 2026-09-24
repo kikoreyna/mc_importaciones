@@ -33,6 +33,7 @@
             @csrf
 
             <x-camera-scanner
+                id="warehouse-guide-scanner"
                 name="guia_principal"
                 label="Escanee la guía"
                 placeholder="Guía principal"

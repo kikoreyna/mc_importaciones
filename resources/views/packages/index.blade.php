@@ -32,10 +32,12 @@
         <form action="{{ route('packages.store') }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-4 md:p-6">
             @csrf
 
-            <div>
-                <label for="guia_principal" class="block text-sm font-medium mb-1.5">Guía principal</label>
-                <input id="guia_principal" name="guia_principal" type="text" required class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escanee o ingrese la guía principal">
-            </div>
+            <x-camera-scanner
+                id="usa-guide-scanner"
+                name="guia_principal"
+                label="Guía principal"
+                placeholder="Escanee o ingrese la guía principal"
+            />
 
             <div>
                 <label for="guia_secundaria" class="block text-sm font-medium mb-1.5">Guía secundaria</label>
@@ -65,7 +67,7 @@
     </div>
 
     <script>
-        const guiaPrincipal = document.getElementById('guia_principal');
+        const guiaPrincipal = document.getElementById('usa-guide-scanner-input');
         const guiaSecundaria = document.getElementById('guia_secundaria');
         const input = document.getElementById('photos');
         const preview = document.getElementById('preview');
