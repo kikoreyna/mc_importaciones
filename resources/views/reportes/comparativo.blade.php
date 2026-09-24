@@ -78,11 +78,6 @@
                         <th class="px-4 py-3 font-semibold">Paquetes</th>
                         <th class="px-4 py-3 font-semibold">Recibida USA</th>
                         <th class="px-4 py-3 font-semibold">Estado</th>
-                        @auth
-                            @if (auth()->user()->isPackageManager())
-                                <th class="px-4 py-3 font-semibold">Acciones</th>
-                            @endif
-                        @endauth
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -105,15 +100,10 @@
                             <td class="px-4 py-3">
                                 <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{{ $statuses[$package->estado] ?? ucfirst($package->estado) }}</span>
                             </td>
-                            @auth
-                                @if (auth()->user()->isPackageManager())
-                                    <td class="px-4 py-3 text-sm text-slate-500">Selecciona la guía para administrar</td>
-                                @endif
-                            @endauth
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="{{ auth()->check() && auth()->user()->isPackageManager() ? 6 : 5 }}" class="px-4 py-8 text-center text-slate-500">No hay guías para el filtro seleccionado.</td>
+                            <td colspan="5" class="px-4 py-8 text-center text-slate-500">No hay guías para el filtro seleccionado.</td>
                         </tr>
                     @endforelse
                 </tbody>
