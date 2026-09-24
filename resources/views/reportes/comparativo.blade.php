@@ -28,7 +28,6 @@
             </div>
             <button class="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700" type="submit">Filtrar</button>
             <a href="{{ route('reports.comparison', ['fecha' => today()->toDateString()]) }}" class="rounded-xl border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Hoy</a>
-            <a href="{{ route('reports.comparison', ['fecha' => '', 'grupo' => '']) }}" class="rounded-xl border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Todas las fechas</a>
         </form>
 
         @include('components.flash-messages')
@@ -40,7 +39,7 @@
             </div>
         @endif
 
-        <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="mb-4 grid grid-cols-1 gap-4 md:grid-cols-3">
             <a href="{{ route('reports.comparison', ['fecha' => $fecha, 'grupo' => 'usa']) }}" class="rounded-2xl border border-blue-200 bg-blue-50 p-5 transition hover:border-blue-400 hover:shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-wide text-blue-700">Recibidas en USA</p>
                 <p class="mt-2 text-3xl font-bold text-blue-950">{{ $receivedInUsa }}</p>
@@ -56,13 +55,14 @@
                 <p class="mt-2 text-3xl font-bold text-amber-950">{{ $pendingInMexico }}</p>
                 <p class="mt-1 text-sm text-amber-700">Guías aún en USA · Ver guías</p>
             </a>
-            <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        </div>
+
+        <div class="mb-6 rounded-2xl border border-slate-200 bg-white p-5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Cumplimiento de llegada</p>
                 <p class="mt-2 text-3xl font-bold text-slate-900">{{ $arrivalPercentage }}%</p>
                 <div class="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
                     <div class="h-full rounded-full bg-emerald-500" style="width: {{ $arrivalPercentage }}%"></div>
                 </div>
-            </div>
         </div>
 
         <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
