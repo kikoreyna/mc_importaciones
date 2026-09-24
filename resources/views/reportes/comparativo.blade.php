@@ -68,7 +68,7 @@
         <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-200 px-4 py-4">
                 <h2 class="font-semibold">Comparativo de guías</h2>
-                <p class="mt-1 text-sm text-slate-500">Consulta el estado de cada guía y administra devoluciones o correcciones autorizadas.</p>
+                <p class="mt-1 text-sm text-slate-500">Consulta el estado de cada guía. Selecciona una guía para cambiar su estado o administrarla.</p>
             </div>
             <table class="min-w-full text-left text-sm">
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
@@ -86,7 +86,10 @@
                             <td class="whitespace-nowrap px-4 py-3 font-semibold">
                                 @auth
                                     @if (auth()->user()->isPackageManager())
-                                        <a href="{{ route('reports.comparison.edit', $package) }}" class="text-blue-700 hover:text-blue-900 hover:underline">{{ $package->guia_principal }}</a>
+                                        <a href="{{ route('reports.comparison.edit', $package) }}" class="inline-flex max-w-full items-center rounded-lg bg-blue-50 px-3 py-2 text-blue-700 hover:bg-blue-100 hover:text-blue-900">
+                                            <span class="truncate">{{ $package->guia_principal }}</span>
+                                            <span class="ml-2 shrink-0 text-xs font-semibold">Administrar</span>
+                                        </a>
                                     @else
                                         {{ $package->guia_principal }}
                                     @endif
