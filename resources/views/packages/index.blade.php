@@ -76,7 +76,11 @@
         const photoLabelText = document.getElementById('photo-label');
         const photoCount = document.getElementById('photo-count');
         const selectedPhotos = new DataTransfer();
+        const selectedPhotoKeys = new Set();
         let photoCapturePending = false;
+        let previewVersion = 0;
+
+        const getPhotoKey = (file) => [file.name, file.size, file.lastModified, file.type].join('|');
 
         window.addEventListener('load', () => {
             guiaPrincipal.focus();
@@ -117,15 +121,22 @@
             [...this.files].forEach(file => {
                 if (!file.type.startsWith('image/')) return;
 
+                const photoKey = getPhotoKey(file);
+                if (selectedPhotoKeys.has(photoKey)) return;
+
+                selectedPhotoKeys.add(photoKey);
                 selectedPhotos.items.add(file);
             });
 
             input.files = selectedPhotos.files;
             preview.innerHTML = '';
+            const currentPreviewVersion = ++previewVersion;
 
             [...selectedPhotos.files].forEach((file, index) => {
                 const reader = new FileReader();
                 reader.onload = function (event) {
+                    if (currentPreviewVersion !== previewVersion) return;
+
                     const img = document.createElement('img');
                     img.src = event.target.result;
                     img.alt = `Foto ${index + 1}`;
