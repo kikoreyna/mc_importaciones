@@ -1,5 +1,13 @@
-<nav class="mb-6 rounded-2xl border border-slate-200 bg-white shadow-sm" aria-label="Navegación principal">
-    <div class="flex flex-wrap items-center gap-2 p-3">
+<nav class="relative z-30 mb-6 rounded-2xl border border-slate-200 bg-white shadow-sm" aria-label="Navegación principal">
+    <div class="flex min-h-14 items-center justify-between gap-3 p-2 sm:p-3 md:hidden">
+        <span class="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 md:hidden">MC Importaciones</span>
+        <button type="button" id="navbar-toggle" class="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 md:hidden" aria-controls="navbar-menu" aria-expanded="false">
+            <span class="sr-only">Abrir navegación</span>
+            <span aria-hidden="true" class="text-xl leading-none">☰</span>
+        </button>
+    </div>
+
+    <div id="navbar-menu" class="hidden flex-col gap-1 border-t border-slate-100 p-2 md:flex md:flex-row md:flex-wrap md:items-center md:gap-2 md:border-t-0 md:p-3">
         <a href="{{ route('packages.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('packages.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Recepción USA
         </a>
@@ -40,3 +48,19 @@
         @endauth
     </div>
 </nav>
+
+<script>
+    (() => {
+        const toggle = document.getElementById('navbar-toggle');
+        const menu = document.getElementById('navbar-menu');
+
+        if (!toggle || !menu) return;
+
+        toggle.addEventListener('click', () => {
+            const isOpen = toggle.getAttribute('aria-expanded') === 'true';
+            toggle.setAttribute('aria-expanded', String(!isOpen));
+            menu.classList.toggle('hidden', isOpen);
+            menu.classList.toggle('flex', !isOpen);
+        });
+    })();
+</script>
