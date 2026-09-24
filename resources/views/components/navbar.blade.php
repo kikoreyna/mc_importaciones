@@ -33,7 +33,7 @@
                 </a>
             @endif
         @endauth
-        <a href="{{ route('reports.packages') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('reports.packages') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.packages') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Reportería
         </a>
         <a href="{{ route('reports.comparison') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.comparison') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
