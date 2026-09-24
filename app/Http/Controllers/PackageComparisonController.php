@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Package;
+use App\Models\PackagePhoto;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Storage;
 
 class PackageComparisonController extends Controller
 {
@@ -86,5 +88,17 @@ class PackageComparisonController extends Controller
         $package->delete();
 
         return back()->with('success', 'La guía fue eliminada correctamente.');
+    }
+
+    public function destroyPhoto(PackagePhoto $photo)
+    {
+        if ($photo->path) {
+            $disk = config('filesystems.disks.s3.bucket') ? 's3' : 'local';
+            Storage::disk($disk)->delete($photo->path);
+        }
+
+        $photo->delete();
+
+        return back()->with('success', 'La fotografía fue eliminada correctamente.');
     }
 }

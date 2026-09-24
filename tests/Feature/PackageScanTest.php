@@ -145,6 +145,6 @@ class PackageScanTest extends TestCase
             ->delete(route('reports.comparison.destroy', $package))
             ->assertRedirect();
 
-        $this->assertDatabaseMissing('packages', ['id' => $package->id]);
+        $this->assertSoftDeleted('packages', ['id' => $package->id]);
     }
 }

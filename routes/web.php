@@ -41,8 +41,11 @@ Route::middleware('auth')->group(function () {
         ->middleware('package.manager')
         ->name('reports.comparison.update');
     Route::delete('/reportes/comparativo/{package}', [PackageComparisonController::class, 'destroy'])
-        ->middleware('package.manager')
+        ->middleware('administrator')
         ->name('reports.comparison.destroy');
+    Route::delete('/reportes/comparativo/fotos/{photo}', [PackageComparisonController::class, 'destroyPhoto'])
+        ->middleware('administrator')
+        ->name('reports.comparison.photo.destroy');
 
     Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
     Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');

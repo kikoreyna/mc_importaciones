@@ -26,6 +26,31 @@
                     <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Recibida USA</p><p class="mt-1 text-sm font-semibold">{{ $package->created_at?->format('d/m/Y H:i') }}</p></div>
                 </div>
 
+                <div class="mb-6 border-t border-slate-200 pt-5">
+                    <div class="mb-3">
+                        <h2 class="font-semibold">Fotografías de la guía</h2>
+                        <p class="mt-1 text-sm text-slate-500">El administrador puede eliminar fotografías individuales.</p>
+                    </div>
+                    @if ($package->photos->isNotEmpty())
+                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                            @foreach ($package->photos as $photo)
+                                <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                                    <img src="{{ $photo->display_url }}" alt="Fotografía de {{ $package->guia_principal }}" class="h-32 w-full object-cover">
+                                    @if (auth()->user()->role === 'administrador')
+                                        <form action="{{ route('reports.comparison.photo.destroy', $photo) }}" method="POST" class="p-2" onsubmit="return confirm('¿Eliminar esta fotografía? Esta acción no se puede deshacer.');">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="w-full rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white hover:bg-red-700">Eliminar foto</button>
+                                        </form>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Esta guía no tiene fotografías.</p>
+                    @endif
+                </div>
+
                 <form action="{{ route('reports.comparison.update', $package) }}" method="POST" class="space-y-4">
                     @csrf
                     @method('PATCH')
@@ -43,11 +68,13 @@
                     </div>
                 </form>
 
-                <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" class="mt-6 border-t border-slate-200 pt-5" onsubmit="return confirm('¿Eliminar esta guía? Esta acción no se puede deshacer.');">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="w-full rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-700">Eliminar guía</button>
-                </form>
+                @if (auth()->user()->role === 'administrador')
+                    <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" class="mt-6 border-t border-slate-200 pt-5" onsubmit="return confirm('¿Enviar esta guía a la papelera? Podrás conservarla para auditoría.');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="w-full rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-700">Enviar guía a la papelera</button>
+                    </form>
+                @endif
             </section>
         </main>
     </div>
