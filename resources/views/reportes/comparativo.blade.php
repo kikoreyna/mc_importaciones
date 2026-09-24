@@ -16,9 +16,9 @@
                 <h1 class="mt-2 text-2xl font-bold md:text-3xl">Comparativo USA - Bodega MEX</h1>
                 <p class="mt-1 text-sm text-slate-500">Control de guías recibidas en origen y confirmadas en destino.</p>
             </div>
-            <span class="rounded-lg bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700">
-                {{ $arrivalPercentage }}% recibidas en MEX
-            </span>
+            <a href="{{ route('reports.comparison', ['fecha' => $fecha, 'grupo' => 'mex']) }}" class="rounded-lg bg-blue-100 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-200">
+                {{ $arrivalPercentage }}% recibidas en MEX · Ver guías
+            </a>
         </div>
 
         <form action="{{ route('reports.comparison') }}" method="GET" class="mb-6 flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:flex-row sm:items-end">
@@ -27,27 +27,35 @@
                 <input id="fecha" name="fecha" type="date" value="{{ $fecha }}" class="w-full rounded-xl border border-slate-300 px-3 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
             </div>
             <button class="rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white hover:bg-blue-700" type="submit">Filtrar</button>
-            <a href="{{ route('reports.comparison') }}" class="rounded-xl border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Todas las fechas</a>
+            <a href="{{ route('reports.comparison', ['fecha' => today()->toDateString()]) }}" class="rounded-xl border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Hoy</a>
+            <a href="{{ route('reports.comparison', ['fecha' => '', 'grupo' => '']) }}" class="rounded-xl border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Todas las fechas</a>
         </form>
 
         @include('components.flash-messages')
 
+        @if ($grupo)
+            <div class="mb-6 flex items-center justify-between gap-3 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-800">
+                <span>Mostrando: <strong>{{ ['usa' => 'Recibidas en USA', 'mex' => 'Recibidas en Bodega MEX', 'pendientes' => 'Pendientes de llegada'][$grupo] }}</strong></span>
+                <a href="{{ route('reports.comparison', ['fecha' => $fecha]) }}" class="font-semibold underline">Ver todas</a>
+            </div>
+        @endif
+
         <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
+            <a href="{{ route('reports.comparison', ['fecha' => $fecha, 'grupo' => 'usa']) }}" class="rounded-2xl border border-blue-200 bg-blue-50 p-5 transition hover:border-blue-400 hover:shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-wide text-blue-700">Recibidas en USA</p>
                 <p class="mt-2 text-3xl font-bold text-blue-950">{{ $receivedInUsa }}</p>
-                <p class="mt-1 text-sm text-blue-700">{{ $totalPackages }} paquetes</p>
-            </div>
-            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5">
+                <p class="mt-1 text-sm text-blue-700">{{ $totalPackages }} paquetes · Ver guías</p>
+            </a>
+            <a href="{{ route('reports.comparison', ['fecha' => $fecha, 'grupo' => 'mex']) }}" class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 transition hover:border-emerald-400 hover:shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-wide text-emerald-700">Recibidas en Bodega MEX</p>
                 <p class="mt-2 text-3xl font-bold text-emerald-950">{{ $receivedInMexico }}</p>
-                <p class="mt-1 text-sm text-emerald-700">{{ $arrivedPackages }} paquetes</p>
-            </div>
-            <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5">
+                <p class="mt-1 text-sm text-emerald-700">{{ $arrivedPackages }} paquetes · Ver guías</p>
+            </a>
+            <a href="{{ route('reports.comparison', ['fecha' => $fecha, 'grupo' => 'pendientes']) }}" class="rounded-2xl border border-amber-200 bg-amber-50 p-5 transition hover:border-amber-400 hover:shadow-sm">
                 <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Pendientes de llegada</p>
                 <p class="mt-2 text-3xl font-bold text-amber-950">{{ $pendingInMexico }}</p>
-                <p class="mt-1 text-sm text-amber-700">Guías aún en USA</p>
-            </div>
+                <p class="mt-1 text-sm text-amber-700">Guías aún en USA · Ver guías</p>
+            </a>
             <div class="rounded-2xl border border-slate-200 bg-white p-5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500">Cumplimiento de llegada</p>
                 <p class="mt-2 text-3xl font-bold text-slate-900">{{ $arrivalPercentage }}%</p>

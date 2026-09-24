@@ -103,6 +103,12 @@ class PackageScanTest extends TestCase
         $response->assertSee('Recibidas en USA');
         $response->assertSee('Recibidas en Bodega MEX');
         $response->assertSee('50%');
+
+        $pendingResponse = $this->get('/reportes/comparativo?fecha=' . today()->toDateString() . '&grupo=pendientes');
+
+        $pendingResponse->assertOk();
+        $pendingResponse->assertSee('USA-PENDIENTE');
+        $pendingResponse->assertDontSee('USA-EN-MEXICO');
     }
 
     public function test_only_managers_can_update_and_delete_comparison_guides(): void

@@ -12,9 +12,11 @@ class PackageComparisonController extends Controller
     {
         $validated = $request->validate([
             'fecha' => ['nullable', 'date'],
+            'grupo' => ['nullable', Rule::in(['usa', 'mex', 'pendientes'])],
         ]);
 
-        $fecha = $validated['fecha'] ?? null;
+        $fecha = $validated['fecha'] ?? today()->toDateString();
+        $grupo = $validated['grupo'] ?? null;
         $baseQuery = Package::query()->when($fecha, fn ($query) => $query->whereDate('created_at', $fecha));
         $receivedInUsa = (clone $baseQuery)->count();
         $receivedInMexico = (clone $baseQuery)->whereIn('estado', ['ingreso_bodega', 'documentado'])->count();
@@ -23,11 +25,14 @@ class PackageComparisonController extends Controller
         $arrivedPackages = (clone $baseQuery)
             ->whereIn('estado', ['ingreso_bodega', 'documentado'])
             ->sum('total_paquetes');
-        $pendingGuides = (clone $baseQuery)
-            ->where('estado', 'recibido')
-            ->latest()
-            ->get(['guia_principal', 'guia_secundaria', 'total_paquetes', 'created_at']);
-        $packages = (clone $baseQuery)->latest()->get();
+        $packagesQuery = clone $baseQuery;
+        if ($grupo === 'mex') {
+            $packagesQuery->whereIn('estado', ['ingreso_bodega', 'documentado']);
+        } elseif ($grupo === 'pendientes') {
+            $packagesQuery->where('estado', 'recibido');
+        }
+
+        $packages = $packagesQuery->latest()->get();
         $statuses = [
             'recibido' => 'Recibido en USA',
             'ingreso_bodega' => 'Recibido en Bodega MEX',
@@ -49,7 +54,7 @@ class PackageComparisonController extends Controller
             'totalPackages',
             'arrivedPackages',
             'arrivalPercentage',
-            'pendingGuides',
+            'grupo',
             'packages',
             'statuses',
         ));
