@@ -32,10 +32,11 @@
         <form action="{{ route('bodega.store') }}" method="POST" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-4">
             @csrf
 
-            <div>
-                <label for="guia_principal" class="block text-sm font-medium mb-1.5">Escanee la guía</label>
-                <input id="guia_principal" name="guia_principal" type="text" required class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Guía principal">
-            </div>
+            <x-camera-scanner
+                name="guia_principal"
+                label="Escanee la guía"
+                placeholder="Guía principal"
+            />
 
             <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
                 Validar guía
