@@ -76,6 +76,7 @@
         const photoLabelText = document.getElementById('photo-label');
         const photoCount = document.getElementById('photo-count');
         const selectedPhotos = new DataTransfer();
+        let photoCapturePending = false;
 
         window.addEventListener('load', () => {
             guiaPrincipal.focus();
@@ -83,7 +84,8 @@
 
         const moveToPhotoCapture = () => {
             const value = guiaPrincipal.value.trim();
-            if (value.length > 0) {
+            if (value.length > 0 && !photoCapturePending) {
+                photoCapturePending = true;
                 photoLabel.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 setTimeout(() => photoLabel.click(), 200);
             }
@@ -110,21 +112,12 @@
         });
 
         input.addEventListener('change', function () {
-            preview.innerHTML = '';
+            photoCapturePending = false;
 
             [...this.files].forEach(file => {
                 if (!file.type.startsWith('image/')) return;
 
-            selectedPhotos.items.add(file);
-
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
+                selectedPhotos.items.add(file);
             });
 
             input.files = selectedPhotos.files;
