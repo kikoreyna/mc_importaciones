@@ -1,5 +1,5 @@
 <nav class="relative z-30 mb-6 rounded-2xl border border-slate-200 bg-white shadow-sm" aria-label="Navegación principal">
-    <div class="flex min-h-14 items-center justify-between gap-3 p-2 sm:p-3 md:hidden">
+    <div id="navbar-mobile-header" class="flex min-h-14 items-center justify-between gap-3 p-2 sm:p-3 md:hidden">
         <span class="text-xs font-bold uppercase tracking-[0.16em] text-blue-700 md:hidden">MC Importaciones</span>
         <button type="button" id="navbar-toggle" class="inline-flex min-h-10 min-w-10 items-center justify-center rounded-xl border border-slate-300 text-slate-700 hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-blue-500 md:hidden" aria-controls="navbar-menu" aria-expanded="false">
             <span class="sr-only">Abrir navegación</span>
@@ -48,6 +48,22 @@
         @endauth
     </div>
 </nav>
+
+<style>
+    @media (min-width: 768px) {
+        #navbar-mobile-header,
+        #navbar-toggle {
+            display: none !important;
+        }
+
+        #navbar-menu {
+            display: flex !important;
+            flex-direction: row;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+    }
+</style>
 
 <script>
     (() => {
