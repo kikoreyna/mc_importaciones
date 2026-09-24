@@ -16,12 +16,22 @@ class User extends Authenticatable
 
     public function isPackageManager(): bool
     {
-        return in_array($this->role, ['administrador', 'supervisor'], true);
+        return $this->hasRole(['administrador', 'supervisor']);
     }
 
     public function canAccessDashboard(): bool
     {
-        return in_array($this->role, ['administrador', 'supervisor', 'documentador'], true);
+        return $this->hasRole(['administrador', 'supervisor', 'documentador']);
+    }
+
+    public function isAdministrator(): bool
+    {
+        return $this->hasRole('administrador');
+    }
+
+    public function hasRole(array|string $roles): bool
+    {
+        return in_array(strtolower(trim((string) $this->role)), (array) $roles, true);
     }
 
     public static function roleLabels(): array
@@ -37,7 +47,9 @@ class User extends Authenticatable
 
     public function roleLabel(): string
     {
-        return self::roleLabels()[$this->role] ?? $this->role;
+        $role = strtolower(trim((string) $this->role));
+
+        return self::roleLabels()[$role] ?? $this->role;
     }
 
     /**

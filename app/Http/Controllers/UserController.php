@@ -37,7 +37,7 @@ class UserController extends Controller
     {
         $data = $this->validated($request, $user);
 
-        if ($user->role === 'administrador' && $data['role'] !== 'administrador' && User::where('role', 'administrador')->count() === 1) {
+        if ($user->isAdministrator() && $data['role'] !== 'administrador' && User::whereRaw('LOWER(TRIM(role)) = ?', ['administrador'])->count() === 1) {
             return back()->with('error', 'Debe existir al menos un administrador.');
         }
 
@@ -52,7 +52,7 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
-        if ($user->role === 'administrador' && User::where('role', 'administrador')->count() === 1) {
+        if ($user->isAdministrator() && User::whereRaw('LOWER(TRIM(role)) = ?', ['administrador'])->count() === 1) {
             return back()->with('error', 'No puedes eliminar al último administrador.');
         }
 

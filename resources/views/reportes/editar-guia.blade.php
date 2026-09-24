@@ -20,6 +20,20 @@
             @include('components.flash-messages')
 
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                @if (auth()->user()->isAdministrator())
+                    <div class="mb-5 flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                        <div>
+                            <p class="text-sm font-semibold text-red-900">Zona de administrador</p>
+                            <p class="mt-1 text-xs text-red-700">Desde aquí puedes enviar esta guía a la papelera.</p>
+                        </div>
+                        <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" onsubmit="return confirm('¿Enviar esta guía a la papelera? Podrás conservarla para auditoría.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="w-full rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 sm:w-auto">Enviar a papelera</button>
+                        </form>
+                    </div>
+                @endif
+
                 <div class="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
                     <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Estado actual</p><p class="mt-1 text-sm font-semibold">{{ $statuses[$package->estado] ?? ucfirst($package->estado) }}</p></div>
                     <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Paquetes</p><p class="mt-1 text-sm font-semibold">{{ $package->total_paquetes }}</p></div>
@@ -36,7 +50,7 @@
                             @foreach ($package->photos as $photo)
                                 <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
                                     <img src="{{ $photo->display_url }}" alt="Fotografía de {{ $package->guia_principal }}" class="h-32 w-full object-cover">
-                                    @if (auth()->user()->role === 'administrador')
+                                    @if (auth()->user()->isAdministrator())
                                         <form action="{{ route('reports.comparison.photo.destroy', $photo) }}" method="POST" class="p-2" onsubmit="return confirm('¿Eliminar esta fotografía? Esta acción no se puede deshacer.');">
                                             @csrf
                                             @method('DELETE')
@@ -68,13 +82,6 @@
                     </div>
                 </form>
 
-                @if (auth()->user()->role === 'administrador')
-                    <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" class="mt-6 border-t border-slate-200 pt-5" onsubmit="return confirm('¿Enviar esta guía a la papelera? Podrás conservarla para auditoría.');">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="w-full rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white hover:bg-red-700">Enviar guía a la papelera</button>
-                    </form>
-                @endif
             </section>
         </main>
     </div>
