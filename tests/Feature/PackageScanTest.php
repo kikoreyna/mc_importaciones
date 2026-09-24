@@ -57,6 +57,22 @@ class PackageScanTest extends TestCase
         ]);
     }
 
+    public function test_cannot_register_a_duplicate_main_guide(): void
+    {
+        Package::create([
+            'guia_principal' => 'USA-DUPLICADA',
+            'estado' => 'recibido',
+        ]);
+
+        $response = $this->from('/packages')->post('/packages', [
+            'guia_principal' => 'USA-DUPLICADA',
+        ]);
+
+        $response->assertRedirect('/packages');
+        $response->assertSessionHasErrors('guia_principal');
+        $this->assertSame(1, Package::where('guia_principal', 'USA-DUPLICADA')->count());
+    }
+
     public function test_bodega_rejects_a_guide_that_does_not_exist(): void
     {
         $response = $this->post('/bodega', [
