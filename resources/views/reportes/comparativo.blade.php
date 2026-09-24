@@ -30,6 +30,8 @@
             <a href="{{ route('reports.comparison') }}" class="rounded-xl border border-slate-300 px-5 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Todas las fechas</a>
         </form>
 
+        @include('components.flash-messages')
+
         <div class="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5">
                 <p class="text-xs font-semibold uppercase tracking-wide text-blue-700">Recibidas en USA</p>
@@ -57,8 +59,8 @@
 
         <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-200 px-4 py-4">
-                <h2 class="font-semibold">Guías pendientes de recibir en Bodega MEX</h2>
-                <p class="mt-1 text-sm text-slate-500">Estas guías fueron registradas en USA, pero aún no tienen ingreso confirmado en Bodega.</p>
+                <h2 class="font-semibold">Comparativo de guías</h2>
+                <p class="mt-1 text-sm text-slate-500">Consulta el estado de cada guía y administra devoluciones o correcciones autorizadas.</p>
             </div>
             <table class="min-w-full text-left text-sm">
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
@@ -67,19 +69,52 @@
                         <th class="px-4 py-3 font-semibold">Guía secundaria</th>
                         <th class="px-4 py-3 font-semibold">Paquetes</th>
                         <th class="px-4 py-3 font-semibold">Recibida USA</th>
+                        <th class="px-4 py-3 font-semibold">Estado</th>
+                        @auth
+                            @if (auth()->user()->isPackageManager())
+                                <th class="px-4 py-3 font-semibold">Acciones</th>
+                            @endif
+                        @endauth
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
-                    @forelse ($pendingGuides as $package)
-                        <tr class="hover:bg-amber-50">
+                    @forelse ($packages as $package)
+                        <tr class="hover:bg-blue-50">
                             <td class="whitespace-nowrap px-4 py-3 font-semibold">{{ $package->guia_principal }}</td>
                             <td class="px-4 py-3">{{ $package->guia_secundaria ?: 'Sin guía secundaria' }}</td>
                             <td class="px-4 py-3">{{ $package->total_paquetes }}</td>
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') }}</td>
+                            <td class="px-4 py-3">
+                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{{ $statuses[$package->estado] ?? ucfirst($package->estado) }}</span>
+                            </td>
+                            @auth
+                                @if (auth()->user()->isPackageManager())
+                                    <td class="min-w-70 px-4 py-3">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <form action="{{ route('reports.comparison.update', $package) }}" method="POST" class="flex items-center gap-2">
+                                                @csrf
+                                                @method('PATCH')
+                                                <label for="estado-{{ $package->id }}" class="sr-only">Estado de {{ $package->guia_principal }}</label>
+                                                <select id="estado-{{ $package->id }}" name="estado" class="rounded-lg border border-slate-300 px-2 py-2 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                                                    @foreach ($statuses as $status => $label)
+                                                        <option value="{{ $status }}" @selected($package->estado === $status)>{{ $label }}</option>
+                                                    @endforeach
+                                                </select>
+                                                <button type="submit" class="rounded-lg bg-blue-600 px-3 py-2 text-xs font-semibold text-white hover:bg-blue-700">Guardar</button>
+                                            </form>
+                                            <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" onsubmit="return confirm('¿Eliminar esta guía? Esta acción no se puede deshacer.');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white hover:bg-red-700">Eliminar</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                @endif
+                            @endauth
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-4 py-8 text-center text-emerald-700">Todas las guías del filtro tienen ingreso confirmado en Bodega MEX.</td>
+                            <td colspan="{{ auth()->check() && auth()->user()->isPackageManager() ? 6 : 5 }}" class="px-4 py-8 text-center text-slate-500">No hay guías para el filtro seleccionado.</td>
                         </tr>
                     @endforelse
                 </tbody>

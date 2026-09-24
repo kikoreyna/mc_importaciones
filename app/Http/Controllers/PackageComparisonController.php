@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Package;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PackageComparisonController extends Controller
 {
@@ -26,6 +27,15 @@ class PackageComparisonController extends Controller
             ->where('estado', 'recibido')
             ->latest()
             ->get(['guia_principal', 'guia_secundaria', 'total_paquetes', 'created_at']);
+        $packages = (clone $baseQuery)->latest()->get();
+        $statuses = [
+            'recibido' => 'Recibido en USA',
+            'ingreso_bodega' => 'Recibido en Bodega MEX',
+            'documentado' => 'Documentado',
+            'devuelto_cliente' => 'Devuelto a cliente',
+            'devuelto_usa' => 'Devuelto a USA',
+            'cancelado' => 'Cancelado',
+        ];
 
         $arrivalPercentage = $receivedInUsa > 0
             ? round(($receivedInMexico / $receivedInUsa) * 100)
@@ -40,6 +50,26 @@ class PackageComparisonController extends Controller
             'arrivedPackages',
             'arrivalPercentage',
             'pendingGuides',
+            'packages',
+            'statuses',
         ));
+    }
+
+    public function update(Request $request, Package $package)
+    {
+        $validated = $request->validate([
+            'estado' => ['required', Rule::in(['recibido', 'ingreso_bodega', 'documentado', 'devuelto_cliente', 'devuelto_usa', 'cancelado'])],
+        ]);
+
+        $package->update(['estado' => $validated['estado']]);
+
+        return back()->with('success', 'El estado de la guía fue actualizado correctamente.');
+    }
+
+    public function destroy(Package $package)
+    {
+        $package->delete();
+
+        return back()->with('success', 'La guía fue eliminada correctamente.');
     }
 }

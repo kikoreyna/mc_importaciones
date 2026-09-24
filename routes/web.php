@@ -6,11 +6,16 @@ use App\Http\Controllers\PartnerController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PackageReportController;
 use App\Http\Controllers\PackageComparisonController;
+use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect()->route('packages.index');
 });
+
+Route::get('/login', [AuthController::class, 'create'])->name('login');
+Route::post('/login', [AuthController::class, 'store'])->name('login.store');
+Route::post('/logout', [AuthController::class, 'destroy'])->middleware('auth')->name('logout');
 
 Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
 Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
@@ -25,6 +30,12 @@ Route::get('/documentacion/documentados', [\App\Http\Controllers\PackageDocument
 Route::patch('/documentacion/{package}/recibido', [\App\Http\Controllers\PackageDocumentationController::class, 'markAsReceived'])->name('documentacion.markAsReceived');
 Route::get('/reportes/paquetes', [PackageReportController::class, 'index'])->name('reports.packages');
 Route::get('/reportes/comparativo', [PackageComparisonController::class, 'index'])->name('reports.comparison');
+Route::patch('/reportes/comparativo/{package}', [PackageComparisonController::class, 'update'])
+    ->middleware(['auth', 'package.manager'])
+    ->name('reports.comparison.update');
+Route::delete('/reportes/comparativo/{package}', [PackageComparisonController::class, 'destroy'])
+    ->middleware(['auth', 'package.manager'])
+    ->name('reports.comparison.destroy');
 
 Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
 Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');

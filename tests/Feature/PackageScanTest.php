@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Package;
+use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
@@ -102,5 +103,35 @@ class PackageScanTest extends TestCase
         $response->assertSee('Recibidas en USA');
         $response->assertSee('Recibidas en Bodega MEX');
         $response->assertSee('50%');
+    }
+
+    public function test_only_managers_can_update_and_delete_comparison_guides(): void
+    {
+        $package = Package::create([
+            'guia_principal' => 'USA-ADMINISTRABLE',
+            'estado' => 'recibido',
+        ]);
+        $supervisor = User::factory()->create(['role' => 'supervisor']);
+
+        $this->actingAs($supervisor)
+            ->patch(route('reports.comparison.update', $package), ['estado' => 'devuelto_usa'])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('packages', [
+            'id' => $package->id,
+            'estado' => 'devuelto_usa',
+        ]);
+
+        $operator = User::factory()->create(['role' => 'operador']);
+
+        $this->actingAs($operator)
+            ->patch(route('reports.comparison.update', $package), ['estado' => 'cancelado'])
+            ->assertForbidden();
+
+        $this->actingAs($supervisor)
+            ->delete(route('reports.comparison.destroy', $package))
+            ->assertRedirect();
+
+        $this->assertDatabaseMissing('packages', ['id' => $package->id]);
     }
 }

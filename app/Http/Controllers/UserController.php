@@ -58,6 +58,7 @@ class UserController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user?->id)->whereNull('deleted_at')],
+            'role' => ['required', Rule::in(['operador', 'supervisor', 'administrador'])],
             'password' => [$user?->exists ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
         ];
 
