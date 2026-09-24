@@ -18,9 +18,13 @@
         <a href="{{ route('partners.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('partners.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Socios
         </a>
-        <a href="{{ route('users.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
-            Usuarios
-        </a>
+        @auth
+            @if (auth()->user()->role === 'administrador')
+                <a href="{{ route('users.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                    Usuarios
+                </a>
+            @endif
+        @endauth
         <a href="{{ route('reports.packages') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Reportería
         </a>

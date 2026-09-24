@@ -39,4 +39,8 @@ Route::delete('/reportes/comparativo/{package}', [PackageComparisonController::c
 
 Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
 Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');
-Route::resource('usuarios', UserController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['usuarios' => 'user'])->names('users');
+Route::resource('usuarios', UserController::class)
+    ->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])
+    ->parameters(['usuarios' => 'user'])
+    ->names('users')
+    ->middleware(['auth', 'administrator']);
