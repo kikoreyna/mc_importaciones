@@ -81,4 +81,26 @@ class PackageScanTest extends TestCase
 
         $response->assertSessionHas('error', 'La guía no existe en el sistema. Debe registrarse primero en USA.');
     }
+
+    public function test_comparison_shows_usa_and_mexico_receipts(): void
+    {
+        Package::create([
+            'guia_principal' => 'USA-PENDIENTE',
+            'total_paquetes' => 2,
+            'estado' => 'recibido',
+        ]);
+        Package::create([
+            'guia_principal' => 'USA-EN-MEXICO',
+            'total_paquetes' => 3,
+            'estado' => 'ingreso_bodega',
+        ]);
+
+        $response = $this->get('/reportes/comparativo');
+
+        $response->assertOk();
+        $response->assertSee('USA-PENDIENTE');
+        $response->assertSee('Recibidas en USA');
+        $response->assertSee('Recibidas en Bodega MEX');
+        $response->assertSee('50%');
+    }
 }
