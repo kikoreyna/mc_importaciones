@@ -5,7 +5,7 @@ const navbarLinks = document.getElementById('navbar-links');
 
 if (navbarToggle && navbarLinks) {
 	const closeNavbar = () => {
-		navbarLinks.classList.add('hidden');
+		navbarLinks.classList.remove('is-open');
 		navbarToggle.setAttribute('aria-expanded', 'false');
 		navbarToggle.setAttribute('aria-label', 'Abrir menú');
 	};
@@ -13,7 +13,7 @@ if (navbarToggle && navbarLinks) {
 	navbarToggle.addEventListener('click', () => {
 		const isExpanded = navbarToggle.getAttribute('aria-expanded') === 'true';
 
-		navbarLinks.classList.toggle('hidden', isExpanded);
+		navbarLinks.classList.toggle('is-open', !isExpanded);
 		navbarToggle.setAttribute('aria-expanded', String(!isExpanded));
 		navbarToggle.setAttribute('aria-label', isExpanded ? 'Abrir menú' : 'Cerrar menú');
 	});

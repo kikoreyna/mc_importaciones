@@ -9,38 +9,38 @@
             <span>Menú</span>
         </button>
 
-        <div id="navbar-links" class="hidden w-full flex-col items-stretch gap-1 pt-3 xl:flex xl:w-auto xl:flex-row xl:flex-wrap xl:items-center xl:justify-end xl:gap-2 xl:pt-0">
-        <a href="{{ route('packages.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('packages.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <div id="navbar-links" class="navbar-links w-full flex-col items-stretch gap-1 pt-3 xl:w-auto xl:flex-row xl:flex-wrap xl:items-center xl:justify-end xl:gap-2 xl:pt-0">
+        <a href="{{ route('packages.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('packages.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Recepción USA
         </a>
-        <a href="{{ route('packages.registered') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('packages.registered') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('packages.registered') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('packages.registered') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Paquetes registrados
         </a>
-        <a href="{{ route('bodega.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('bodega.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('bodega.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('bodega.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Bodega
         </a>
-        <a href="{{ route('documentacion.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('documentacion.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('documentacion.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('documentacion.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Documentación
         </a>
-        <a href="{{ route('clients.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('clients.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('clients.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('clients.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Clientes
         </a>
-        <a href="{{ route('partners.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('partners.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('partners.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('partners.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Socios
         </a>
         @auth
             @if (auth()->user()->isAdministrator())
-                <a href="{{ route('users.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                <a href="{{ route('users.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
                     Usuarios
                 </a>
             @endif
         @endauth
-        <a href="{{ route('reports.packages') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.packages') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('reports.packages') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('reports.packages') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Reportería
         </a>
         @auth
             @if (auth()->user()->canAccessDashboard())
-                <a href="{{ route('reports.comparison') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('reports.comparison') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                <a href="{{ route('reports.comparison') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('reports.comparison') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
                     Comparativo USA-MEX
                 </a>
             @endif

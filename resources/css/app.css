@@ -5,6 +5,22 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@layer components {
+    .navbar-links {
+        display: none;
+    }
+
+    .navbar-links.is-open {
+        display: flex;
+    }
+
+    @media (min-width: 80rem) {
+        .navbar-links {
+            display: flex;
+        }
+    }
+}
+
 @layer base {
     button:enabled,
     [role='button'],
