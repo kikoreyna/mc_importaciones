@@ -29,26 +29,28 @@
 
         <div class="grid grid-cols-1 gap-6">
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
-                <div class="mb-4 flex justify-end">
-                    <a href="{{ route('documentacion.documented') }}" class="rounded-lg border border-blue-600 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">
+                <div class="mb-4 flex flex-col gap-4 lg:flex-row lg:items-end">
+                    <form action="{{ route('documentacion.index') }}" method="GET" class="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-end">
+                        @csrf
+                        <div class="min-w-0 flex-1">
+                            <x-camera-scanner
+                                id="documentation-guide-scanner"
+                                name="guia_principal"
+                                label="Buscar guía recibida"
+                                placeholder="Escanee la guía"
+                                value="{{ old('guia_principal', $guiaPrincipal ?? '') }}"
+                            />
+                        </div>
+
+                        <button type="submit" class="w-full rounded-xl bg-blue-600 px-5 py-3.5 font-semibold text-white hover:bg-blue-700 active:bg-blue-800 sm:w-auto sm:shrink-0">
+                            Buscar guía
+                        </button>
+                    </form>
+
+                    <a href="{{ route('documentacion.documented') }}" class="self-end whitespace-nowrap rounded-lg border border-blue-600 px-3 py-3.5 text-sm font-semibold text-blue-700 hover:bg-blue-50">
                         Ver paquetes documentados
                     </a>
                 </div>
-
-                <form action="{{ route('documentacion.index') }}" method="GET" class="space-y-4">
-                    @csrf
-                    <x-camera-scanner
-                        id="documentation-guide-scanner"
-                        name="guia_principal"
-                        label="Buscar guía recibida"
-                        placeholder="Escanee la guía"
-                        value="{{ old('guia_principal', $guiaPrincipal ?? '') }}"
-                    />
-
-                    <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
-                        Buscar guía
-                    </button>
-                </form>
 
                 @if ($packagesRecibidos->isNotEmpty())
                     <div class="mt-5 border border-slate-200 rounded-xl p-3 bg-slate-50">
