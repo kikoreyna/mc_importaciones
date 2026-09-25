@@ -32,7 +32,7 @@
                 <div class="mb-4 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
                     <form action="{{ route('documentacion.index') }}" method="GET" class="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-end xl:max-w-3xl">
                         @csrf
-                        <div class="min-w-0 flex-1 xl:max-w-xl">
+                        <div class="min-w-0 flex-1 xl:max-w-[18rem]">
                             <x-camera-scanner
                                 id="documentation-guide-scanner"
                                 name="guia_principal"
@@ -42,12 +42,12 @@
                             />
                         </div>
 
-                        <button type="submit" class="w-full rounded-xl bg-blue-600 px-5 py-3.5 font-semibold text-white hover:bg-blue-700 active:bg-blue-800 sm:w-auto sm:shrink-0">
+                        <button type="submit" class="h-12.5 w-full rounded-xl bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700 active:bg-blue-800 sm:w-auto sm:shrink-0">
                             Buscar guía
                         </button>
                     </form>
 
-                    <a href="{{ route('documentacion.documented') }}" class="flex h-12 shrink-0 items-center self-end whitespace-nowrap rounded-lg border border-blue-600 px-3 text-sm font-semibold text-blue-700 hover:bg-blue-50">
+                    <a href="{{ route('documentacion.documented') }}" class="flex h-12.5 shrink-0 items-center self-end whitespace-nowrap rounded-lg border border-blue-600 px-3 text-sm font-semibold text-blue-700 hover:bg-blue-50">
                         Ver paquetes documentados
                     </a>
                 </div>
