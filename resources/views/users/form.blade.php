@@ -34,6 +34,14 @@
 				<input id="email" name="email" type="email" required value="{{ old('email', $user->email) }}" class="w-full rounded-xl border border-slate-300 px-3 py-3">
 			</div>
 			<div>
+				<label for="role" class="mb-1.5 block text-sm font-medium">Rol</label>
+				<select id="role" name="role" required class="w-full rounded-xl border border-slate-300 px-3 py-3">
+					@foreach (['administrador' => 'Administrador', 'supervisor' => 'Supervisor', 'documentador' => 'Documentador', 'bodega_usa' => 'Bodega USA', 'bodega_mex' => 'Bodega MEX'] as $role => $label)
+						<option value="{{ $role }}" @selected(old('role', $user->role ?: 'documentador') === $role)>{{ $label }}</option>
+					@endforeach
+				</select>
+			</div>
+			<div>
 				<label for="password" class="mb-1.5 block text-sm font-medium">Contraseña {{ $user->exists ? '(opcional)' : '' }}</label>
 				<input id="password" name="password" type="password" {{ $user->exists ? '' : 'required' }} class="w-full rounded-xl border border-slate-300 px-3 py-3">
 			</div>

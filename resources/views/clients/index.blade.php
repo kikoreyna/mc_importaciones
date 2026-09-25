@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <div class="max-w-5xl mx-auto px-4 py-6 md:px-6">
+    <div class="max-w-6xl mx-auto px-4 py-6">
         @include('components.navbar')
         <div class="mb-6 flex items-center justify-between gap-4">
             <div><p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">ADMINISTRACIÓN</p><h1 class="text-2xl font-bold mt-2">Clientes</h1></div>

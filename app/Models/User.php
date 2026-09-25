@@ -14,6 +14,44 @@ class User extends Authenticatable
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable, SoftDeletes;
 
+    public function isPackageManager(): bool
+    {
+        return $this->hasRole(['administrador', 'supervisor']);
+    }
+
+    public function canAccessDashboard(): bool
+    {
+        return $this->hasRole(['administrador', 'supervisor', 'documentador']);
+    }
+
+    public function isAdministrator(): bool
+    {
+        return $this->hasRole('administrador');
+    }
+
+    public function hasRole(array|string $roles): bool
+    {
+        return in_array(strtolower(trim((string) $this->role)), (array) $roles, true);
+    }
+
+    public static function roleLabels(): array
+    {
+        return [
+            'administrador' => 'Administrador',
+            'supervisor' => 'Supervisor',
+            'documentador' => 'Documentador',
+            'bodega_usa' => 'Bodega USA',
+            'bodega_mex' => 'Bodega MEX',
+        ];
+    }
+
+    public function roleLabel(): string
+    {
+        $role = strtolower(trim((string) $this->role));
+
+        return self::roleLabels()[$role] ?? $this->role;
+    }
+
     /**
      * The attributes that are mass assignable.
      *
@@ -22,6 +60,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'role',
         'password',
     ];
 
