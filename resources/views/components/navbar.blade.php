@@ -1,5 +1,12 @@
 <nav class="relative left-1/2 z-30 mb-6 w-screen -translate-x-1/2 border-y border-slate-200 bg-white shadow-sm sm:rounded-lg sm:border" aria-label="Navegación principal">
     <div class="flex flex-wrap items-center justify-end gap-2 px-4 py-3 sm:px-6 lg:px-8">
+        <button type="button" class="inline-flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 sm:hidden" data-navbar-toggle aria-controls="navbar-links" aria-expanded="false" aria-label="Abrir menú">
+            <span class="h-0.5 w-5 bg-current"></span>
+            <span class="h-0.5 w-5 bg-current"></span>
+            <span class="h-0.5 w-5 bg-current"></span>
+        </button>
+
+        <div id="navbar-links" class="hidden w-full flex-col items-stretch gap-1 pt-3 sm:flex sm:w-auto sm:flex-row sm:flex-wrap sm:items-center sm:justify-end sm:gap-2 sm:pt-0">
         <a href="{{ route('packages.index') }}" class="rounded-lg px-3 py-2 text-sm font-semibold {{ request()->routeIs('packages.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Recepción USA
         </a>
@@ -36,11 +43,12 @@
             @endif
         @endauth
         @auth
-            <span class="ml-auto rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600">{{ auth()->user()->name }} · {{ auth()->user()->roleLabel() }}</span>
-            <form action="{{ route('logout') }}" method="POST">
+            <span class="rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600 sm:ml-auto">{{ auth()->user()->name }} · {{ auth()->user()->roleLabel() }}</span>
+            <form action="{{ route('logout') }}" method="POST" class="w-full sm:w-auto">
                 @csrf
-                <button type="submit" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">Salir</button>
+                <button type="submit" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 sm:w-auto">Salir</button>
             </form>
         @endauth
+        </div>
     </div>
 </nav>
