@@ -1,9 +1,12 @@
 <nav class="relative left-1/2 z-30 mb-6 w-screen -translate-x-1/2 border-y border-slate-200 bg-white shadow-sm sm:rounded-lg sm:border" aria-label="Navegación principal">
     <div class="flex flex-wrap items-center justify-end gap-2 px-4 py-3 sm:px-6 lg:px-8">
-        <button type="button" class="inline-flex h-10 w-10 flex-col items-center justify-center gap-1.5 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-50 xl:hidden" data-navbar-toggle aria-controls="navbar-links" aria-expanded="false" aria-label="Abrir menú">
-            <span class="h-0.5 w-5 bg-current"></span>
-            <span class="h-0.5 w-5 bg-current"></span>
-            <span class="h-0.5 w-5 bg-current"></span>
+        <button type="button" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-blue-700 bg-blue-600 px-3 text-sm font-semibold text-white hover:bg-blue-700 xl:hidden" data-navbar-toggle aria-controls="navbar-links" aria-expanded="false" aria-label="Abrir menú">
+            <span class="flex flex-col gap-1" aria-hidden="true">
+                <span class="h-0.5 w-5 bg-current"></span>
+                <span class="h-0.5 w-5 bg-current"></span>
+                <span class="h-0.5 w-5 bg-current"></span>
+            </span>
+            <span>Menú</span>
         </button>
 
         <div id="navbar-links" class="hidden w-full flex-col items-stretch gap-1 pt-3 xl:flex xl:w-auto xl:flex-row xl:flex-wrap xl:items-center xl:justify-end xl:gap-2 xl:pt-0">
