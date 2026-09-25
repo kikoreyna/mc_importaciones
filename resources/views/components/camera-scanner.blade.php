@@ -33,7 +33,7 @@
         </button>
     </div>
 
-    <div id="{{ $readerId }}" class="mt-3 max-w-[400px] overflow-hidden rounded-xl border border-slate-200 bg-slate-50" style="display:none;"></div>
+    <div id="{{ $readerId }}" class="mt-3 max-w-100 overflow-hidden rounded-xl border border-slate-200 bg-slate-50" style="display:none;"></div>
 
     <button
         type="button"

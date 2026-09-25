@@ -179,10 +179,10 @@
 
                             @if ($firstPhoto)
                                 <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="w-full h-[520px] md:h-[560px] object-cover">
+                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="w-full h-130 md:h-140 object-cover">
 
                                     @if ($photos->count() > 1)
-                                        <div class="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent p-3">
+                                        <div class="absolute inset-x-0 bottom-0 flex items-center justify-between bg-linear-to-t from-slate-900/70 via-slate-900/20 to-transparent p-3">
                                             <button type="button" id="prev-photo" class="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white">Anterior</button>
                                             <span id="photo-counter" class="text-xs font-semibold text-white">1 / {{ $photos->count() }}</span>
                                             <button type="button" id="next-photo" class="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white">Siguiente</button>
