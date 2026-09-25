@@ -28,7 +28,7 @@
             required
         >
 
-        <button type="button" id="{{ $scanButtonId }}" class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto sm:shrink-0">
+        <button type="button" id="{{ $scanButtonId }}" class="w-full rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto sm:shrink-0 xl:hidden">
             Escanear
         </button>
     </div>
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         lector.style.display = 'none';
-        botonEscanear.style.display = 'inline-block';
+        botonEscanear.style.removeProperty('display');
         botonDetener.style.display = 'none';
     }
 });
