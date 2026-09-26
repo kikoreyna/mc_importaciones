@@ -17,7 +17,7 @@ class PackageReportController extends Controller
             'estado' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $packages = Package::with('client')
+        $packages = Package::with(['client', 'partner'])
             ->when($validated['guia_principal'] ?? null, fn ($query, $guide) => $query->where('guia_principal', 'like', "%{$guide}%"))
             ->when($validated['client_id'] ?? null, fn ($query, $clientId) => $query->where('client_id', $clientId))
             ->when($validated['transportadora'] ?? null, fn ($query, $carrier) => $query->where('transportadora', $carrier))

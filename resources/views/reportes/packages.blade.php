@@ -51,23 +51,27 @@
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
                         <th class="px-4 py-3 font-semibold">Número de guía</th>
-                        <th class="px-4 py-3 font-semibold">Cliente</th>
-                        <th class="px-4 py-3 font-semibold">Transportadora</th>
-                        <th class="px-4 py-3 font-semibold">Status</th>
+                        <th class="px-4 py-3 font-semibold">Guía secundaria</th>
                         <th class="px-4 py-3 font-semibold">Secuencia de cajas</th>
+                        <th class="px-4 py-3 font-semibold">Transportadora</th>
+                        <th class="px-4 py-3 font-semibold">Socio</th>
+                        <th class="px-4 py-3 font-semibold">Cliente</th>
+                        <th class="px-4 py-3 font-semibold">Fecha de recibido</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($packages as $package)
                         <tr class="hover:bg-blue-50">
                             <td class="whitespace-nowrap px-4 py-3 font-semibold">{{ $package->guia_principal }}</td>
-                            <td class="px-4 py-3">{{ $package->client?->nombre ?: 'Sin cliente' }}</td>
-                            <td class="px-4 py-3">{{ $package->transportadora ?: 'Sin transportadora' }}</td>
-                            <td class="px-4 py-3"><span class="rounded-full bg-blue-100 px-2.5 py-1 text-xs font-semibold text-blue-700">{{ ucfirst($package->estado) }}</span></td>
+                            <td class="px-4 py-3">{{ $package->guia_secundaria ?: 'Sin guía secundaria' }}</td>
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->caja_numero && $package->total_cajas ? $package->caja_numero . ' de ' . $package->total_cajas : 'Sin secuencia' }}</td>
+                            <td class="px-4 py-3">{{ $package->transportadora ?: 'Sin transportadora' }}</td>
+                            <td class="px-4 py-3">{{ $package->partner?->nombre ?: 'Sin socio' }}</td>
+                            <td class="px-4 py-3">{{ $package->client?->nombre ?: 'Sin cliente' }}</td>
+                            <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') ?: 'Sin fecha' }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
+                        <tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
                     @endforelse
                 </tbody>
             </table>
