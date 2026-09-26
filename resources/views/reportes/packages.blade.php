@@ -52,6 +52,9 @@
                     <tr>
                         <th class="px-4 py-3 font-semibold">Número de guía</th>
                         <th class="px-4 py-3 font-semibold">Guía secundaria</th>
+                        @if ($showMasterGuide)
+                            <th class="px-4 py-3 font-semibold">Guía máster</th>
+                        @endif
                         <th class="px-4 py-3 font-semibold">Secuencia de cajas</th>
                         <th class="px-4 py-3 font-semibold">Transportadora</th>
                         <th class="px-4 py-3 font-semibold">Socio</th>
@@ -76,6 +79,9 @@
                                 @endauth
                             </td>
                             <td class="px-4 py-3">{{ $package->guia_secundaria ?: 'Sin guía secundaria' }}</td>
+                            @if ($showMasterGuide)
+                                <td class="px-4 py-3">{{ $package->guia_master ?: 'Sin guía máster' }}</td>
+                            @endif
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->caja_numero && $package->total_cajas ? $package->caja_numero . ' de ' . $package->total_cajas : 'Sin secuencia' }}</td>
                             <td class="px-4 py-3">
                                 @if ($package->transportadora && $transportadoraWebs->has($package->transportadora))
@@ -91,7 +97,7 @@
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') ?: 'Sin fecha' }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="7" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
+                        <tr><td colspan="{{ $showMasterGuide ? 8 : 7 }}" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
                     @endforelse
                 </tbody>
             </table>

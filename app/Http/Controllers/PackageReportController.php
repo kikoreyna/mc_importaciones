@@ -25,6 +25,7 @@ class PackageReportController extends Controller
             ->when($validated['estado'] ?? null, fn ($query, $status) => $query->where('estado', $status))
             ->latest()
             ->get();
+        $showMasterGuide = $packages->contains(fn ($package) => filled($package->guia_master));
 
         $clients = Client::orderBy('nombre')->get();
         $transportadoras = Package::query()
@@ -42,6 +43,6 @@ class PackageReportController extends Controller
             ->orderBy('estado')
             ->pluck('estado');
 
-        return view('reportes.packages', compact('packages', 'clients', 'transportadoras', 'transportadoraWebs', 'estados'));
+        return view('reportes.packages', compact('packages', 'clients', 'transportadoras', 'transportadoraWebs', 'estados', 'showMasterGuide'));
     }
 }
