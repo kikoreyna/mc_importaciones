@@ -45,6 +45,11 @@
             </div>
 
             <div>
+                <label for="guia_master" class="block text-sm font-medium mb-1.5">Guía máster</label>
+                <input id="guia_master" name="guia_master" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+            </div>
+
+            <div>
                 <label class="block text-sm font-medium mb-2">Tomar fotos</label>
                 <label for="photos" class="flex items-center justify-center h-16 rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 text-blue-700 font-medium cursor-pointer active:scale-[0.99]">
                     <span id="photo-label">Tomar foto</span>
