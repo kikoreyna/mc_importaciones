@@ -67,7 +67,6 @@
                                     @if (auth()->user()->isPackageManager())
                                         <a href="{{ route('reports.comparison.edit', $package) }}" class="inline-flex max-w-full items-center rounded-lg bg-blue-50 px-3 py-2 text-blue-700 hover:bg-blue-100 hover:text-blue-900">
                                             <span class="truncate">{{ $package->guia_principal }}</span>
-                                            <span class="ml-2 shrink-0 text-xs font-semibold">Editar estado</span>
                                         </a>
                                     @else
                                         {{ $package->guia_principal }}
