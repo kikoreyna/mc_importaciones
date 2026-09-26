@@ -64,11 +64,12 @@ class PackageComparisonController extends Controller
         ));
     }
 
-    public function edit(Package $package)
+    public function edit(Request $request, Package $package)
     {
         return view('reportes.editar-guia', [
             'package' => $package,
             'statuses' => self::STATUSES,
+            'returnTo' => $request->string('return_to')->toString() === 'reporteria' ? 'reporteria' : 'comparativo',
         ]);
     }
 
@@ -83,11 +84,15 @@ class PackageComparisonController extends Controller
         return back()->with('success', 'El estado de la guía fue actualizado correctamente.');
     }
 
-    public function destroy(Package $package)
+    public function destroy(Request $request, Package $package)
     {
         $package->delete();
 
-        return redirect()->route('reports.packages')->with('success', 'La guía fue eliminada correctamente.');
+        $route = $request->string('return_to')->toString() === 'reporteria'
+            ? 'reports.packages'
+            : 'reports.comparison';
+
+        return redirect()->route($route)->with('success', 'La guía fue eliminada correctamente.');
     }
 
     public function destroyPhoto(PackagePhoto $photo)

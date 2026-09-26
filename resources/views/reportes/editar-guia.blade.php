@@ -29,6 +29,7 @@
                 <form action="{{ route('reports.comparison.update', $package) }}" method="POST" class="space-y-4">
                     @csrf
                     @method('PATCH')
+                    <input type="hidden" name="return_to" value="{{ $returnTo }}">
                     <div>
                         <label for="estado" class="mb-1.5 block text-sm font-medium">Nuevo estado</label>
                         <select id="estado" name="estado" class="w-full rounded-xl border border-slate-300 px-3 py-3 focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
@@ -77,6 +78,7 @@
                         <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" onsubmit="return confirm('¿Enviar esta guía a la papelera? Podrás conservarla para auditoría.');">
                             @csrf
                             @method('DELETE')
+                            <input type="hidden" name="return_to" value="{{ $returnTo }}">
                             <button type="submit" class="w-full rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 sm:w-auto">Enviar a papelera</button>
                         </form>
                     </div>

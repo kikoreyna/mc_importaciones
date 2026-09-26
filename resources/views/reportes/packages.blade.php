@@ -65,7 +65,7 @@
                             <td class="whitespace-nowrap px-4 py-3 font-semibold">
                                 @auth
                                     @if (auth()->user()->isPackageManager())
-                                        <a href="{{ route('reports.comparison.edit', $package) }}" class="inline-flex max-w-full items-center rounded-lg bg-blue-50 px-3 py-2 text-blue-700 hover:bg-blue-100 hover:text-blue-900">
+                                        <a href="{{ route('reports.comparison.edit', [$package, 'return_to' => 'reporteria']) }}" class="inline-flex max-w-full items-center rounded-lg bg-blue-50 px-3 py-2 text-blue-700 hover:bg-blue-100 hover:text-blue-900">
                                             <span class="truncate">{{ $package->guia_principal }}</span>
                                         </a>
                                     @else
