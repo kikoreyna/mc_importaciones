@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Client;
 use App\Models\Package;
 use App\Models\Partner;
+use App\Models\Transportadora;
 use Illuminate\Http\Request;
 
 class PackageDocumentationController extends Controller
@@ -35,7 +36,7 @@ class PackageDocumentationController extends Controller
 
         $clients = Client::orderBy('nombre')->get();
         $partners = Partner::orderBy('nombre')->get();
-        $transportadoras = ['DHL', 'FedEx', 'UPS', 'USPS', 'Amazon Logistics', 'Otra'];
+        $transportadoras = Transportadora::orderBy('nombre')->get();
 
         return view('documentacion.index', compact('package', 'clients', 'partners', 'transportadoras', 'guiaPrincipal', 'packagesRecibidos'));
     }

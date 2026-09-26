@@ -28,6 +28,9 @@
         <a href="{{ route('partners.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('partners.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
             Socios
         </a>
+        <a href="{{ route('transportadoras.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('transportadoras.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+            Transportadoras
+        </a>
         @auth
             @if (auth()->user()->isAdministrator())
                 <a href="{{ route('users.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">

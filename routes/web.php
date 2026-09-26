@@ -3,6 +3,7 @@
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\PartnerController;
+use App\Http\Controllers\TransportadoraController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PackageReportController;
 use App\Http\Controllers\PackageComparisonController;
@@ -49,6 +50,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
     Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');
+    Route::resource('transportadoras', TransportadoraController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
     Route::resource('usuarios', UserController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])
         ->parameters(['usuarios' => 'user'])

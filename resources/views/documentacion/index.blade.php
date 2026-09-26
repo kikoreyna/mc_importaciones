@@ -140,12 +140,12 @@
                                 @endphp
                                 <select id="transportadora" name="transportadora" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Selecciona una transportadora</option>
-                                    @if ($selectedTransportadora && ! in_array($selectedTransportadora, $transportadoras, true))
+                                    @if ($selectedTransportadora && ! $transportadoras->contains('nombre', $selectedTransportadora))
                                         <option value="{{ $selectedTransportadora }}" selected>{{ $selectedTransportadora }} (actual)</option>
                                     @endif
                                     @foreach ($transportadoras as $transportadora)
-                                        <option value="{{ $transportadora }}" {{ $selectedTransportadora === $transportadora ? 'selected' : '' }}>
-                                            {{ $transportadora }}
+                                        <option value="{{ $transportadora->nombre }}" {{ $selectedTransportadora === $transportadora->nombre ? 'selected' : '' }}>
+                                            {{ $transportadora->nombre }}
                                         </option>
                                     @endforeach
                                 </select>
