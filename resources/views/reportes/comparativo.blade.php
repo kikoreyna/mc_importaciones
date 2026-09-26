@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <div class="mx-auto max-w-6xl px-4 py-6">
+    <div class="w-full px-4 py-6">
         @include('components.navbar')
 
         <div class="mb-6 flex flex-wrap items-end justify-between gap-3">

@@ -7,10 +7,10 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <div class="mx-auto max-w-6xl px-4 py-6">
+    <div class="w-full px-4 py-6">
         @include('components.navbar')
 
-        <main class="mx-auto max-w-2xl">
+        <main class="w-full">
             <div class="mb-6">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">ADMINISTRACIÓN DE GUÍA</p>
                 <h1 class="mt-2 text-2xl font-bold md:text-3xl">{{ $package->guia_principal }}</h1>
