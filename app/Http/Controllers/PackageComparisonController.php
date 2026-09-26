@@ -87,7 +87,7 @@ class PackageComparisonController extends Controller
     {
         $package->delete();
 
-        return back()->with('success', 'La guía fue eliminada correctamente.');
+        return redirect()->route('reports.packages')->with('success', 'La guía fue eliminada correctamente.');
     }
 
     public function destroyPhoto(PackagePhoto $photo)
