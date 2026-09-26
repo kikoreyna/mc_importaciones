@@ -86,6 +86,16 @@ class PackageComparisonController extends Controller
 
     public function destroy(Request $request, Package $package)
     {
+        $disk = config('filesystems.disks.s3.bucket') ? 's3' : 'local';
+
+        foreach ($package->photos as $photo) {
+            if ($photo->path) {
+                Storage::disk($disk)->delete($photo->path);
+            }
+
+            $photo->delete();
+        }
+
         $package->delete();
 
         $route = $request->string('return_to')->toString() === 'reporteria'
