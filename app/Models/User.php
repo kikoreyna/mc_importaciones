@@ -16,7 +16,7 @@ class User extends Authenticatable
 
     public function isPackageManager(): bool
     {
-        return $this->hasRole(['administrador', 'supervisor']);
+        return $this->hasRole(['administrador', 'supervisor', 'documentador']);
     }
 
     public function canAccessDashboard(): bool

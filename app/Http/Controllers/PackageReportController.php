@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Client;
 use App\Models\Package;
+use App\Models\Transportadora;
 use Illuminate\Http\Request;
 
 class PackageReportController extends Controller
@@ -32,12 +33,15 @@ class PackageReportController extends Controller
             ->distinct()
             ->orderBy('transportadora')
             ->pluck('transportadora');
+        $transportadoraWebs = Transportadora::query()
+            ->whereIn('nombre', $transportadoras)
+            ->pluck('web', 'nombre');
         $estados = Package::query()
             ->whereNotNull('estado')
             ->distinct()
             ->orderBy('estado')
             ->pluck('estado');
 
-        return view('reportes.packages', compact('packages', 'clients', 'transportadoras', 'estados'));
+        return view('reportes.packages', compact('packages', 'clients', 'transportadoras', 'transportadoraWebs', 'estados'));
     }
 }

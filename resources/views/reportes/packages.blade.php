@@ -62,10 +62,31 @@
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($packages as $package)
                         <tr class="hover:bg-blue-50">
-                            <td class="whitespace-nowrap px-4 py-3 font-semibold">{{ $package->guia_principal }}</td>
+                            <td class="whitespace-nowrap px-4 py-3 font-semibold">
+                                @auth
+                                    @if (auth()->user()->isPackageManager())
+                                        <a href="{{ route('reports.comparison.edit', $package) }}" class="inline-flex max-w-full items-center rounded-lg bg-blue-50 px-3 py-2 text-blue-700 hover:bg-blue-100 hover:text-blue-900">
+                                            <span class="truncate">{{ $package->guia_principal }}</span>
+                                            <span class="ml-2 shrink-0 text-xs font-semibold">Editar estado</span>
+                                        </a>
+                                    @else
+                                        {{ $package->guia_principal }}
+                                    @endif
+                                @else
+                                    {{ $package->guia_principal }}
+                                @endauth
+                            </td>
                             <td class="px-4 py-3">{{ $package->guia_secundaria ?: 'Sin guía secundaria' }}</td>
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->caja_numero && $package->total_cajas ? $package->caja_numero . ' de ' . $package->total_cajas : 'Sin secuencia' }}</td>
-                            <td class="px-4 py-3">{{ $package->transportadora ?: 'Sin transportadora' }}</td>
+                            <td class="px-4 py-3">
+                                @if ($package->transportadora && $transportadoraWebs->has($package->transportadora))
+                                    <a href="{{ $transportadoraWebs->get($package->transportadora) }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+                                        {{ $package->transportadora }}
+                                    </a>
+                                @else
+                                    {{ $package->transportadora ?: 'Sin transportadora' }}
+                                @endif
+                            </td>
                             <td class="px-4 py-3">{{ $package->partner?->nombre ?: 'Sin socio' }}</td>
                             <td class="px-4 py-3">{{ $package->client?->nombre ?: 'Sin cliente' }}</td>
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') ?: 'Sin fecha' }}</td>
