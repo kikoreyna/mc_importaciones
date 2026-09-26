@@ -48,6 +48,7 @@ class PackageDocumentationController extends Controller
             'client_id' => ['nullable', 'exists:clients,id'],
             'partner_id' => ['nullable', 'exists:partners,id'],
             'transportadora' => ['nullable', 'string', 'max:255'],
+            'guia_master' => ['nullable', 'string', 'max:255'],
             'caja_numero' => ['nullable', 'integer', 'min:1'],
             'total_cajas' => ['nullable', 'integer', 'min:1'],
         ]);
@@ -75,6 +76,7 @@ class PackageDocumentationController extends Controller
             'client_id' => $validated['client_id'] ?? null,
             'partner_id' => $partnerId,
             'transportadora' => $validated['transportadora'] ?? null,
+            'guia_master' => $validated['guia_master'] ?? null,
             'caja_numero' => $validated['caja_numero'] ?? null,
             'total_cajas' => $validated['total_cajas'] ?? null,
             'estado' => 'documentado',

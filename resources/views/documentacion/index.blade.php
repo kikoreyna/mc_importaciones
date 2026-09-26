@@ -151,6 +151,11 @@
                                 </select>
                             </div>
 
+                            <div>
+                                <label for="guia_master" class="block text-sm font-medium mb-1.5">Guía máster</label>
+                                <input id="guia_master" name="guia_master" type="text" value="{{ old('guia_master', $package->guia_master ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+                            </div>
+
                             <div class="grid grid-cols-2 gap-4">
                                 <div>
                                     <label for="caja_numero" class="block text-sm font-medium mb-1.5">Caja #</label>
