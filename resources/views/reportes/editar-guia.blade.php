@@ -10,7 +10,7 @@
     <div class="w-full px-4 py-6">
         @include('components.navbar')
 
-        <main class="w-full">
+        <main class="w-full max-w-2xl mx-auto">
             <div class="mb-6">
                 <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">ADMINISTRACIÓN DE GUÍA</p>
                 <h1 class="mt-2 text-2xl font-bold md:text-3xl">{{ $package->guia_principal }}</h1>
