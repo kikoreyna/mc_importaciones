@@ -11,7 +11,7 @@
         @include('components.navbar')
     </div>
 
-    <div class="w-full px-4 py-6 md:px-6">
+    <div class="w-full max-w-4xl mx-auto px-4 py-6 md:px-6">
         <div class="mb-6">
             <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">USA</p>
             <h1 class="text-2xl font-bold mt-2 md:text-3xl">Recepción de guía</h1>
