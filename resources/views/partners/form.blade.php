@@ -11,7 +11,7 @@
 		@include('components.navbar')
 	</div>
 
-	<div class="w-full max-w-xl mx-auto px-4 pb-6">
+	<div class="w-full max-w-2xl mx-auto px-4 pb-6">
 		<div class="mb-6">
 			<p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">ADMINISTRACIÓN</p>
 			<h1 class="text-2xl font-bold mt-2">{{ $partner->exists ? 'Editar socio' : 'Nuevo socio' }}</h1>
