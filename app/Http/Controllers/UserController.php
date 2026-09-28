@@ -37,6 +37,10 @@ class UserController extends Controller
     {
         $data = $this->validated($request, $user);
 
+        if ($user->isAdministrator() && $data['role'] !== 'administrador' && User::whereRaw('LOWER(TRIM(role)) = ?', ['administrador'])->count() === 1) {
+            return back()->with('error', 'Debe existir al menos un administrador.');
+        }
+
         if (blank($data['password'] ?? null)) {
             unset($data['password']);
         }
@@ -48,6 +52,10 @@ class UserController extends Controller
 
     public function destroy(User $user)
     {
+        if ($user->isAdministrator() && User::whereRaw('LOWER(TRIM(role)) = ?', ['administrador'])->count() === 1) {
+            return back()->with('error', 'No puedes eliminar al último administrador.');
+        }
+
         $user->delete();
 
         return redirect()->route('users.index')->with('success', 'Usuario eliminado correctamente.');
@@ -58,6 +66,7 @@ class UserController extends Controller
         $rules = [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user?->id)->whereNull('deleted_at')],
+            'role' => ['required', Rule::in(['administrador', 'supervisor', 'documentador', 'bodega_usa', 'bodega_mex'])],
             'password' => [$user?->exists ? 'nullable' : 'required', 'string', 'min:8', 'confirmed'],
         ];
 

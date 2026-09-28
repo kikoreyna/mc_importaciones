@@ -7,7 +7,7 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="w-full px-4 py-6">
         @include('components.navbar')
 
         <div class="mb-6">
@@ -29,23 +29,28 @@
 
         <div class="grid grid-cols-1 gap-6">
             <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
-                <div class="mb-4 flex justify-end">
-                    <a href="{{ route('documentacion.documented') }}" class="rounded-lg border border-blue-600 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">
+                <div class="mb-4 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
+                    <form action="{{ route('documentacion.index') }}" method="GET" class="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-end xl:max-w-3xl">
+                        @csrf
+                        <div class="min-w-0 flex-1 xl:max-w-[18rem]">
+                            <x-camera-scanner
+                                id="documentation-guide-scanner"
+                                name="guia_principal"
+                                label="Buscar guía recibida"
+                                placeholder="Escanee la guía"
+                                value="{{ old('guia_principal', $guiaPrincipal ?? '') }}"
+                            />
+                        </div>
+
+                        <button type="submit" class="h-12.5 w-full rounded-xl bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700 active:bg-blue-800 sm:w-auto sm:shrink-0">
+                            Buscar guía
+                        </button>
+                    </form>
+
+                    <a href="{{ route('documentacion.documented') }}" class="flex h-12.5 shrink-0 items-center self-end whitespace-nowrap rounded-lg border border-blue-600 px-3 text-sm font-semibold text-blue-700 hover:bg-blue-50">
                         Ver paquetes documentados
                     </a>
                 </div>
-
-                <form action="{{ route('documentacion.index') }}" method="GET" class="space-y-4">
-                    @csrf
-                    <div>
-                        <label for="guia_principal" class="block text-sm font-medium mb-1.5">Buscar guía recibida</label>
-                        <input id="guia_principal" name="guia_principal" type="text" value="{{ old('guia_principal', $guiaPrincipal ?? '') }}" {{ $package ? '' : 'autofocus' }} class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escanee la guía">
-                    </div>
-
-                    <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
-                        Buscar guía
-                    </button>
-                </form>
 
                 @if ($packagesRecibidos->isNotEmpty())
                     <div class="mt-5 border border-slate-200 rounded-xl p-3 bg-slate-50">
@@ -135,15 +140,20 @@
                                 @endphp
                                 <select id="transportadora" name="transportadora" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent">
                                     <option value="">Selecciona una transportadora</option>
-                                    @if ($selectedTransportadora && ! in_array($selectedTransportadora, $transportadoras, true))
+                                    @if ($selectedTransportadora && ! $transportadoras->contains('nombre', $selectedTransportadora))
                                         <option value="{{ $selectedTransportadora }}" selected>{{ $selectedTransportadora }} (actual)</option>
                                     @endif
                                     @foreach ($transportadoras as $transportadora)
-                                        <option value="{{ $transportadora }}" {{ $selectedTransportadora === $transportadora ? 'selected' : '' }}>
-                                            {{ $transportadora }}
+                                        <option value="{{ $transportadora->nombre }}" {{ $selectedTransportadora === $transportadora->nombre ? 'selected' : '' }}>
+                                            {{ $transportadora->nombre }}
                                         </option>
                                     @endforeach
                                 </select>
+                            </div>
+
+                            <div>
+                                <label for="guia_master" class="block text-sm font-medium mb-1.5">Guía máster</label>
+                                <input id="guia_master" name="guia_master" type="text" value="{{ old('guia_master', $package->guia_master ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
                             </div>
 
                             <div class="grid grid-cols-2 gap-4">
@@ -174,10 +184,10 @@
 
                             @if ($firstPhoto)
                                 <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="w-full h-[520px] md:h-[560px] object-cover">
+                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="w-full h-130 md:h-140 object-cover">
 
                                     @if ($photos->count() > 1)
-                                        <div class="absolute inset-x-0 bottom-0 flex items-center justify-between bg-gradient-to-t from-slate-900/70 via-slate-900/20 to-transparent p-3">
+                                        <div class="absolute inset-x-0 bottom-0 flex items-center justify-between bg-linear-to-t from-slate-900/70 via-slate-900/20 to-transparent p-3">
                                             <button type="button" id="prev-photo" class="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white">Anterior</button>
                                             <span id="photo-counter" class="text-xs font-semibold text-white">1 / {{ $photos->count() }}</span>
                                             <button type="button" id="next-photo" class="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white">Siguiente</button>
@@ -222,7 +232,7 @@
 
     <script>
         const editingGuide = document.getElementById('edicion-guia-principal');
-        const guideSearch = document.getElementById('guia_principal');
+        const guideSearch = document.getElementById('documentation-guide-scanner-input');
 
         window.addEventListener('load', () => {
             (editingGuide ?? guideSearch)?.focus();

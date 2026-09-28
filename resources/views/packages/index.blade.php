@@ -7,11 +7,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body class="bg-slate-100 text-slate-900">
-    <div class="max-w-6xl mx-auto px-4 py-6">
+    <div class="w-full px-4 py-6">
         @include('components.navbar')
     </div>
 
-    <div class="max-w-md mx-auto px-4 py-6 md:max-w-4xl md:px-6">
+    <div class="w-full max-w-4xl mx-auto px-4 py-6 md:px-6">
         <div class="mb-6">
             <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">USA</p>
             <h1 class="text-2xl font-bold mt-2 md:text-3xl">Recepción de guía</h1>
@@ -32,14 +32,21 @@
         <form action="{{ route('packages.store') }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-4 md:p-6">
             @csrf
 
-            <div>
-                <label for="guia_principal" class="block text-sm font-medium mb-1.5">Guía principal</label>
-                <input id="guia_principal" name="guia_principal" type="text" required class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escanee o ingrese la guía principal">
-            </div>
+            <x-camera-scanner
+                id="usa-guide-scanner"
+                name="guia_principal"
+                label="Guía principal"
+                placeholder="Escanee o ingrese la guía principal"
+            />
 
             <div>
                 <label for="guia_secundaria" class="block text-sm font-medium mb-1.5">Guía secundaria</label>
                 <input id="guia_secundaria" name="guia_secundaria" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+            </div>
+
+            <div>
+                <label for="guia_master" class="block text-sm font-medium mb-1.5">Guía máster</label>
+                <input id="guia_master" name="guia_master" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
             </div>
 
             <div>
@@ -65,7 +72,7 @@
     </div>
 
     <script>
-        const guiaPrincipal = document.getElementById('guia_principal');
+        const guiaPrincipal = document.getElementById('usa-guide-scanner-input');
         const guiaSecundaria = document.getElementById('guia_secundaria');
         const input = document.getElementById('photos');
         const preview = document.getElementById('preview');
@@ -74,6 +81,29 @@
         const photoLabelText = document.getElementById('photo-label');
         const photoCount = document.getElementById('photo-count');
         const selectedPhotos = new DataTransfer();
+        const selectedPhotoHashes = new Set();
+        let photoCapturePending = false;
+
+        const getPhotoHash = async (file) => {
+            const buffer = await file.arrayBuffer();
+            const digest = await crypto.subtle.digest('SHA-256', buffer);
+
+            return [...new Uint8Array(digest)]
+                .map(byte => byte.toString(16).padStart(2, '0'))
+                .join('');
+        };
+
+        const renderPhotoPreview = (files) => {
+            preview.innerHTML = '';
+
+            [...files].forEach((file, index) => {
+                const img = document.createElement('img');
+                img.src = URL.createObjectURL(file);
+                img.alt = `Foto ${index + 1}`;
+                img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+                preview.appendChild(img);
+            });
+        };
 
         window.addEventListener('load', () => {
             guiaPrincipal.focus();
@@ -81,7 +111,8 @@
 
         const moveToPhotoCapture = () => {
             const value = guiaPrincipal.value.trim();
-            if (value.length > 0) {
+            if (value.length > 0 && !photoCapturePending) {
+                photoCapturePending = true;
                 photoLabel.scrollIntoView({ behavior: 'smooth', block: 'center' });
                 setTimeout(() => photoLabel.click(), 200);
             }
@@ -107,38 +138,21 @@
             }
         });
 
-        input.addEventListener('change', function () {
-            preview.innerHTML = '';
+        input.addEventListener('change', async function () {
+            photoCapturePending = false;
 
-            [...this.files].forEach(file => {
-                if (!file.type.startsWith('image/')) return;
+            for (const file of [...this.files]) {
+                if (!file.type.startsWith('image/')) continue;
 
-            selectedPhotos.items.add(file);
+                const photoHash = await getPhotoHash(file);
+                if (selectedPhotoHashes.has(photoHash)) continue;
 
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
+                selectedPhotoHashes.add(photoHash);
+                selectedPhotos.items.add(file);
+            }
 
             input.files = selectedPhotos.files;
-            preview.innerHTML = '';
-
-            [...selectedPhotos.files].forEach((file, index) => {
-                const reader = new FileReader();
-                reader.onload = function (event) {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.alt = `Foto ${index + 1}`;
-                    img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
-                    preview.appendChild(img);
-                };
-                reader.readAsDataURL(file);
-            });
+            renderPhotoPreview(selectedPhotos.files);
 
             const count = selectedPhotos.files.length;
             photoLabelText.textContent = 'Tomar otra foto';

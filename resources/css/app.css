@@ -5,6 +5,135 @@
 @source '../**/*.blade.php';
 @source '../**/*.js';
 
+@layer components {
+    .navbar-links {
+        display: none;
+    }
+
+    .navbar-links.is-open {
+        display: flex;
+    }
+
+    @media (min-width: 80rem) {
+        .navbar-links {
+            display: flex;
+        }
+    }
+}
+
+@layer base {
+    :root {
+        color-scheme: light;
+        --ui-primary: #1d4ed8;
+        --ui-primary-hover: #1e40af;
+        --ui-text: #0f172a;
+        --ui-muted: #475569;
+        --ui-border: #cbd5e1;
+        --ui-focus: #2563eb;
+        --ui-success: #166534;
+        --ui-error: #b91c1c;
+        --ui-warning: #92400e;
+        --ui-shadow: 0 1px 2px rgb(15 23 42 / 6%), 0 6px 18px rgb(15 23 42 / 5%);
+    }
+
+    body {
+        color: var(--ui-text);
+        font-family: var(--font-sans);
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    button:enabled,
+    [role='button'],
+    a[href] {
+        cursor: pointer;
+    }
+
+    button:disabled {
+        cursor: not-allowed;
+    }
+
+    :where(button, input, select, textarea, a[href], [role='button']):focus-visible {
+        outline: 3px solid var(--ui-focus);
+        outline-offset: 3px;
+    }
+
+    :where(button, a[href], input, select, textarea) {
+        transition-property: color, background-color, border-color, box-shadow, opacity, transform;
+        transition-duration: 180ms;
+        transition-timing-function: ease-out;
+    }
+
+    button:enabled:active,
+    [role='button']:active {
+        transform: translateY(1px);
+    }
+
+    :where(button, input:not([type='checkbox']):not([type='radio']):not([type='hidden']), select, textarea) {
+        min-height: 44px;
+    }
+
+    .navbar-links > a,
+    .navbar-links > form button {
+        min-height: 44px;
+    }
+
+    input[aria-invalid='true'],
+    select[aria-invalid='true'],
+    textarea[aria-invalid='true'] {
+        border-color: var(--ui-error);
+        box-shadow: 0 0 0 1px var(--ui-error);
+    }
+
+    button:disabled,
+    input:disabled,
+    select:disabled,
+    textarea:disabled {
+        opacity: 0.6;
+    }
+
+    .ui-skeleton {
+        border-radius: 0.5rem;
+        background: linear-gradient(100deg, #e2e8f0 30%, #f8fafc 50%, #e2e8f0 70%);
+        background-size: 200% 100%;
+        animation: ui-skeleton 1.4s ease-in-out infinite;
+    }
+
+    .ui-spinner {
+        width: 1.25rem;
+        height: 1.25rem;
+        border: 2px solid #bfdbfe;
+        border-top-color: var(--ui-primary);
+        border-radius: 50%;
+        animation: ui-spin 700ms linear infinite;
+    }
+
+    .empty-state {
+        color: var(--ui-muted);
+        text-align: center;
+    }
+
+    @keyframes ui-skeleton {
+        to { background-position: -200% 0; }
+    }
+
+    @keyframes ui-spin {
+        to { transform: rotate(360deg); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+            scroll-behavior: auto !important;
+            animation-duration: 0.01ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: 0.01ms !important;
+        }
+    }
+}
+
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';

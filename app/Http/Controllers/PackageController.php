@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Package;
 use App\Services\PackagePhotoUploadService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class PackageController extends Controller
 {
@@ -30,7 +31,7 @@ class PackageController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'guia_principal' => ['required', 'string', 'max:255'],
+            'guia_principal' => ['required', 'string', 'max:255', Rule::unique('packages', 'guia_principal')],
             'guia_secundaria' => ['nullable', 'string', 'max:255'],
             'guia_master' => ['nullable', 'string', 'max:255'],
             'total_paquetes' => ['nullable', 'integer', 'min:1'],
@@ -38,31 +39,13 @@ class PackageController extends Controller
             'photos.*' => ['file', 'mimetypes:image/jpeg,image/png,image/webp,image/heic,image/heif', 'max:8192'],
         ]);
 
-        $package = Package::firstOrCreate(
-            ['guia_principal' => $validated['guia_principal']],
-            [
-                'guia_secundaria' => $validated['guia_secundaria'] ?? null,
-                'guia_master' => $validated['guia_master'] ?? null,
-                'total_paquetes' => $validated['total_paquetes'] ?? 1,
-                'estado' => 'recibido',
-            ]
-        );
-
-        if ($package->wasRecentlyCreated) {
-            $package->update(['estado' => 'recibido']);
-        }
-
-        if ($request->filled('guia_secundaria') && $package->guia_secundaria !== $validated['guia_secundaria']) {
-            $package->update(['guia_secundaria' => $validated['guia_secundaria']]);
-        }
-
-        if ($request->filled('guia_master') && $package->guia_master !== $validated['guia_master']) {
-            $package->update(['guia_master' => $validated['guia_master']]);
-        }
-
-        if ($request->filled('total_paquetes') && $package->total_paquetes !== (int) $validated['total_paquetes']) {
-            $package->update(['total_paquetes' => (int) $validated['total_paquetes']]);
-        }
+        $package = Package::create([
+            'guia_principal' => $validated['guia_principal'],
+            'guia_secundaria' => $validated['guia_secundaria'] ?? null,
+            'guia_master' => $validated['guia_master'] ?? null,
+            'total_paquetes' => $validated['total_paquetes'] ?? 1,
+            'estado' => 'recibido',
+        ]);
 
         $this->photoUploadService->handle($request->file('photos', []), $package);
 
