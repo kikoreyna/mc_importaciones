@@ -36,6 +36,9 @@
                 <a href="{{ route('users.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
                     Usuarios
                 </a>
+                <a href="{{ route('company-settings.edit') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('company-settings.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                    Datos de empresa
+                </a>
             @endif
         @endauth
         <a href="{{ route('reports.packages') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('reports.packages') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">

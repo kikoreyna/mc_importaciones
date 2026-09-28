@@ -8,10 +8,13 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\PackageReportController;
 use App\Http\Controllers\PackageComparisonController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CompanySettingController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'create'])->name('login');
 Route::post('/login', [AuthController::class, 'store'])->name('login.store');
+Route::get('/company/favicon.png', [CompanySettingController::class, 'favicon'])->name('company-settings.favicon');
+Route::get('/company/logo.png', [CompanySettingController::class, 'logo'])->name('company-settings.logo');
 
 Route::middleware('auth')->group(function () {
     Route::get('/', function () {
@@ -56,4 +59,9 @@ Route::middleware('auth')->group(function () {
         ->parameters(['usuarios' => 'user'])
         ->names('users')
         ->middleware('administrator');
+
+    Route::middleware('administrator')->group(function () {
+        Route::get('/empresa', [CompanySettingController::class, 'edit'])->name('company-settings.edit');
+        Route::put('/empresa', [CompanySettingController::class, 'update'])->name('company-settings.update');
+    });
 });
