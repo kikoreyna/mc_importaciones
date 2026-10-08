@@ -69,7 +69,7 @@
                     <ol class="mt-5 space-y-6 border-l-2 border-slate-200 pl-6">
                         @foreach ($logs as $log)
                             <li class="relative">
-                                <span class="absolute -left-[1.95rem] top-1 h-3.5 w-3.5 rounded-full ring-4 ring-white {{ $dot[$log->action] ?? 'bg-slate-400' }}"></span>
+                                <span class="absolute left-[-1.95rem] top-1 h-3.5 w-3.5 rounded-full ring-4 ring-white {{ $dot[$log->action] ?? 'bg-slate-400' }}"></span>
                                 <p class="text-sm font-semibold text-slate-900">{{ $log->description }}</p>
                                 <p class="mt-0.5 text-xs text-slate-500">
                                     {{ $log->created_at->format('d/m/Y H:i') }}
