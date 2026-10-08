@@ -26,6 +26,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
     Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
     Route::get('/paquetes-registrados', [PackageController::class, 'registeredIndex'])->name('packages.registered');
+    Route::get('/buscar-guia', [PackageController::class, 'search'])->name('packages.search');
     Route::post('/paquetes-registrados/{package}/fotos', [PackageController::class, 'addPhotos'])->name('packages.photos.store');
 
     Route::get('/bodega', [PackageController::class, 'bodegaIndex'])->name('bodega.index');

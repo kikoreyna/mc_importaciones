@@ -28,6 +28,26 @@ class PackageController extends Controller
         return view('packages.registered', compact('packages'));
     }
 
+    public function search(Request $request)
+    {
+        $term = trim($request->validate(['q' => ['nullable', 'string', 'max:255']])['q'] ?? '');
+
+        $packages = $term === ''
+            ? collect()
+            : Package::with(['photos', 'client', 'partner'])
+                ->where(function ($query) use ($term) {
+                    $like = '%' . addcslashes($term, '%_\\') . '%';
+                    $query->where('guia_principal', 'like', $like)
+                        ->orWhere('guia_secundaria', 'like', $like)
+                        ->orWhere('guia_master', 'like', $like);
+                })
+                ->latest()
+                ->limit(50)
+                ->get();
+
+        return view('packages.search', compact('packages', 'term'));
+    }
+
     public function store(Request $request)
     {
         $validated = $request->validate([
