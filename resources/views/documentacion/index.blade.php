@@ -5,14 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Documentación</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-100 text-slate-900">
+<body class="bg-slate-50 text-slate-800 antialiased" style="font-family: 'Inter', ui-sans-serif, system-ui, sans-serif">
     <div class="w-full px-4 py-6">
         @include('components.navbar')
 
-        <div class="mb-6">
-            <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">DOCUMENTACIÓN</p>
-            <h1 class="text-2xl font-bold mt-2">Edición de guía</h1>
+        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">Documentación</p>
+                <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Edición de guía</h1>
+            </div>
+            <a href="{{ route('documentacion.documented') }}" class="inline-flex cursor-pointer items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+                Ver paquetes documentados
+            </a>
         </div>
 
         @if (session('success'))
@@ -42,14 +49,10 @@
                             />
                         </div>
 
-                        <button type="submit" class="h-12.5 w-full rounded-xl bg-blue-600 px-5 font-semibold text-white hover:bg-blue-700 active:bg-blue-800 sm:w-auto sm:shrink-0">
+                        <button type="submit" class="h-12.5 w-full cursor-pointer rounded-xl bg-blue-600 px-5 font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 sm:w-auto sm:shrink-0">
                             Buscar guía
                         </button>
                     </form>
-
-                    <a href="{{ route('documentacion.documented') }}" class="flex h-12.5 shrink-0 items-center self-end whitespace-nowrap rounded-lg border border-blue-600 px-3 text-sm font-semibold text-blue-700 hover:bg-blue-50">
-                        Ver paquetes documentados
-                    </a>
                 </div>
 
                 @if ($packagesRecibidos->isNotEmpty())
@@ -85,7 +88,7 @@
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
                         <div class="mb-4 pt-1 border-b border-slate-200 pb-3">
-                            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">Edición</p>
+                            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Edición</p>
                         </div>
 
                         <form action="{{ route('documentacion.store') }}" method="POST" class="space-y-4">
@@ -168,7 +171,7 @@
                             </div>
 
                             <div class="pt-5 mt-3 border-t-2 border-slate-200">
-                                <button id="actualizar-guia" type="submit" class="block w-fit mx-auto cursor-pointer bg-blue-600 text-white px-5 py-4 rounded-xl font-bold text-base shadow-md hover:bg-blue-700 active:bg-blue-800">
+                                <button id="actualizar-guia" type="submit" class="block w-fit mx-auto cursor-pointer bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-base shadow-sm hover:bg-blue-700 active:bg-blue-800">
                                     Actualizar Guia
                                 </button>
                             </div>
@@ -183,44 +186,131 @@
                             @endphp
 
                             @if ($firstPhoto)
-                                <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="w-full h-130 md:h-140 object-cover">
+                                <div id="photo-stage" class="relative aspect-4/3 w-full animate-pulse overflow-hidden rounded-xl border border-slate-200 bg-slate-200">
+                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="h-full w-full cursor-zoom-in object-contain transition-transform duration-200">
+
+                                    <span id="photo-counter" class="absolute right-3 top-3 rounded-full bg-slate-900/70 px-3 py-1 text-xs font-semibold text-white">1 / {{ $photos->count() }}</span>
+
+                                    <div class="absolute left-3 top-3 flex gap-2">
+                                        <button type="button" id="rotate-photo" class="cursor-pointer rounded-full bg-slate-700 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-slate-800">Rotar</button>
+                                        <a id="open-photo" href="{{ $firstPhoto->display_url }}" target="_blank" rel="noopener" class="cursor-pointer rounded-full bg-slate-700 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-slate-800">Abrir</a>
+                                    </div>
 
                                     @if ($photos->count() > 1)
-                                        <div class="absolute inset-x-0 bottom-0 flex items-center justify-between bg-linear-to-t from-slate-900/70 via-slate-900/20 to-transparent p-3">
-                                            <button type="button" id="prev-photo" class="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white">Anterior</button>
-                                            <span id="photo-counter" class="text-xs font-semibold text-white">1 / {{ $photos->count() }}</span>
-                                            <button type="button" id="next-photo" class="rounded-full bg-white/90 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm hover:bg-white">Siguiente</button>
-                                        </div>
+                                        <button type="button" id="prev-photo" class="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600/90 text-xl font-bold text-white shadow-sm hover:bg-blue-700" aria-label="Anterior">&lsaquo;</button>
+                                        <button type="button" id="next-photo" class="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600/90 text-xl font-bold text-white shadow-sm hover:bg-blue-700" aria-label="Siguiente">&rsaquo;</button>
                                     @endif
                                 </div>
 
+                                @if ($photos->count() > 1)
+                                    <div class="mt-3 flex gap-2 overflow-x-auto pb-1">
+                                        @foreach ($photos as $i => $photo)
+                                            <button type="button" data-thumb="{{ $i }}" class="aspect-square h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg border-2 border-transparent bg-slate-100 focus:outline-none">
+                                                <img src="{{ $photo->display_url }}" alt="Miniatura {{ $i + 1 }}" loading="lazy" class="h-full w-full object-cover">
+                                            </button>
+                                        @endforeach
+                                    </div>
+                                @endif
+
+                                <div id="photo-lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/90 p-4" role="dialog" aria-modal="true">
+                                    <button type="button" id="lightbox-close" class="absolute right-4 top-4 cursor-pointer rounded-full bg-blue-600 px-4 py-1.5 text-lg font-bold text-white hover:bg-blue-700" aria-label="Cerrar">&times;</button>
+                                    @if ($photos->count() > 1)
+                                        <button type="button" id="lightbox-prev" class="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white hover:bg-blue-700" aria-label="Anterior">&lsaquo;</button>
+                                        <button type="button" id="lightbox-next" class="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white hover:bg-blue-700" aria-label="Siguiente">&rsaquo;</button>
+                                    @endif
+                                    <img id="lightbox-img" src="" alt="Foto ampliada" class="max-h-full max-w-full cursor-zoom-in rounded-lg object-contain transition-transform duration-200">
+                                </div>
+
                                 <script>
-                                    const packagePhotos = @json($photos->map(fn($photo) => ['url' => $photo->display_url])->all());
-                                    const photoCounter = document.getElementById('photo-counter');
-                                    const photoImage = document.getElementById('package-photo');
-                                    const prevButton = document.getElementById('prev-photo');
-                                    const nextButton = document.getElementById('next-photo');
+                                    (() => {
+                                        const photos = @json($photos->map(fn($photo) => $photo->display_url)->values()->all());
+                                        const image = document.getElementById('package-photo');
+                                        const stage = document.getElementById('photo-stage');
+                                        const counter = document.getElementById('photo-counter');
+                                        const openLink = document.getElementById('open-photo');
+                                        const thumbs = document.querySelectorAll('[data-thumb]');
+                                        const box = document.getElementById('photo-lightbox');
+                                        const boxImg = document.getElementById('lightbox-img');
+                                        let index = 0;
+                                        let rotation = 0;
+                                        let zoomed = false;
 
-                                    if (packagePhotos.length > 1 && photoCounter && photoImage && prevButton && nextButton) {
-                                        let currentIndex = 0;
+                                        const clearLoading = () => stage.classList.remove('animate-pulse', 'bg-slate-200');
+                                        if (image.complete) clearLoading(); else image.addEventListener('load', clearLoading);
 
-                                        const updatePhoto = () => {
-                                            const photo = packagePhotos[currentIndex];
-                                            photoImage.src = photo.url;
-                                            photoCounter.textContent = `${currentIndex + 1} / ${packagePhotos.length}`;
+                                        const render = () => {
+                                            rotation = 0;
+                                            zoomed = false;
+                                            image.style.transform = '';
+                                            image.src = photos[index];
+                                            openLink.href = photos[index];
+                                            counter.textContent = `${index + 1} / ${photos.length}`;
+                                            thumbs.forEach((t, i) => {
+                                                const active = i === index;
+                                                t.classList.toggle('border-blue-600', active);
+                                                t.classList.toggle('border-transparent', !active);
+                                            });
+                                            if (!box.classList.contains('hidden')) {
+                                                boxImg.src = photos[index];
+                                                boxImg.style.transform = '';
+                                            }
+                                            new Image().src = photos[(index + 1) % photos.length];
                                         };
 
-                                        prevButton.addEventListener('click', () => {
-                                            currentIndex = (currentIndex - 1 + packagePhotos.length) % packagePhotos.length;
-                                            updatePhoto();
+                                        const go = (step) => {
+                                            if (photos.length < 2) return;
+                                            index = (index + step + photos.length) % photos.length;
+                                            render();
+                                        };
+
+                                        const openBox = () => {
+                                            boxImg.src = photos[index];
+                                            boxImg.style.transform = '';
+                                            zoomed = false;
+                                            box.classList.remove('hidden');
+                                            box.classList.add('flex');
+                                        };
+                                        const closeBox = () => { box.classList.add('hidden'); box.classList.remove('flex'); };
+
+                                        document.getElementById('prev-photo')?.addEventListener('click', () => go(-1));
+                                        document.getElementById('next-photo')?.addEventListener('click', () => go(1));
+                                        document.getElementById('lightbox-prev')?.addEventListener('click', () => go(-1));
+                                        document.getElementById('lightbox-next')?.addEventListener('click', () => go(1));
+                                        document.getElementById('lightbox-close').addEventListener('click', closeBox);
+                                        thumbs.forEach((t) => t.addEventListener('click', () => { index = Number(t.dataset.thumb); render(); }));
+
+                                        document.getElementById('rotate-photo').addEventListener('click', () => {
+                                            rotation = (rotation + 90) % 360;
+                                            image.style.transform = `rotate(${rotation}deg)`;
                                         });
 
-                                        nextButton.addEventListener('click', () => {
-                                            currentIndex = (currentIndex + 1) % packagePhotos.length;
-                                            updatePhoto();
+                                        image.addEventListener('click', openBox);
+                                        boxImg.addEventListener('click', () => {
+                                            zoomed = !zoomed;
+                                            boxImg.style.transform = zoomed ? 'scale(2)' : '';
+                                            boxImg.classList.toggle('cursor-zoom-in', !zoomed);
+                                            boxImg.classList.toggle('cursor-zoom-out', zoomed);
                                         });
-                                    }
+                                        box.addEventListener('click', (e) => { if (e.target === box) closeBox(); });
+
+                                        document.addEventListener('keydown', (e) => {
+                                            if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
+                                            if (e.key === 'ArrowLeft') go(-1);
+                                            if (e.key === 'ArrowRight') go(1);
+                                            if (e.key === 'Escape') closeBox();
+                                        });
+
+                                        let startX = null;
+                                        stage.addEventListener('touchstart', (e) => { startX = e.touches[0].clientX; }, { passive: true });
+                                        stage.addEventListener('touchend', (e) => {
+                                            if (startX === null) return;
+                                            const diff = e.changedTouches[0].clientX - startX;
+                                            if (Math.abs(diff) > 50) go(diff > 0 ? -1 : 1);
+                                            startX = null;
+                                        });
+
+                                        render();
+                                    })();
                                 </script>
                             @endif
                         </div>
