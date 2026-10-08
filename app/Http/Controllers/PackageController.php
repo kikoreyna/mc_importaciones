@@ -101,6 +101,10 @@ class PackageController extends Controller
             return back()->with('error', 'La guía no existe en el sistema. Debe registrarse primero en USA.');
         }
 
+        if ($package->estado === 'documentado') {
+            return redirect()->route('bodega.index')->with('success', 'La guía ya está documentada; se mantiene su estado.');
+        }
+
         $package->update(['estado' => 'ingreso_bodega']);
 
         return redirect()->route('bodega.index')->with('success', 'La guía fue aceptada en bodega.');

@@ -10,13 +10,16 @@ use Illuminate\Http\Request;
 
 class PackageDocumentationController extends Controller
 {
+    // Una guía sigue pendiente de documentar hasta que su estado sea "documentado".
+    private const PENDING_STATUSES = ['recibido', 'ingreso_bodega'];
+
     public function index(Request $request)
     {
         $guiaPrincipal = $request->input('guia_principal');
 
         $package = null;
         $packagesRecibidos = Package::with(['photos', 'client', 'partner'])
-            ->where('estado', 'recibido')
+            ->whereIn('estado', self::PENDING_STATUSES)
             ->oldest()
             ->get();
 
@@ -54,18 +57,18 @@ class PackageDocumentationController extends Controller
         ]);
 
         $package = Package::where('guia_principal', $validated['guia_principal'])
-            ->whereIn('estado', ['recibido', 'documentado'])
+            ->whereIn('estado', [...self::PENDING_STATUSES, 'documentado'])
             ->first();
 
         if (! $package) {
-            return back()->withInput()->with('error', 'La guía no está en estado recibido o no existe en el sistema.');
+            return back()->withInput()->with('error', 'La guía no está pendiente de documentar o no existe en el sistema.');
         }
 
         if (! empty($validated['caja_numero']) && ! empty($validated['total_cajas']) && $validated['caja_numero'] > $validated['total_cajas']) {
             return back()->withInput()->with('error', 'La caja no puede ser mayor que el total de cajas.');
         }
 
-        $client = $validated['client_id'] ? Client::find($validated['client_id']) : null;
+        $client = ! empty($validated['client_id']) ? Client::find($validated['client_id']) : null;
         $partnerId = $client?->partner_id;
 
         if (! $client) {
@@ -82,7 +85,7 @@ class PackageDocumentationController extends Controller
             'estado' => 'documentado',
         ]);
 
-        $nextPackage = Package::where('estado', 'recibido')
+        $nextPackage = Package::whereIn('estado', self::PENDING_STATUSES)
             ->oldest()
             ->first();
 
@@ -107,9 +110,19 @@ class PackageDocumentationController extends Controller
     {
         abort_unless($package->estado === 'documentado', 404);
 
-        $package->update(['estado' => 'recibido']);
+        // Vuelve al estado previo a documentarse; sin historial queda como recibido.
+        $previous = $package->logs()
+            ->where('action', 'estado_cambiado')
+            ->latest('id')
+            ->get()
+            ->map(fn ($log) => $log->changes['Estado'] ?? null)
+            ->first(fn ($change) => is_array($change) && ($change[1] ?? null) === 'documentado')[0] ?? null;
+
+        $package->update([
+            'estado' => in_array($previous, self::PENDING_STATUSES, true) ? $previous : 'recibido',
+        ]);
 
         return redirect()->route('documentacion.documented')
-            ->with('success', 'La guía volvió al estado recibido.');
+            ->with('success', 'La guía volvió a pendiente de documentar.');
     }
 }
