@@ -73,6 +73,9 @@
                             </div>
                         </dl>
 
+                        <div class="mt-4">
+                            <a href="{{ route('packages.history', $package) }}" class="inline-flex cursor-pointer items-center rounded-lg bg-slate-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800">Ver historial</a>
+                        </div>
                         @if ($package->photos->isNotEmpty())
                             <div class="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
                                 @foreach ($package->photos as $photo)

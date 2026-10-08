@@ -18,6 +18,12 @@ class PackagePhoto extends Model
         'size',
     ];
 
+    protected static function booted(): void
+    {
+        static::created(fn (PackagePhoto $photo) => PackageLog::record($photo->package_id, 'foto_agregada', 'Foto agregada'));
+        static::deleted(fn (PackagePhoto $photo) => PackageLog::record($photo->package_id, 'foto_eliminada', 'Foto eliminada'));
+    }
+
     public function getDisplayUrlAttribute(): string
     {
         if ($this->path && config('filesystems.disks.s3.bucket')) {

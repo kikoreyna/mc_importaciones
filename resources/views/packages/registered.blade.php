@@ -69,6 +69,7 @@
                             @csrf
                             <input type="file" name="photos[]" multiple accept="image/*" required class="min-w-0 flex-1 text-sm text-slate-600 file:mr-3 file:cursor-pointer file:rounded-lg file:border file:border-slate-300 file:bg-slate-200 file:px-3 file:py-2 file:text-sm file:font-medium file:text-slate-800 hover:file:bg-slate-300">
                             <button type="submit" class="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">Subir fotos</button>
+                            <a href="{{ route('packages.history', $package) }}" class="cursor-pointer rounded-lg bg-slate-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800">Historial</a>
                         </form>
                     </article>
                 @endforeach
