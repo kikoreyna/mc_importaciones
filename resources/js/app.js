@@ -32,6 +32,27 @@ if (navbarToggle && navbarLinks) {
 	});
 }
 
+const navGroups = document.querySelectorAll('[data-nav-group]');
+
+navGroups.forEach((group) => {
+	group.addEventListener('toggle', () => {
+		if (!group.open) return;
+		navGroups.forEach((other) => {
+			if (other !== group) other.open = false;
+		});
+	});
+});
+
+document.addEventListener('click', (event) => {
+	navGroups.forEach((group) => {
+		if (!group.contains(event.target)) group.open = false;
+	});
+});
+
+document.addEventListener('keydown', (event) => {
+	if (event.key === 'Escape') navGroups.forEach((group) => { group.open = false; });
+});
+
 const companyFavicon = document.createElement('link');
 companyFavicon.rel = 'icon';
 companyFavicon.type = 'image/png';
