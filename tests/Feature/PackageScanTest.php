@@ -118,7 +118,7 @@ class PackageScanTest extends TestCase
         $pendingResponse->assertDontSee('USA-EN-MEXICO');
     }
 
-    public function test_only_managers_can_update_and_delete_comparison_guides(): void
+    public function test_only_managers_can_update_and_only_administrators_can_delete_comparison_guides(): void
     {
         $package = Package::create([
             'guia_principal' => 'USA-ADMINISTRABLE',
@@ -135,13 +135,19 @@ class PackageScanTest extends TestCase
             'estado' => 'devuelto_usa',
         ]);
 
-        $operator = User::factory()->create(['role' => 'documentador']);
+        $warehouse = User::factory()->create(['role' => 'bodega_usa']);
 
-        $this->actingAs($operator)
+        $this->actingAs($warehouse)
             ->patch(route('reports.comparison.update', $package), ['estado' => 'cancelado'])
             ->assertForbidden();
 
         $this->actingAs($supervisor)
+            ->delete(route('reports.comparison.destroy', $package))
+            ->assertForbidden();
+
+        $administrator = User::factory()->create(['role' => 'administrador']);
+
+        $this->actingAs($administrator)
             ->delete(route('reports.comparison.destroy', $package))
             ->assertRedirect();
 
