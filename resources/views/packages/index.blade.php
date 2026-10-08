@@ -5,70 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Escaneo de guía</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-100 text-slate-900">
+<body class="bg-slate-50 text-slate-800 antialiased" style="font-family: 'Inter', ui-sans-serif, system-ui, sans-serif">
     <div class="w-full px-4 py-6">
         @include('components.navbar')
     </div>
 
     <div class="w-full max-w-4xl mx-auto px-4 py-6 md:px-6">
-        <div class="mb-6">
-            <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">USA</p>
-            <h1 class="text-2xl font-bold mt-2 md:text-3xl">Recepción de guía</h1>
+        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">USA</p>
+                <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Recepción de guía</h1>
+                <p class="mt-1 text-sm text-slate-500">Escanea la guía, toma las fotos y guarda el registro.</p>
+            </div>
+            <a href="{{ route('packages.registered') }}" class="inline-flex cursor-pointer items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+                Ver paquetes registrados
+            </a>
         </div>
 
         @if (session('success'))
-            <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+            <div class="mb-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800">
                 {{ session('success') }}
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+            <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
                 {{ $errors->first() }}
             </div>
         @endif
 
-        <form action="{{ route('packages.store') }}" method="POST" enctype="multipart/form-data" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-4 md:p-6">
+        <form action="{{ route('packages.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6">
             @csrf
 
-            <x-camera-scanner
-                id="usa-guide-scanner"
-                name="guia_principal"
-                label="Guía principal"
-                placeholder="Escanee o ingrese la guía principal"
-            />
+            <div class="space-y-4">
+                <p class="border-b border-slate-100 pb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Datos de la guía</p>
 
-            <div>
-                <label for="guia_secundaria" class="block text-sm font-medium mb-1.5">Guía secundaria</label>
-                <input id="guia_secundaria" name="guia_secundaria" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+                <x-camera-scanner
+                    id="usa-guide-scanner"
+                    name="guia_principal"
+                    label="Guía principal"
+                    placeholder="Escanee o ingrese la guía principal"
+                />
+
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div>
+                        <label for="guia_secundaria" class="mb-1.5 block text-sm font-medium text-slate-700">Guía secundaria</label>
+                        <input id="guia_secundaria" name="guia_secundaria" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-3 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="Opcional">
+                    </div>
+                    <div>
+                        <label for="guia_master" class="mb-1.5 block text-sm font-medium text-slate-700">Guía máster</label>
+                        <input id="guia_master" name="guia_master" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-3 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="Opcional">
+                    </div>
+                </div>
             </div>
 
             <div>
-                <label for="guia_master" class="block text-sm font-medium mb-1.5">Guía máster</label>
-                <input id="guia_master" name="guia_master" type="text" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
-            </div>
-
-            <div>
-                <label class="block text-sm font-medium mb-2">Tomar fotos</label>
-                <label for="photos" class="flex items-center justify-center h-16 rounded-xl border-2 border-dashed border-blue-300 bg-blue-50 text-blue-700 font-medium cursor-pointer active:scale-[0.99]">
+                <p class="mb-3 border-b border-slate-100 pb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Fotos</p>
+                <label for="photos" class="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-slate-700 px-6 font-semibold text-white shadow-sm hover:bg-slate-800 active:scale-[0.99] sm:w-auto">
                     <span id="photo-label">Tomar foto</span>
                 </label>
                 <input id="photos" name="photos[]" type="file" multiple accept="image/*" capture="environment" class="hidden">
-                <p id="photo-count" class="text-xs text-slate-500 mt-2">Puedes tomar varias fotos antes de guardar la guía.</p>
-                <div id="preview" class="mt-3 grid grid-cols-3 gap-2"></div>
+                <p id="photo-count" class="mt-2 text-xs text-slate-500">Puedes tomar varias fotos antes de guardar la guía.</p>
+                <div id="preview" class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6"></div>
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
-                Guardar guía
-            </button>
+            <div class="flex justify-end border-t border-slate-100 pt-5">
+                <button id="save-guide" type="submit" class="w-full cursor-pointer rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 sm:w-auto">
+                    Guardar guía
+                </button>
+            </div>
         </form>
-
-        <div class="mt-6 text-center">
-            <a href="{{ route('packages.registered') }}" class="inline-block text-sm font-semibold text-blue-700 hover:text-blue-800 hover:underline">
-                Ver paquetes registrados
-            </a>
-        </div>
     </div>
 
     <script>
@@ -77,7 +86,7 @@
         const input = document.getElementById('photos');
         const preview = document.getElementById('preview');
         const photoLabel = document.querySelector('label[for="photos"]');
-        const submitButton = document.querySelector('button[type="submit"]');
+        const submitButton = document.getElementById('save-guide');
         const photoLabelText = document.getElementById('photo-label');
         const photoCount = document.getElementById('photo-count');
         const selectedPhotos = new DataTransfer();
@@ -100,7 +109,7 @@
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
                 img.alt = `Foto ${index + 1}`;
-                img.className = 'w-full h-20 object-cover rounded-lg border border-slate-200';
+                img.className = 'aspect-square w-full object-cover rounded-lg border border-slate-200';
                 preview.appendChild(img);
             });
         };
