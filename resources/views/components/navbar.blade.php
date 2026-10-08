@@ -10,53 +10,58 @@
         </button>
 
         <div id="navbar-links" class="navbar-links w-full flex-col items-stretch gap-1 pt-3 xl:w-auto xl:flex-row xl:flex-wrap xl:items-center xl:justify-end xl:gap-2 xl:pt-0">
-        <a href="{{ route('packages.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('packages.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('packages.index') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('packages.index') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Recepción USA
         </a>
-        <a href="{{ route('packages.registered') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('packages.registered') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('packages.registered') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('packages.registered') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Paquetes registrados
         </a>
-        <a href="{{ route('bodega.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('bodega.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('bodega.index') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('bodega.index') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Bodega
         </a>
-        <a href="{{ route('documentacion.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('documentacion.index') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('documentacion.index') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('documentacion.index') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Documentación
         </a>
-        <a href="{{ route('clients.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('clients.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('clients.index') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('clients.*') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Clientes
         </a>
-        <a href="{{ route('partners.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('partners.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('partners.index') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('partners.*') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Socios
         </a>
-        <a href="{{ route('transportadoras.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('transportadoras.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('transportadoras.index') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('transportadoras.*') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Transportadoras
         </a>
         @auth
             @if (auth()->user()->isAdministrator())
-                <a href="{{ route('users.index') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('users.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                <a href="{{ route('users.index') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('users.*') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
                     Usuarios
                 </a>
-                <a href="{{ route('company-settings.edit') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('company-settings.*') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                <a href="{{ route('company-settings.edit') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('company-settings.*') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
                     Datos de empresa
                 </a>
             @endif
         @endauth
-        <a href="{{ route('reports.packages') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('reports.packages') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+        <a href="{{ route('reports.packages') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('reports.packages') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
             Reportería
         </a>
         @auth
             @if (auth()->user()->canAccessDashboard())
-                <a href="{{ route('reports.comparison') }}" class="w-full rounded-lg px-3 py-2 text-sm font-semibold xl:w-auto {{ request()->routeIs('reports.comparison') ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100' }}">
+                <a href="{{ route('reports.comparison') }}" class="w-full whitespace-nowrap border-b-2 px-3 py-2 text-sm font-medium transition xl:w-auto {{ request()->routeIs('reports.comparison') ? 'border-blue-600 text-blue-700 bg-blue-50' : 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900' }}">
                     Comparativo USA-MEX
                 </a>
             @endif
         @endauth
         @auth
-            <span class="rounded-lg bg-slate-100 px-3 py-2 text-xs font-semibold text-slate-600 xl:ml-auto">{{ auth()->user()->name }} · {{ auth()->user()->roleLabel() }}</span>
-            <form action="{{ route('logout') }}" method="POST" class="w-full xl:w-auto">
+            <div class="mt-2 flex items-center gap-3 border-t border-slate-200 pt-2 xl:ml-4 xl:mt-0 xl:border-l xl:border-t-0 xl:pl-4 xl:pt-0">
+            <span class="flex items-center gap-2 text-sm text-slate-700">
+                <span class="flex h-8 w-8 items-center justify-center rounded-full bg-blue-600 text-xs font-bold uppercase text-white">{{ mb_substr(auth()->user()->name, 0, 1) }}</span>
+                <span class="leading-tight"><span class="block font-semibold">{{ auth()->user()->name }}</span><span class="block text-xs text-slate-500">{{ auth()->user()->roleLabel() }}</span></span>
+            </span>
+            <form action="{{ route('logout') }}" method="POST">
                 @csrf
-                <button type="submit" class="w-full rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 xl:w-auto">Salir</button>
+                <button type="submit" class="cursor-pointer rounded-lg bg-slate-700 px-3 py-2 text-sm font-semibold text-white hover:bg-slate-800">Salir</button>
             </form>
+            </div>
         @endauth
         </div>
     </div>

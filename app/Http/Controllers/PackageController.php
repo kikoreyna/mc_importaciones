@@ -52,6 +52,18 @@ class PackageController extends Controller
         return redirect()->route('packages.index')->with('success', 'Guía registrada correctamente.');
     }
 
+    public function addPhotos(Request $request, Package $package)
+    {
+        $request->validate([
+            'photos' => ['required', 'array', 'min:1'],
+            'photos.*' => ['file', 'mimetypes:image/jpeg,image/png,image/webp,image/heic,image/heif', 'max:8192'],
+        ]);
+
+        $this->photoUploadService->handle($request->file('photos', []), $package);
+
+        return redirect()->route('packages.registered')->with('success', 'Fotos agregadas correctamente.');
+    }
+
     public function bodegaIndex()
     {
         return view('bodega.index');
