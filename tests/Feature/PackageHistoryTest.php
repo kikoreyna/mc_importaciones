@@ -28,17 +28,23 @@ class PackageHistoryTest extends TestCase
         $this->assertSame(5, $package->logs()->where('user_id', $user->id)->where('user_name', 'Ana')->count());
     }
 
-    public function test_history_is_visible_to_any_role_including_deleted_packages(): void
+    public function test_history_is_visible_only_to_management_roles(): void
     {
         $package = Package::create(['guia_principal' => 'G-2', 'estado' => 'recibido']);
         $package->delete();
 
-        foreach (['administrador', 'supervisor', 'documentador', 'bodega_usa', 'bodega_mex'] as $role) {
+        foreach (['administrador', 'supervisor'] as $role) {
             $this->actingAs(User::factory()->create(['role' => $role]))
                 ->get(route('packages.history', $package))
                 ->assertOk()
                 ->assertSee('Guía registrada')
                 ->assertSee('Guía eliminada');
+        }
+
+        foreach (['documentador', 'bodega_usa', 'bodega_mex'] as $role) {
+            $this->actingAs(User::factory()->create(['role' => $role]))
+                ->get(route('packages.history', $package))
+                ->assertForbidden();
         }
     }
 }

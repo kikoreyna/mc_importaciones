@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Concerns\HasActivityLog;
 
 class Client extends Model
 {
-    use SoftDeletes;
+    use HasActivityLog, SoftDeletes;
 
     protected $fillable = [
         'partner_id',

@@ -14,7 +14,7 @@ class PackageScanTest extends TestCase
     {
         parent::setUp();
 
-        $this->actingAs(User::factory()->create(['role' => 'documentador']));
+        $this->actingAs(User::factory()->create(['role' => 'administrador']));
     }
 
     public function test_can_store_a_main_guide_with_an_optional_secondary_guide_and_photos(): void
@@ -118,7 +118,7 @@ class PackageScanTest extends TestCase
         $pendingResponse->assertDontSee('USA-EN-MEXICO');
     }
 
-    public function test_only_managers_can_update_and_only_administrators_can_delete_comparison_guides(): void
+    public function test_only_administrators_can_modify_comparison_and_delete_guides(): void
     {
         $package = Package::create([
             'guia_principal' => 'USA-ADMINISTRABLE',
@@ -128,16 +128,16 @@ class PackageScanTest extends TestCase
 
         $this->actingAs($supervisor)
             ->patch(route('reports.comparison.update', $package), ['estado' => 'devuelto_usa'])
-            ->assertRedirect();
+            ->assertForbidden();
 
         $this->assertDatabaseHas('packages', [
             'id' => $package->id,
-            'estado' => 'devuelto_usa',
+            'estado' => 'recibido',
         ]);
 
-        $warehouse = User::factory()->create(['role' => 'bodega_usa']);
+        $documentador = User::factory()->create(['role' => 'documentador']);
 
-        $this->actingAs($warehouse)
+        $this->actingAs($documentador)
             ->patch(route('reports.comparison.update', $package), ['estado' => 'cancelado'])
             ->assertForbidden();
 

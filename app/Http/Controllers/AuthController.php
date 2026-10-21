@@ -27,7 +27,7 @@ class AuthController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('reports.comparison'));
+        return redirect()->intended(route(Auth::user()->homeRouteName()));
     }
 
     public function destroy(Request $request)

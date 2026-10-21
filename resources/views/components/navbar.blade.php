@@ -1,10 +1,12 @@
 <nav class="relative left-1/2 z-30 mb-6 w-screen -translate-x-1/2 border-y border-slate-200 bg-white shadow-sm sm:rounded-lg sm:border" aria-label="Navegación principal">
     <div class="flex flex-wrap items-center justify-between gap-2 px-4 py-3 sm:px-6 lg:px-8">
         @auth
-            <form action="{{ route('packages.search') }}" method="GET" role="search" class="flex min-w-0 flex-1 items-center gap-2 sm:max-w-sm xl:flex-none xl:basis-80">
-                <input type="search" name="q" value="{{ request()->routeIs('packages.search') ? request('q') : '' }}" maxlength="255" placeholder="Buscar guía" aria-label="Buscar guía" class="h-10 min-w-0 flex-1 rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm placeholder:text-slate-400 focus:border-transparent focus:bg-white focus:ring-2 focus:ring-blue-500">
-                <button type="submit" class="h-10 shrink-0 cursor-pointer rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">Buscar</button>
-            </form>
+            @if (auth()->user()->canSearchGuides())
+                <form action="{{ route('packages.search') }}" method="GET" role="search" class="flex min-w-0 flex-1 items-center gap-2 sm:max-w-sm xl:flex-none xl:basis-80">
+                    <input type="search" name="q" value="{{ request()->routeIs('packages.search') ? request('q') : '' }}" maxlength="255" placeholder="Buscar guía" aria-label="Buscar guía" class="h-10 min-w-0 flex-1 rounded-lg border border-slate-300 bg-slate-50 px-3 text-sm placeholder:text-slate-400 focus:border-transparent focus:bg-white focus:ring-2 focus:ring-blue-500">
+                    <button type="submit" class="h-10 shrink-0 cursor-pointer rounded-lg bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">Buscar</button>
+                </form>
+            @endif
         @endauth
         <button type="button" class="inline-flex h-10 items-center justify-center gap-2 rounded-lg border border-blue-700 bg-blue-600 px-3 text-sm font-semibold text-white hover:bg-blue-700 xl:hidden" data-navbar-toggle aria-controls="navbar-links" aria-expanded="false" aria-label="Abrir menú">
             <span class="flex flex-col gap-1" aria-hidden="true">
@@ -24,46 +26,56 @@
             $groupOff = 'border-transparent text-slate-600 hover:border-slate-300 hover:text-slate-900';
             $panel = 'mt-1 flex flex-col gap-0.5 pl-3 xl:absolute xl:left-0 xl:top-full xl:z-40 xl:mt-2 xl:min-w-56 xl:rounded-xl xl:border xl:border-slate-200 xl:bg-white xl:p-1.5 xl:shadow-lg';
             $item = fn (bool $active) => 'block whitespace-nowrap rounded-lg px-3 py-2 text-sm transition ' . ($active ? 'bg-blue-50 font-semibold text-blue-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900');
+            $user = auth()->user();
         @endphp
 
-        <details class="relative w-full xl:w-auto" data-nav-group>
-            <summary class="{{ $groupButton }}{{ $operativoActive ? $groupOn : $groupOff }}">
-                Operativo
-                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"/></svg>
-            </summary>
-            <div class="{{ $panel }}">
-                <a href="{{ route('packages.index') }}" class="{{ $item(request()->routeIs('packages.index')) }}">Recepción USA</a>
-                <a href="{{ route('packages.registered') }}" class="{{ $item(request()->routeIs('packages.registered')) }}">Paquetes registrados</a>
-                <a href="{{ route('bodega.index') }}" class="{{ $item(request()->routeIs('bodega.index')) }}">Bodega</a>
-                <a href="{{ route('documentacion.index') }}" class="{{ $item(request()->routeIs('documentacion.*')) }}">Documentación</a>
-            </div>
-        </details>
+        @if ($user->canAccessUsaWarehouse() || $user->canAccessMexWarehouse() || $user->canAccessDocumentation())
+            <details class="relative w-full xl:w-auto" data-nav-group>
+                <summary class="{{ $groupButton }}{{ $operativoActive ? $groupOn : $groupOff }}">
+                    Operativo
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"/></svg>
+                </summary>
+                <div class="{{ $panel }}">
+                    @if ($user->canAccessUsaWarehouse())
+                        <a href="{{ route('packages.index') }}" class="{{ $item(request()->routeIs('packages.index')) }}">Recepción USA</a>
+                        <a href="{{ route('packages.registered') }}" class="{{ $item(request()->routeIs('packages.registered')) }}">Paquetes registrados</a>
+                    @endif
+                    @if ($user->canAccessMexWarehouse())
+                        <a href="{{ route('bodega.index') }}" class="{{ $item(request()->routeIs('bodega.index')) }}">Bodega</a>
+                    @endif
+                    @if ($user->canAccessDocumentation())
+                        <a href="{{ route('documentacion.index') }}" class="{{ $item(request()->routeIs('documentacion.*')) }}">Documentación</a>
+                    @endif
+                </div>
+            </details>
+        @endif
 
-        <details class="relative w-full xl:w-auto" data-nav-group>
-            <summary class="{{ $groupButton }}{{ $administrativoActive ? $groupOn : $groupOff }}">
-                Administrativo
-                <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"/></svg>
-            </summary>
-            <div class="{{ $panel }}">
-                <a href="{{ route('clients.index') }}" class="{{ $item(request()->routeIs('clients.*')) }}">Clientes</a>
-                <a href="{{ route('partners.index') }}" class="{{ $item(request()->routeIs('partners.*')) }}">Socios</a>
-                <a href="{{ route('transportadoras.index') }}" class="{{ $item(request()->routeIs('transportadoras.*')) }}">Transportadoras</a>
-                @auth
-                    @if (auth()->user()->isAdministrator())
+        @if ($user->canAccessAdministration() || $user->canAccessPackageReports() || $user->canAccessDashboard())
+            <details class="relative w-full xl:w-auto" data-nav-group>
+                <summary class="{{ $groupButton }}{{ $administrativoActive ? $groupOn : $groupOff }}">
+                    Administración y reportes
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.17l3.71-3.94a.75.75 0 1 1 1.08 1.04l-4.25 4.5a.75.75 0 0 1-1.08 0l-4.25-4.5a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd"/></svg>
+                </summary>
+                <div class="{{ $panel }}">
+                    @if ($user->canAccessAdministration())
+                        <a href="{{ route('clients.index') }}" class="{{ $item(request()->routeIs('clients.*')) }}">Clientes</a>
+                        <a href="{{ route('partners.index') }}" class="{{ $item(request()->routeIs('partners.*')) }}">Socios</a>
+                        <a href="{{ route('transportadoras.index') }}" class="{{ $item(request()->routeIs('transportadoras.*')) }}">Transportadoras</a>
+                    @endif
+                    @if ($user->isAdministrator())
                         <a href="{{ route('users.index') }}" class="{{ $item(request()->routeIs('users.*')) }}">Usuarios</a>
+                        <a href="{{ route('activity-logs.index') }}" class="{{ $item(request()->routeIs('activity-logs.*')) }}">Historial de cambios</a>
                         <a href="{{ route('company-settings.edit') }}" class="{{ $item(request()->routeIs('company-settings.*')) }}">Datos de empresa</a>
                     @endif
-                @endauth
-                @auth
-                    @if (auth()->user()->isAdministrator())
+                    @if ($user->canAccessPackageReports())
                         <a href="{{ route('reports.packages') }}" class="{{ $item(request()->routeIs('reports.packages')) }}">Reportería</a>
                     @endif
-                    @if (auth()->user()->canAccessDashboard())
+                    @if ($user->canAccessDashboard())
                         <a href="{{ route('reports.comparison') }}" class="{{ $item(request()->routeIs('reports.comparison')) }}">Comparativo USA-MEX</a>
                     @endif
-                @endauth
-            </div>
-        </details>
+                </div>
+            </details>
+        @endif
         @auth
             <div class="mt-2 flex items-center gap-3 border-t border-slate-200 pt-2 xl:ml-4 xl:mt-0 xl:border-l xl:border-t-0 xl:pl-4 xl:pt-0">
             <span class="flex items-center gap-2 text-sm text-slate-700">

@@ -8,20 +8,56 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
+use App\Models\Concerns\HasActivityLog;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<UserFactory> */
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasActivityLog, HasFactory, Notifiable, SoftDeletes;
 
     public function isPackageManager(): bool
     {
-        return $this->hasRole(['administrador', 'supervisor', 'documentador']);
+        return $this->isAdministrator();
     }
 
     public function canAccessDashboard(): bool
     {
+        return $this->hasRole(['administrador', 'supervisor', 'documentador', 'bodega_mex']);
+    }
+
+    public function canAccessUsaWarehouse(): bool
+    {
+        return $this->hasRole(['administrador', 'supervisor', 'bodega_usa']);
+    }
+
+    public function canSearchGuides(): bool
+    {
+        return $this->hasRole(['administrador', 'supervisor']);
+    }
+
+    public function canAccessMexWarehouse(): bool
+    {
+        return $this->hasRole(['administrador', 'supervisor', 'bodega_mex']);
+    }
+
+    public function canAccessDocumentation(): bool
+    {
         return $this->hasRole(['administrador', 'supervisor', 'documentador']);
+    }
+
+    public function canAccessAdministration(): bool
+    {
+        return $this->hasRole(['administrador', 'supervisor']);
+    }
+
+    public function canAccessPackageReports(): bool
+    {
+        return $this->hasRole(['administrador', 'supervisor']);
+    }
+
+    public function homeRouteName(): string
+    {
+        return $this->hasRole('bodega_usa') ? 'packages.index' : 'reports.comparison';
     }
 
     public function isAdministrator(): bool

@@ -9,6 +9,7 @@ use App\Http\Controllers\PackageReportController;
 use App\Http\Controllers\PackageComparisonController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CompanySettingController;
+use App\Http\Controllers\ActivityLogController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/login', [AuthController::class, 'create'])->name('login');
@@ -17,27 +18,39 @@ Route::get('/company/favicon.png', [CompanySettingController::class, 'favicon'])
 Route::get('/company/logo.png', [CompanySettingController::class, 'logo'])->name('company-settings.logo');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return redirect()->route('packages.index');
+    Route::get('/', function (\Illuminate\Http\Request $request) {
+        return redirect()->route($request->user()->homeRouteName());
     });
 
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 
-    Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
-    Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
-    Route::get('/paquetes-registrados', [PackageController::class, 'registeredIndex'])->name('packages.registered');
-    Route::get('/buscar-guia', [PackageController::class, 'search'])->name('packages.search');
-    Route::get('/guias/{package}/historial', [\App\Http\Controllers\PackageHistoryController::class, 'show'])->withTrashed()->name('packages.history');
-    Route::post('/paquetes-registrados/{package}/fotos', [PackageController::class, 'addPhotos'])->name('packages.photos.store');
+    Route::middleware('role:administrador,supervisor,bodega_usa')->group(function () {
+        Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
+        Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
+        Route::get('/paquetes-registrados', [PackageController::class, 'registeredIndex'])->name('packages.registered');
+        Route::post('/paquetes-registrados/{package}/fotos', [PackageController::class, 'addPhotos'])->name('packages.photos.store');
+    });
 
-    Route::get('/bodega', [PackageController::class, 'bodegaIndex'])->name('bodega.index');
-    Route::post('/bodega', [PackageController::class, 'bodegaStore'])->name('bodega.store');
+    Route::middleware('role:administrador,supervisor')->group(function () {
+        Route::get('/buscar-guia', [PackageController::class, 'search'])->name('packages.search');
+        Route::get('/guias/{package}/historial', [\App\Http\Controllers\PackageHistoryController::class, 'show'])->withTrashed()->name('packages.history');
+    });
 
-    Route::get('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'index'])->name('documentacion.index');
-    Route::post('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'store'])->name('documentacion.store');
-    Route::get('/documentacion/documentados', [\App\Http\Controllers\PackageDocumentationController::class, 'documented'])->name('documentacion.documented');
-    Route::patch('/documentacion/{package}/recibido', [\App\Http\Controllers\PackageDocumentationController::class, 'markAsReceived'])->name('documentacion.markAsReceived');
-    Route::get('/reportes/paquetes', [PackageReportController::class, 'index'])->middleware('administrator')->name('reports.packages');
+    Route::middleware('role:administrador,supervisor,bodega_mex')->group(function () {
+        Route::get('/bodega', [PackageController::class, 'bodegaIndex'])->name('bodega.index');
+        Route::post('/bodega', [PackageController::class, 'bodegaStore'])->name('bodega.store');
+    });
+
+    Route::middleware('role:administrador,supervisor,documentador')->group(function () {
+        Route::get('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'index'])->name('documentacion.index');
+        Route::post('/documentacion', [\App\Http\Controllers\PackageDocumentationController::class, 'store'])->name('documentacion.store');
+        Route::get('/documentacion/documentados', [\App\Http\Controllers\PackageDocumentationController::class, 'documented'])->name('documentacion.documented');
+        Route::patch('/documentacion/{package}/recibido', [\App\Http\Controllers\PackageDocumentationController::class, 'markAsReceived'])->name('documentacion.markAsReceived');
+    });
+
+    Route::get('/reportes/paquetes', [PackageReportController::class, 'index'])
+        ->middleware('role:administrador,supervisor')
+        ->name('reports.packages');
     Route::get('/reportes/comparativo', [PackageComparisonController::class, 'index'])
         ->middleware('dashboard.access')
         ->name('reports.comparison');
@@ -54,9 +67,11 @@ Route::middleware('auth')->group(function () {
         ->middleware('administrator')
         ->name('reports.comparison.photo.destroy');
 
-    Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
-    Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');
-    Route::resource('transportadoras', TransportadoraController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    Route::middleware('role:administrador,supervisor')->group(function () {
+        Route::resource('clientes', ClientController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['clientes' => 'client'])->names('clients');
+        Route::resource('socios', PartnerController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])->parameters(['socios' => 'partner'])->names('partners');
+        Route::resource('transportadoras', TransportadoraController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+    });
     Route::resource('usuarios', UserController::class)
         ->only(['index', 'create', 'store', 'edit', 'update', 'destroy'])
         ->parameters(['usuarios' => 'user'])
@@ -64,6 +79,7 @@ Route::middleware('auth')->group(function () {
         ->middleware('administrator');
 
     Route::middleware('administrator')->group(function () {
+        Route::get('/administracion/historial', [ActivityLogController::class, 'index'])->name('activity-logs.index');
         Route::get('/empresa', [CompanySettingController::class, 'edit'])->name('company-settings.edit');
         Route::put('/empresa', [CompanySettingController::class, 'update'])->name('company-settings.update');
     });

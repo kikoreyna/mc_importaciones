@@ -68,7 +68,13 @@
         <div class="overflow-x-auto rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="border-b border-slate-200 px-4 py-4">
                 <h2 class="font-semibold">Comparativo de guías</h2>
-                <p class="mt-1 text-sm text-slate-500">Consulta el estado de cada guía. Selecciona una guía para cambiar su estado o administrarla.</p>
+                <p class="mt-1 text-sm text-slate-500">
+                    @if (auth()->user()->isPackageManager())
+                        Consulta el estado de cada guía. Selecciona una guía para cambiar su estado o administrarla.
+                    @else
+                        Consulta el estado de cada guía.
+                    @endif
+                </p>
             </div>
             <table class="min-w-full text-left text-sm">
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
