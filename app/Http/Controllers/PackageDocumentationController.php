@@ -10,38 +10,40 @@ use Illuminate\Http\Request;
 
 class PackageDocumentationController extends Controller
 {
-    // Una guía sigue pendiente de documentar hasta que su estado sea "documentado".
-    private const PENDING_STATUSES = ['recibido', 'ingreso_bodega'];
-
     public function index(Request $request)
     {
-        $guiaPrincipal = $request->input('guia_principal');
+        // Colección de guías sin documentar, de la más antigua a la más reciente.
+        $pendingIds = Package::pendingDocumentation()
+            ->orderBy('created_at')
+            ->orderBy('id')
+            ->pluck('id');
 
-        $package = null;
-        $packagesRecibidos = Package::with(['photos', 'client', 'partner'])
-            ->whereIn('estado', self::PENDING_STATUSES)
-            ->oldest()
-            ->get();
+        $total = $pendingIds->count();
+        $posicion = $total > 0 ? min(max((int) $request->query('posicion', 1), 1), $total) : 0;
 
-        if ($guiaPrincipal) {
-            $package = Package::with(['photos', 'client', 'partner'])
-                ->where('guia_principal', $guiaPrincipal)
-                ->first();
-        } elseif ($packagesRecibidos->isNotEmpty()) {
-            $package = $packagesRecibidos->first();
+        // Desde el buscador se abre una guía concreta, esté pendiente o ya documentada.
+        $requestedId = (int) $request->query('guia');
+        if ($requestedId > 0 && Package::whereKey($requestedId)->exists()) {
+            $index = $pendingIds->search($requestedId);
+            $posicion = $index === false ? 0 : $index + 1;
+            $selectedId = $requestedId;
+        } else {
+            $selectedId = $total > 0 ? $pendingIds[$posicion - 1] : null;
         }
 
-        if ($package) {
-            $packagesRecibidos = $packagesRecibidos
-                ->reject(fn ($item) => $item->id === $package->id)
-                ->values();
-        }
+        $package = $selectedId
+            ? Package::with([
+                'photos' => fn ($query) => $query->orderBy('created_at')->orderBy('id'),
+                'client',
+                'partner',
+            ])->find($selectedId)
+            : null;
 
         $clients = Client::orderBy('nombre')->get();
         $partners = Partner::orderBy('nombre')->get();
         $transportadoras = Transportadora::orderBy('nombre')->get();
 
-        return view('documentacion.index', compact('package', 'clients', 'partners', 'transportadoras', 'guiaPrincipal', 'packagesRecibidos'));
+        return view('documentacion.index', compact('package', 'clients', 'partners', 'transportadoras', 'total', 'posicion'));
     }
 
     public function store(Request $request)
@@ -56,12 +58,10 @@ class PackageDocumentationController extends Controller
             'total_cajas' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        $package = Package::where('guia_principal', $validated['guia_principal'])
-            ->whereIn('estado', [...self::PENDING_STATUSES, 'documentado'])
-            ->first();
+        $package = Package::where('guia_principal', $validated['guia_principal'])->first();
 
         if (! $package) {
-            return back()->withInput()->with('error', 'La guía no está pendiente de documentar o no existe en el sistema.');
+            return back()->withInput()->with('error', 'La guía no existe en el sistema.');
         }
 
         if (! empty($validated['caja_numero']) && ! empty($validated['total_cajas']) && $validated['caja_numero'] > $validated['total_cajas']) {
@@ -75,31 +75,27 @@ class PackageDocumentationController extends Controller
             $partnerId = $validated['partner_id'] ?? null;
         }
 
-        $package->update([
+        $package->markDocumented([
             'client_id' => $validated['client_id'] ?? null,
             'partner_id' => $partnerId,
             'transportadora' => $validated['transportadora'] ?? null,
+            'transportadora_id' => ! empty($validated['transportadora'])
+                ? Transportadora::where('nombre', $validated['transportadora'])->value('id')
+                : null,
             'guia_master' => $validated['guia_master'] ?? null,
             'caja_numero' => $validated['caja_numero'] ?? null,
             'total_cajas' => $validated['total_cajas'] ?? null,
-            'estado' => 'documentado',
         ]);
 
-        $nextPackage = Package::whereIn('estado', self::PENDING_STATUSES)
-            ->oldest()
-            ->first();
-
-        $redirect = $nextPackage
-            ? redirect()->route('documentacion.index', ['guia_principal' => $nextPackage->guia_principal])
-            : redirect()->route('documentacion.index');
-
-        return $redirect->with('success', 'Documentación actualizada correctamente.');
+        // Al salir de la colección la siguiente guía ocupa la misma posición.
+        return redirect()->route('documentacion.index', ['posicion' => max((int) $request->input('posicion', 1), 1)])
+            ->with('success', 'Documentación actualizada correctamente.');
     }
 
     public function documented()
     {
         $packages = Package::with(['client', 'partner'])
-            ->where('estado', 'documentado')
+            ->documented()
             ->latest()
             ->get();
 
@@ -108,19 +104,10 @@ class PackageDocumentationController extends Controller
 
     public function markAsReceived(Package $package)
     {
-        abort_unless($package->estado === 'documentado', 404);
+        abort_unless($package->documented_at !== null, 404);
 
-        // Vuelve al estado previo a documentarse; sin historial queda como recibido.
-        $previous = $package->logs()
-            ->where('action', 'estado_cambiado')
-            ->latest('id')
-            ->get()
-            ->map(fn ($log) => $log->changes['Estado'] ?? null)
-            ->first(fn ($change) => is_array($change) && ($change[1] ?? null) === 'documentado')[0] ?? null;
-
-        $package->update([
-            'estado' => in_array($previous, self::PENDING_STATUSES, true) ? $previous : 'recibido',
-        ]);
+        // Conserva el color previo: amarillo si ya entró a bodega MEX, azul si no.
+        $package->markPendingDocumentation();
 
         return redirect()->route('documentacion.documented')
             ->with('success', 'La guía volvió a pendiente de documentar.');

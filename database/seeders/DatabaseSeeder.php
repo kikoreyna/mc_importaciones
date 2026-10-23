@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(PartnerSeeder::class);
         $this->call(ClientSeeder::class);
+        $this->call(PackageSeeder::class);
 
         User::factory()->create([
             'name' => 'Test User',

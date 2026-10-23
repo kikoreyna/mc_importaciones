@@ -10,15 +10,6 @@ use Illuminate\Support\Facades\Storage;
 
 class PackageComparisonController extends Controller
 {
-    private const STATUSES = [
-        'recibido' => 'Recibido en USA',
-        'ingreso_bodega' => 'Recibido en Bodega MEX',
-        'documentado' => 'Documentado',
-        'devuelto_cliente' => 'Devuelto a cliente',
-        'devuelto_usa' => 'Devuelto a USA',
-        'cancelado' => 'Cancelado',
-    ];
-
     public function index(Request $request)
     {
         $validated = $request->validate([
@@ -29,23 +20,22 @@ class PackageComparisonController extends Controller
         $fecha = $validated['fecha'] ?? today()->toDateString();
         $grupo = $validated['grupo'] ?? null;
         $baseQuery = Package::query()->when($fecha, fn ($query) => $query->whereDate('created_at', $fecha));
-        $pendingQuery = Package::query()->where('estado', 'recibido');
+        $pendingQuery = Package::query()->withColor('azul');
         $receivedInUsa = (clone $baseQuery)->count();
-        $receivedInMexico = (clone $baseQuery)->whereIn('estado', ['ingreso_bodega', 'documentado'])->count();
+        $receivedInMexico = (clone $baseQuery)->receivedInMexico()->count();
         $pendingInMexico = (clone $pendingQuery)->count();
         $totalPackages = (clone $baseQuery)->sum('total_paquetes');
         $arrivedPackages = (clone $baseQuery)
-            ->whereIn('estado', ['ingreso_bodega', 'documentado'])
+            ->receivedInMexico()
             ->sum('total_paquetes');
         $packagesQuery = $grupo === 'pendientes'
             ? clone $pendingQuery
             : clone $baseQuery;
         if ($grupo === 'mex') {
-            $packagesQuery->whereIn('estado', ['ingreso_bodega', 'documentado']);
+            $packagesQuery->receivedInMexico();
         }
 
         $packages = $packagesQuery->latest()->get();
-        $statuses = self::STATUSES;
         $arrivalPercentage = $receivedInUsa > 0
             ? round(($receivedInMexico / $receivedInUsa) * 100)
             : 0;
@@ -60,7 +50,6 @@ class PackageComparisonController extends Controller
             'arrivalPercentage',
             'grupo',
             'packages',
-            'statuses',
         ));
     }
 
@@ -68,20 +57,8 @@ class PackageComparisonController extends Controller
     {
         return view('reportes.editar-guia', [
             'package' => $package,
-            'statuses' => self::STATUSES,
             'returnTo' => $request->string('return_to')->toString() === 'reporteria' ? 'reporteria' : 'comparativo',
         ]);
-    }
-
-    public function update(Request $request, Package $package)
-    {
-        $validated = $request->validate([
-            'estado' => ['required', Rule::in(array_keys(self::STATUSES))],
-        ]);
-
-        $package->update(['estado' => $validated['estado']]);
-
-        return back()->with('success', 'El estado de la guía fue actualizado correctamente.');
     }
 
     public function destroy(Request $request, Package $package)

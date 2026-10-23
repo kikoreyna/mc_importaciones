@@ -16,13 +16,85 @@ class Package extends Model
         'guia_secundaria',
         'guia_master',
         'total_paquetes',
-        'estado',
         'client_id',
         'partner_id',
         'transportadora',
         'caja_numero',
         'total_cajas',
+        'transportadora_id',
+        'bodega_usa_user_id',
+        'bodega_mex_user_id',
+        'documentador_user_id',
+        'registered_at',
+        'received_at',
+        'received_mex_at',
+        'documented_at',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'registered_at' => 'datetime',
+            'received_at' => 'datetime',
+            'received_mex_at' => 'datetime',
+            'documented_at' => 'datetime',
+        ];
+    }
+
+    // Azul: recibido en USA, amarillo: recibido en bodega MEX, verde: documentado.
+    public static function colorFor(mixed $documentedAt, mixed $receivedMexAt): string
+    {
+        return match (true) {
+            $documentedAt !== null => 'verde',
+            $receivedMexAt !== null => 'amarillo',
+            default => 'azul',
+        };
+    }
+
+    public function getColorAttribute(): string
+    {
+        return self::colorFor($this->documented_at, $this->received_mex_at);
+    }
+
+    public function scopePendingDocumentation($query)
+    {
+        return $query->whereNull('documented_at');
+    }
+
+    public function scopeDocumented($query)
+    {
+        return $query->whereNotNull('documented_at');
+    }
+
+    public function scopeReceivedInMexico($query)
+    {
+        return $query->whereNotNull('received_mex_at');
+    }
+
+    public function scopeWithColor($query, string $color)
+    {
+        return match ($color) {
+            'verde' => $query->whereNotNull('documented_at'),
+            'amarillo' => $query->whereNull('documented_at')->whereNotNull('received_mex_at'),
+            'azul' => $query->whereNull('documented_at')->whereNull('received_mex_at'),
+            default => $query,
+        };
+    }
+
+    public function markReceivedInMexico(): void
+    {
+        $this->update(['received_mex_at' => now(), 'bodega_mex_user_id' => auth()->id()]);
+    }
+
+    public function markDocumented(array $attributes = []): void
+    {
+        $this->update($attributes + ['documented_at' => now(), 'documentador_user_id' => auth()->id()]);
+    }
+
+    public function markPendingDocumentation(): void
+    {
+        $this->update(['documented_at' => null, 'documentador_user_id' => null]);
+    }
 
     protected const FIELD_LABELS = [
         'guia_principal' => 'Guía principal',
@@ -38,21 +110,24 @@ class Package extends Model
 
     protected static function booted(): void
     {
+        static::creating(function (Package $package) {
+            $package->registered_at ??= now();
+            $package->received_at ??= now();
+            $package->bodega_usa_user_id ??= auth()->id();
+        });
+
         static::created(fn (Package $package) => PackageLog::record($package->id, 'registrada', 'Guía registrada'));
 
         static::updated(function (Package $package) {
             $changes = Arr::except($package->getChanges(), ['updated_at', 'deleted_at']);
 
-            if (array_key_exists('estado', $changes)) {
-                $from = (string) $package->getOriginal('estado');
-                $to = (string) $changes['estado'];
+            if (array_key_exists('documented_at', $changes) || array_key_exists('received_mex_at', $changes)) {
+                $from = self::colorFor($package->getOriginal('documented_at'), $package->getOriginal('received_mex_at'));
+                $to = $package->color;
 
-                PackageLog::record(
-                    $package->id,
-                    'estado_cambiado',
-                    'Estado: ' . str_replace('_', ' ', $from) . ' → ' . str_replace('_', ' ', $to),
-                    ['Estado' => [$from, $to]],
-                );
+                if ($from !== $to) {
+                    PackageLog::record($package->id, 'color_cambiado', "Color: {$from} → {$to}", ['Color' => [$from, $to]]);
+                }
             }
 
             $labelled = [];
@@ -103,5 +178,25 @@ class Package extends Model
     public function partner(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Partner::class);
+    }
+
+    public function transportadoraRelation(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Transportadora::class, 'transportadora_id');
+    }
+
+    public function bodegaUsaUser(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'bodega_usa_user_id')->withTrashed();
+    }
+
+    public function bodegaMexUser(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'bodega_mex_user_id')->withTrashed();
+    }
+
+    public function documentadorUser(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(User::class, 'documentador_user_id')->withTrashed();
     }
 }

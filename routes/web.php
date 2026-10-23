@@ -57,9 +57,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/reportes/comparativo/{package}/editar', [PackageComparisonController::class, 'edit'])
         ->middleware('package.manager')
         ->name('reports.comparison.edit');
-    Route::patch('/reportes/comparativo/{package}', [PackageComparisonController::class, 'update'])
-        ->middleware('package.manager')
-        ->name('reports.comparison.update');
     Route::delete('/reportes/comparativo/{package}', [PackageComparisonController::class, 'destroy'])
         ->middleware('administrator')
         ->name('reports.comparison.destroy');

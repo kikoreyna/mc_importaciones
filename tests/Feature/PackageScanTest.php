@@ -59,17 +59,16 @@ class PackageScanTest extends TestCase
         ]);
 
         $response->assertRedirect('/packages');
-        $this->assertDatabaseHas('packages', [
-            'guia_principal' => 'USA-200',
-            'estado' => 'recibido',
-        ]);
+        $package = Package::where('guia_principal', 'USA-200')->firstOrFail();
+        $this->assertSame('azul', $package->color);
+        $this->assertNotNull($package->registered_at);
+        $this->assertNotNull($package->received_at);
     }
 
     public function test_cannot_register_a_duplicate_main_guide(): void
     {
         Package::create([
             'guia_principal' => 'USA-DUPLICADA',
-            'estado' => 'recibido',
         ]);
 
         $response = $this->from('/packages')->post('/packages', [
@@ -95,12 +94,11 @@ class PackageScanTest extends TestCase
         Package::create([
             'guia_principal' => 'USA-PENDIENTE',
             'total_paquetes' => 2,
-            'estado' => 'recibido',
         ]);
         Package::create([
             'guia_principal' => 'USA-EN-MEXICO',
             'total_paquetes' => 3,
-            'estado' => 'ingreso_bodega',
+            'received_mex_at' => now(),
         ]);
 
         $response = $this->get('/reportes/comparativo');
@@ -122,23 +120,13 @@ class PackageScanTest extends TestCase
     {
         $package = Package::create([
             'guia_principal' => 'USA-ADMINISTRABLE',
-            'estado' => 'recibido',
         ]);
         $supervisor = User::factory()->create(['role' => 'supervisor']);
-
-        $this->actingAs($supervisor)
-            ->patch(route('reports.comparison.update', $package), ['estado' => 'devuelto_usa'])
-            ->assertForbidden();
-
-        $this->assertDatabaseHas('packages', [
-            'id' => $package->id,
-            'estado' => 'recibido',
-        ]);
 
         $documentador = User::factory()->create(['role' => 'documentador']);
 
         $this->actingAs($documentador)
-            ->patch(route('reports.comparison.update', $package), ['estado' => 'cancelado'])
+            ->delete(route('reports.comparison.destroy', $package))
             ->assertForbidden();
 
         $this->actingAs($supervisor)

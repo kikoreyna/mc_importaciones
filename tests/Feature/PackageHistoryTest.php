@@ -14,23 +14,23 @@ class PackageHistoryTest extends TestCase
         $user = User::factory()->create(['role' => 'bodega_usa', 'name' => 'Ana']);
         $this->actingAs($user);
 
-        $package = Package::create(['guia_principal' => 'G-1', 'estado' => 'recibido']);
-        $package->update(['estado' => 'ingreso_bodega']);
+        $package = Package::create(['guia_principal' => 'G-1']);
+        $package->markReceivedInMexico();
         $package->update(['guia_master' => 'M-9']);
         PackagePhoto::create(['package_id' => $package->id, 'file_name' => 'a.jpg', 'path' => 'a.jpg', 'url' => 'a.jpg']);
         $package->delete();
 
         $this->assertSame(
-            ['registrada', 'estado_cambiado', 'actualizada', 'foto_agregada', 'eliminada'],
+            ['registrada', 'color_cambiado', 'actualizada', 'foto_agregada', 'eliminada'],
             $package->logs()->orderBy('id')->pluck('action')->all(),
         );
-        $this->assertSame(1, $package->logs()->where('action', 'estado_cambiado')->whereJsonContains('changes->Estado', 'ingreso_bodega')->count());
+        $this->assertSame(1, $package->logs()->where('action', 'color_cambiado')->whereJsonContains('changes->Color', 'amarillo')->count());
         $this->assertSame(5, $package->logs()->where('user_id', $user->id)->where('user_name', 'Ana')->count());
     }
 
     public function test_history_is_visible_only_to_management_roles(): void
     {
-        $package = Package::create(['guia_principal' => 'G-2', 'estado' => 'recibido']);
+        $package = Package::create(['guia_principal' => 'G-2']);
         $package->delete();
 
         foreach (['administrador', 'supervisor'] as $role) {

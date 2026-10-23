@@ -64,7 +64,6 @@ class PackageController extends Controller
             'guia_secundaria' => $validated['guia_secundaria'] ?? null,
             'guia_master' => $validated['guia_master'] ?? null,
             'total_paquetes' => $validated['total_paquetes'] ?? 1,
-            'estado' => 'recibido',
         ]);
 
         $this->photoUploadService->handle($request->file('photos', []), $package);
@@ -101,11 +100,13 @@ class PackageController extends Controller
             return back()->with('error', 'La guía no existe en el sistema. Debe registrarse primero en USA.');
         }
 
-        if ($package->estado === 'documentado') {
-            return redirect()->route('bodega.index')->with('success', 'La guía ya está documentada; se mantiene su estado.');
+        if ($package->documented_at) {
+            return redirect()->route('bodega.index')->with('success', 'La guía ya está documentada; se mantiene su color verde.');
         }
 
-        $package->update(['estado' => 'ingreso_bodega']);
+        if (! $package->received_mex_at) {
+            $package->markReceivedInMexico();
+        }
 
         return redirect()->route('bodega.index')->with('success', 'La guía fue aceptada en bodega.');
     }
