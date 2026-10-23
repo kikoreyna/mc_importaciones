@@ -12,14 +12,9 @@
     <div class="w-full px-4 py-6">
         @include('components.navbar')
 
-        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
-            <div>
-                <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">Documentación</p>
-                <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Edición de guía</h1>
-            </div>
-            <a href="{{ route('documentacion.documented') }}" class="inline-flex cursor-pointer items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
-                Ver paquetes documentados
-            </a>
+        <div class="mb-6">
+            <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">Documentación</p>
+            <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Edición de guía</h1>
         </div>
 
         @if (session('success'))
@@ -35,58 +30,26 @@
         @endif
 
         <div class="grid grid-cols-1 gap-6">
-            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
-                <div class="mb-4 flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
-                    <form action="{{ route('documentacion.index') }}" method="GET" class="flex min-w-0 flex-1 flex-col gap-2 sm:flex-row sm:items-end xl:max-w-3xl">
-                        @csrf
-                        <div class="min-w-0 flex-1 xl:max-w-[18rem]">
-                            <x-camera-scanner
-                                id="documentation-guide-scanner"
-                                name="guia_principal"
-                                label="Buscar guía recibida"
-                                placeholder="Escanee la guía"
-                                value="{{ old('guia_principal', $guiaPrincipal ?? '') }}"
-                            />
-                        </div>
+            @if ($package)
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div class="flex items-center gap-2">
+                        @if ($posicion > 1)
+                            <a id="previous-package" href="{{ route('documentacion.index', ['posicion' => $posicion - 1]) }}" class="rounded-xl border border-slate-500 bg-transparent px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100">&lsaquo; Anterior</a>
+                        @else
+                            <span class="cursor-not-allowed rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-300">&lsaquo; Anterior</span>
+                        @endif
 
-                        <button type="submit" class="h-12.5 w-full cursor-pointer rounded-xl bg-blue-600 px-5 font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 sm:w-auto sm:shrink-0">
-                            Buscar guía
-                        </button>
-                    </form>
+                        @if ($posicion < $total)
+                            <a id="next-package" href="{{ route('documentacion.index', ['posicion' => $posicion + 1]) }}" class="rounded-xl border border-slate-500 bg-transparent px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100">Siguiente &rsaquo;</a>
+                        @else
+                            <span class="cursor-not-allowed rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-300">Siguiente &rsaquo;</span>
+                        @endif
+                    </div>
+                    <span id="package-position" class="w-fit rounded-full bg-amber-100 px-4 py-1.5 text-sm font-semibold text-amber-800">{{ $package->documented_at ? 'Documentada' : $posicion . '/' . $total . ' sin documentar' }}</span>
                 </div>
 
-                @if ($packagesRecibidos->isNotEmpty())
-                    <div class="mt-5 border border-slate-200 rounded-xl p-3 bg-slate-50">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs uppercase tracking-[0.2em] text-slate-500 font-semibold">Pendientes</p>
-                            <span class="inline-flex items-center rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700">
-                                {{ $packagesRecibidos->count() }} por revisar
-                            </span>
-                        </div>
-                        <div class="space-y-2 max-h-52 overflow-y-auto">
-                            @foreach ($packagesRecibidos as $index => $receivedPackage)
-                                <a href="{{ route('documentacion.index', ['guia_principal' => $receivedPackage->guia_principal]) }}" class="block rounded-lg border {{ $index === 0 ? 'border-amber-400 bg-amber-50 shadow-sm' : 'border-slate-200 bg-white' }} px-3 py-2 text-sm hover:bg-blue-50 transition">
-                                    <div class="flex items-center justify-between gap-2">
-                                        <div class="font-medium">{{ $receivedPackage->guia_principal }}</div>
-                                        @if ($index === 0)
-                                            <span class="rounded-full bg-amber-200 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-amber-800">Prioridad</span>
-                                        @endif
-                                    </div>
-                                    <div class="text-slate-500 text-xs">{{ $receivedPackage->guia_secundaria ?? 'Sin guía secundaria' }}</div>
-                                </a>
-                            @endforeach
-                        </div>
-                    </div>
-                @else
-                    <div class="mt-5 border border-emerald-200 rounded-xl p-3 bg-emerald-50 text-sm text-emerald-700 font-medium">
-                        No hay más guías pendientes por revisar.
-                    </div>
-                @endif
-            </div>
-
-            @if ($package)
-                <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
-                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
+                <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
+                    <div class="min-w-0 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6 lg:col-span-4">
                         <div class="mb-4 pt-1 border-b border-slate-200 pb-3">
                             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Edición</p>
                         </div>
@@ -94,6 +57,7 @@
                         <form action="{{ route('documentacion.store') }}" method="POST" class="space-y-4">
                             @csrf
                             <input type="hidden" name="guia_principal" value="{{ $package->guia_principal }}">
+                            <input type="hidden" name="posicion" value="{{ $posicion }}">
 
                             <div>
                                 <label class="block text-sm font-medium mb-1.5">Guía principal</label>
@@ -179,7 +143,7 @@
                     </div>
 
                     @if ($package->photos->isNotEmpty())
-                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6">
+                        <div class="min-w-0 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6 lg:col-span-8">
                             @php
                                 $photos = collect($package->photos->all());
                                 $firstPhoto = $photos->first();
@@ -188,8 +152,6 @@
                             @if ($firstPhoto)
                                 <div id="photo-stage" class="relative aspect-4/3 w-full animate-pulse overflow-hidden rounded-xl border border-slate-200 bg-slate-200">
                                     <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="h-full w-full cursor-zoom-in object-contain transition-transform duration-200">
-
-                                    <span id="photo-counter" class="absolute right-3 top-3 rounded-full bg-slate-900/70 px-3 py-1 text-xs font-semibold text-white">1 / {{ $photos->count() }}</span>
 
                                     <div class="absolute left-3 top-3 flex gap-2">
                                         <button type="button" id="rotate-photo" class="cursor-pointer rounded-full bg-slate-700 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-slate-800">Rotar</button>
@@ -226,7 +188,6 @@
                                         const photos = @json($photos->map(fn($photo) => $photo->display_url)->values()->all());
                                         const image = document.getElementById('package-photo');
                                         const stage = document.getElementById('photo-stage');
-                                        const counter = document.getElementById('photo-counter');
                                         const openLink = document.getElementById('open-photo');
                                         const thumbs = document.querySelectorAll('[data-thumb]');
                                         const box = document.getElementById('photo-lightbox');
@@ -244,7 +205,6 @@
                                             image.style.transform = '';
                                             image.src = photos[index];
                                             openLink.href = photos[index];
-                                            counter.textContent = `${index + 1} / ${photos.length}`;
                                             thumbs.forEach((t, i) => {
                                                 const active = i === index;
                                                 t.classList.toggle('border-blue-600', active);
@@ -314,7 +274,16 @@
                                 </script>
                             @endif
                         </div>
-                    @endif
+                    @else
+                        <div class="flex aspect-4/3 min-w-0 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-4 text-center text-sm font-medium text-slate-500 shadow-sm md:p-6 lg:col-span-8">
+                            Este paquete no tiene fotos disponibles.
+                        </div>
+                @endif
+                </div>
+
+            @else
+                <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center text-sm font-medium text-emerald-700">
+                    No hay paquetes pendientes por documentar.
                 </div>
             @endif
         </div>

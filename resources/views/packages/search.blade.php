@@ -46,9 +46,9 @@
                                 <dd class="mt-1 truncate text-sm font-semibold text-slate-900">{{ $package->guia_master ?: 'N/A' }}</dd>
                             </div>
                             <div>
-                                <dt class="text-xs font-medium uppercase tracking-wide text-slate-500">Estado</dt>
+                                <dt class="text-xs font-medium uppercase tracking-wide text-slate-500">Color</dt>
                                 <dd class="mt-1">
-                                    <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold capitalize text-green-800">{{ str_replace('_', ' ', $package->estado) }}</span>
+                                    <x-package-color :package="$package" />
                                 </dd>
                             </div>
                             <div class="min-w-0">
@@ -73,7 +73,8 @@
                             </div>
                         </dl>
 
-                        <div class="mt-4">
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <a href="{{ route('documentacion.index', ['guia' => $package->id]) }}" class="inline-flex cursor-pointer items-center rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">Editar documentación</a>
                             <a href="{{ route('packages.history', $package) }}" class="inline-flex cursor-pointer items-center rounded-lg bg-slate-700 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-slate-800">Ver historial</a>
                         </div>
                         @if ($package->photos->isNotEmpty())

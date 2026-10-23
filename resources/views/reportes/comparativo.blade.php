@@ -70,9 +70,9 @@
                 <h2 class="font-semibold">Comparativo de guías</h2>
                 <p class="mt-1 text-sm text-slate-500">
                     @if (auth()->user()->isPackageManager())
-                        Consulta el estado de cada guía. Selecciona una guía para cambiar su estado o administrarla.
+                        Consulta el color de cada guía. Selecciona una guía para administrarla.
                     @else
-                        Consulta el estado de cada guía.
+                        Consulta el color de cada guía.
                     @endif
                 </p>
             </div>
@@ -80,10 +80,8 @@
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
                         <th class="px-4 py-3 font-semibold">Guía principal</th>
-                        <th class="px-4 py-3 font-semibold">Guía secundaria</th>
-                        <th class="px-4 py-3 font-semibold">Paquetes</th>
                         <th class="px-4 py-3 font-semibold">Recibida USA</th>
-                        <th class="px-4 py-3 font-semibold">Estado</th>
+                        <th class="px-4 py-3 font-semibold">Color</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -101,17 +99,18 @@
                                 @else
                                     {{ $package->guia_principal }}
                                 @endauth
+                                @if ($package->guia_secundaria)
+                                    <span class="mt-1 block px-1 text-xs font-normal text-slate-500">{{ $package->guia_secundaria }}</span>
+                                @endif
                             </td>
-                            <td class="px-4 py-3">{{ $package->guia_secundaria ?: 'Sin guía secundaria' }}</td>
-                            <td class="px-4 py-3">{{ $package->total_paquetes }}</td>
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') }}</td>
                             <td class="px-4 py-3">
-                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700">{{ $statuses[$package->estado] ?? ucfirst($package->estado) }}</span>
+                                <x-package-color :package="$package" />
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-8 text-center text-slate-500">No hay guías para el filtro seleccionado.</td>
+                            <td colspan="3" class="px-4 py-8 text-center text-slate-500">No hay guías para el filtro seleccionado.</td>
                         </tr>
                     @endforelse
                 </tbody>

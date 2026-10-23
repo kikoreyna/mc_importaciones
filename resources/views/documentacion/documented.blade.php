@@ -37,7 +37,7 @@
                             <a href="{{ route('documentacion.index', ['guia_principal' => $package->guia_principal]) }}" class="rounded-lg border border-blue-600 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-50">
                                 Editar guía
                             </a>
-                            <form action="{{ route('documentacion.markAsReceived', $package) }}" method="POST" onsubmit="return confirm('¿Regresar esta guía al estado recibido?');">
+                            <form action="{{ route('documentacion.markAsReceived', $package) }}" method="POST" onsubmit="return confirm('¿Regresar esta guía a pendiente de documentar?');">
                                 @csrf
                                 @method('PATCH')
                                 <button type="submit" class="rounded-lg bg-blue-600 px-3 py-2 text-sm font-semibold text-white hover:bg-blue-700">

@@ -12,7 +12,7 @@
     @php
         $dot = [
             'registrada' => 'bg-green-500',
-            'estado_cambiado' => 'bg-blue-600',
+            'color_cambiado' => 'bg-blue-600',
             'actualizada' => 'bg-amber-500',
             'foto_agregada' => 'bg-sky-500',
             'foto_eliminada' => 'bg-slate-500',
@@ -28,8 +28,8 @@
                 <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">Historial</p>
                 <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Guía {{ $package->guia_principal }}</h1>
                 <p class="mt-1 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-                    Estado actual
-                    <span class="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-semibold capitalize text-green-800">{{ str_replace('_', ' ', $package->estado) }}</span>
+                    Color actual
+                    <x-package-color :package="$package" />
                     @if ($package->trashed())
                         <span class="inline-flex items-center rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-semibold text-red-800">Eliminada</span>
                     @endif

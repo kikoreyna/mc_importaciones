@@ -34,10 +34,10 @@
                     <option value="{{ $transportadora }}" @selected(request('transportadora') === $transportadora)>{{ $transportadora }}</option>
                 @endforeach
             </select>
-            <select name="estado" class="rounded-xl border border-slate-300 px-3 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
-                <option value="">Todos los estados</option>
-                @foreach ($estados as $estado)
-                    <option value="{{ $estado }}" @selected(request('estado') === $estado)>{{ ucfirst($estado) }}</option>
+            <select name="color" class="rounded-xl border border-slate-300 px-3 py-3 text-sm focus:border-blue-500 focus:ring-2 focus:ring-blue-500">
+                <option value="">Todos los colores</option>
+                @foreach ($colores as $value => $label)
+                    <option value="{{ $value }}" @selected(request('color') === $value)>{{ $label }}</option>
                 @endforeach
             </select>
             <div class="flex gap-2">
@@ -51,7 +51,6 @@
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
                         <th class="px-4 py-3 font-semibold">Número de guía</th>
-                        <th class="px-4 py-3 font-semibold">Guía secundaria</th>
                         @if ($showMasterGuide)
                             <th class="px-4 py-3 font-semibold">Guía máster</th>
                         @endif
@@ -77,8 +76,10 @@
                                 @else
                                     {{ $package->guia_principal }}
                                 @endauth
+                                @if ($package->guia_secundaria)
+                                    <span class="mt-1 block px-1 text-xs font-normal text-slate-500">{{ $package->guia_secundaria }}</span>
+                                @endif
                             </td>
-                            <td class="px-4 py-3">{{ $package->guia_secundaria ?: 'Sin guía secundaria' }}</td>
                             @if ($showMasterGuide)
                                 <td class="px-4 py-3">{{ $package->guia_master ?: 'Sin guía máster' }}</td>
                             @endif
@@ -97,7 +98,7 @@
                             <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') ?: 'Sin fecha' }}</td>
                         </tr>
                     @empty
-                        <tr><td colspan="{{ $showMasterGuide ? 8 : 7 }}" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
+                        <tr><td colspan="{{ $showMasterGuide ? 7 : 6 }}" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
                     @endforelse
                 </tbody>
             </table>
