@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 
 class Package extends Model
 {
@@ -83,12 +84,12 @@ class Package extends Model
 
     public function markReceivedInMexico(): void
     {
-        $this->update(['received_mex_at' => now(), 'bodega_mex_user_id' => auth()->id()]);
+        $this->update(['received_mex_at' => now(), 'bodega_mex_user_id' => Auth::id()]);
     }
 
     public function markDocumented(array $attributes = []): void
     {
-        $this->update($attributes + ['documented_at' => now(), 'documentador_user_id' => auth()->id()]);
+        $this->update($attributes + ['documented_at' => now(), 'documentador_user_id' => Auth::id()]);
     }
 
     public function markPendingDocumentation(): void
@@ -113,7 +114,7 @@ class Package extends Model
         static::creating(function (Package $package) {
             $package->registered_at ??= now();
             $package->received_at ??= now();
-            $package->bodega_usa_user_id ??= auth()->id();
+            $package->bodega_usa_user_id ??= Auth::id();
         });
 
         static::created(fn (Package $package) => PackageLog::record($package->id, 'registrada', 'Guía registrada'));
