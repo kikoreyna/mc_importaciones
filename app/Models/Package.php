@@ -115,8 +115,11 @@ class Package extends Model
     {
         static::creating(function (Package $package) {
             $package->registered_at ??= now();
-            $package->received_at ??= now();
-            $package->bodega_usa_user_id ??= Auth::id();
+            // Una guía creada desde bodega MEX llega con received_at nulo: no se escaneó en USA.
+            if (! array_key_exists('received_at', $package->getAttributes())) {
+                $package->received_at = now();
+                $package->bodega_usa_user_id ??= Auth::id();
+            }
         });
 
         static::created(fn (Package $package) => PackageLog::record($package->id, 'registrada', 'Guía registrada'));

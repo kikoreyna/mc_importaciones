@@ -80,13 +80,29 @@ class PackageScanTest extends TestCase
         $this->assertSame(1, Package::where('guia_principal', 'USA-DUPLICADA')->count());
     }
 
-    public function test_bodega_rejects_a_guide_that_does_not_exist(): void
+    public function test_bodega_registers_a_guide_missing_in_usa_with_a_warning(): void
     {
         $response = $this->post('/bodega', [
             'guia_principal' => 'NO-EXISTE-999',
         ]);
 
-        $response->assertSessionHas('error', 'La guía no existe en el sistema. Debe registrarse primero en USA.');
+        $response->assertSessionHas('warning');
+        $package = Package::where('guia_principal', 'NO-EXISTE-999')->firstOrFail();
+        $this->assertNull($package->received_at);
+        $this->assertNotNull($package->received_mex_at);
+        $this->assertSame('amarillo', $package->color);
+    }
+
+    public function test_bodega_counter_drops_as_guides_are_scanned(): void
+    {
+        Package::create(['guia_principal' => 'PEND-1']);
+        Package::create(['guia_principal' => 'PEND-2']);
+
+        $this->get('/bodega')->assertOk()->assertSee('id="pending-counter"', false)->assertSeeInOrder(['Recepción', '>2<']);
+
+        $this->post('/bodega', ['guia_principal' => 'PEND-1']);
+
+        $this->get('/bodega')->assertSeeInOrder(['Recepción', '>1<']);
     }
 
     public function test_comparison_shows_usa_and_mexico_receipts(): void

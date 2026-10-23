@@ -85,7 +85,9 @@ class PackageController extends Controller
 
     public function bodegaIndex()
     {
-        return view('bodega.index');
+        return view('bodega.index', [
+            'pendingCount' => Package::whereNull('received_mex_at')->count(),
+        ]);
     }
 
     public function bodegaStore(Request $request)
@@ -97,7 +99,15 @@ class PackageController extends Controller
         $package = Package::where('guia_principal', $validated['guia_principal'])->first();
 
         if (! $package) {
-            return back()->with('error', 'La guía no existe en el sistema. Debe registrarse primero en USA.');
+            $package = Package::create([
+                'guia_principal' => $validated['guia_principal'],
+                'received_at' => null,
+                'bodega_usa_user_id' => null,
+            ]);
+            $package->markReceivedInMexico();
+
+            return redirect()->route('bodega.index')
+                ->with('warning', 'La guía no fue escaneada en USA. Se registró y se aceptó en bodega MEX.');
         }
 
         if (! $package->received_mex_at) {
