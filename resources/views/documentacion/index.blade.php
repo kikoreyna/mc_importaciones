@@ -54,7 +54,7 @@
                             <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Edición</p>
                         </div>
 
-                        <form action="{{ route('documentacion.store') }}" method="POST" class="space-y-4">
+                        <form id="documentation-form" action="{{ route('documentacion.store') }}" method="POST" class="space-y-4">
                             @csrf
                             <input type="hidden" name="guia_principal" value="{{ $package->guia_principal }}">
                             <input type="hidden" name="posicion" value="{{ $posicion }}">
@@ -300,6 +300,16 @@
 
         window.addEventListener('load', () => {
             (editingGuide ?? guideSearch)?.focus();
+        });
+
+        const documentationForm = document.getElementById('documentation-form');
+
+        // Enter solo envía desde "Total de cajas" o sobre el botón.
+        documentationForm?.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter') return;
+            if (event.target.id === 'total_cajas' || event.target.tagName === 'BUTTON') return;
+
+            event.preventDefault();
         });
 
         const clientSearch = document.getElementById('client_search');
