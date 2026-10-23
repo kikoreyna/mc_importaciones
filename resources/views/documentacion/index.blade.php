@@ -45,7 +45,7 @@
                             <span class="cursor-not-allowed rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-300">Siguiente &rsaquo;</span>
                         @endif
                     </div>
-                    <span id="package-position" class="w-fit rounded-full bg-amber-100 px-4 py-1.5 text-sm font-semibold text-amber-800">{{ $package->documented_at ? 'Documentada' : $posicion . '/' . $total . ' sin documentar' }}</span>
+                    <span id="package-position" class="w-fit rounded-full px-4 py-1.5 text-sm font-semibold {{ $package->documented_at ? '' : 'bg-amber-100 text-amber-800' }}" @if ($package->documented_at) style="background-color: #dcfce7; color: #166534" @endif>{{ $package->documented_at ? 'Documentada' : $posicion . '/' . $total . ' sin documentar' }}</span>
                 </div>
 
                 <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
@@ -64,6 +64,11 @@
                                 <div id="edicion-guia-principal" tabindex="0" class="w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
                                     {{ $package->guia_principal }}
                                 </div>
+                            </div>
+
+                            <div>
+                                <label for="guia_secundaria" class="block text-sm font-medium mb-1.5">Guía secundaria</label>
+                                <input id="guia_secundaria" name="guia_secundaria" type="text" value="{{ old('guia_secundaria', $package->guia_secundaria ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
                             </div>
 
                             <div>

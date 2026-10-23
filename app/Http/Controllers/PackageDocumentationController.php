@@ -50,6 +50,7 @@ class PackageDocumentationController extends Controller
     {
         $validated = $request->validate([
             'guia_principal' => ['required', 'string', 'max:255'],
+            'guia_secundaria' => ['nullable', 'string', 'max:255'],
             'client_id' => ['nullable', 'exists:clients,id'],
             'partner_id' => ['nullable', 'exists:partners,id'],
             'transportadora' => ['nullable', 'string', 'max:255'],
@@ -76,6 +77,7 @@ class PackageDocumentationController extends Controller
         }
 
         $package->markDocumented([
+            'guia_secundaria' => $validated['guia_secundaria'] ?? null,
             'client_id' => $validated['client_id'] ?? null,
             'partner_id' => $partnerId,
             'transportadora' => $validated['transportadora'] ?? null,
