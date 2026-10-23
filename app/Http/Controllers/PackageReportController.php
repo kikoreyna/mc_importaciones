@@ -25,7 +25,6 @@ class PackageReportController extends Controller
             ->when($validated['color'] ?? null, fn ($query, $color) => $query->withColor($color))
             ->latest()
             ->get();
-        $showMasterGuide = $packages->contains(fn ($package) => filled($package->guia_master));
 
         $clients = Client::orderBy('nombre')->get();
         $transportadoras = Package::query()
@@ -39,6 +38,6 @@ class PackageReportController extends Controller
             ->pluck('web', 'nombre');
         $colores = ['azul' => 'Azul (recibido en USA)', 'amarillo' => 'Amarillo (bodega MEX)', 'verde' => 'Verde (documentado)'];
 
-        return view('reportes.packages', compact('packages', 'clients', 'transportadoras', 'transportadoraWebs', 'colores', 'showMasterGuide'));
+        return view('reportes.packages', compact('packages', 'clients', 'transportadoras', 'transportadoraWebs', 'colores'));
     }
 }

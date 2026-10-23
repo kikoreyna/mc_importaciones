@@ -65,7 +65,7 @@
                             </div>
                             <div class="min-w-0">
                                 <dt class="text-xs font-medium uppercase tracking-wide text-slate-500">Cajas</dt>
-                                <dd class="mt-1 truncate text-sm text-slate-700">{{ $package->caja_numero && $package->total_cajas ? $package->caja_numero . ' de ' . $package->total_cajas : 'Sin secuencia' }}</dd>
+                                <dd class="mt-1 truncate text-sm text-slate-700">{{ $package->caja_numero && $package->total_cajas ? $package->caja_numero . ' de ' . $package->total_cajas : '1 de 1' }}</dd>
                             </div>
                             <div class="min-w-0">
                                 <dt class="text-xs font-medium uppercase tracking-wide text-slate-500">Recibido</dt>

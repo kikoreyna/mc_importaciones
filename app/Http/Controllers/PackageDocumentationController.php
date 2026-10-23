@@ -85,8 +85,8 @@ class PackageDocumentationController extends Controller
                 ? Transportadora::where('nombre', $validated['transportadora'])->value('id')
                 : null,
             'guia_master' => $validated['guia_master'] ?? null,
-            'caja_numero' => $validated['caja_numero'] ?? null,
-            'total_cajas' => $validated['total_cajas'] ?? null,
+            'caja_numero' => $validated['caja_numero'] ?? 1,
+            'total_cajas' => $validated['total_cajas'] ?? ($validated['caja_numero'] ?? 1),
         ]);
 
         // Al salir de la colección la siguiente guía ocupa la misma posición.

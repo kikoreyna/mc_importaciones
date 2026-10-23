@@ -51,14 +51,10 @@
                 <thead class="border-b border-slate-200 bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                     <tr>
                         <th class="px-4 py-3 font-semibold">Número de guía</th>
-                        @if ($showMasterGuide)
-                            <th class="px-4 py-3 font-semibold">Guía máster</th>
-                        @endif
-                        <th class="px-4 py-3 font-semibold">Secuencia de cajas</th>
-                        <th class="px-4 py-3 font-semibold">Transportadora</th>
-                        <th class="px-4 py-3 font-semibold">Socio</th>
-                        <th class="px-4 py-3 font-semibold">Cliente</th>
                         <th class="px-4 py-3 font-semibold">Fecha de recibido</th>
+                        <th class="px-4 py-3 font-semibold">Transportadora</th>
+                        <th class="px-4 py-3 font-semibold">Cliente</th>
+                        <th class="px-4 py-3 font-semibold">Secuencia de cajas</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -80,10 +76,7 @@
                                     <span class="mt-1 block px-1 text-xs font-normal text-slate-500">{{ $package->guia_secundaria }}</span>
                                 @endif
                             </td>
-                            @if ($showMasterGuide)
-                                <td class="px-4 py-3">{{ $package->guia_master ?: 'Sin guía máster' }}</td>
-                            @endif
-                            <td class="whitespace-nowrap px-4 py-3">{{ $package->caja_numero && $package->total_cajas ? $package->caja_numero . ' de ' . $package->total_cajas : 'Sin secuencia' }}</td>
+                            <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') ?: 'Sin fecha' }}</td>
                             <td class="px-4 py-3">
                                 @if ($package->transportadora && $transportadoraWebs->has($package->transportadora))
                                     <a href="{{ $transportadoraWebs->get($package->transportadora) }}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
@@ -93,12 +86,21 @@
                                     {{ $package->transportadora ?: 'Sin transportadora' }}
                                 @endif
                             </td>
-                            <td class="px-4 py-3">{{ $package->partner?->nombre ?: 'Sin socio' }}</td>
-                            <td class="px-4 py-3">{{ $package->client?->nombre ?: 'Sin cliente' }}</td>
-                            <td class="whitespace-nowrap px-4 py-3">{{ $package->created_at?->format('d/m/Y H:i') ?: 'Sin fecha' }}</td>
+                            <td class="px-4 py-3">
+                                {{ $package->client?->nombre ?: 'Sin cliente' }}
+                                @if ($package->partner)
+                                    <span class="mt-1 block text-xs text-slate-500">{{ $package->partner->nombre }}</span>
+                                @endif
+                            </td>
+                            <td class="whitespace-nowrap px-4 py-3">
+                                {{ $package->caja_numero && $package->total_cajas ? $package->caja_numero . ' de ' . $package->total_cajas : '1 de 1' }}
+                                @if ($package->guia_master)
+                                    <span class="mt-1 block text-xs text-slate-500">{{ $package->guia_master }}</span>
+                                @endif
+                            </td>
                         </tr>
                     @empty
-                        <tr><td colspan="{{ $showMasterGuide ? 7 : 6 }}" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
+                        <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
                     @endforelse
                 </tbody>
             </table>
