@@ -173,7 +173,7 @@
                                     <div class="mt-3 flex gap-2 overflow-x-auto pb-1">
                                         @foreach ($photos as $i => $photo)
                                             <button type="button" data-thumb="{{ $i }}" class="aspect-square h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg border-2 border-transparent bg-slate-100 focus:outline-none">
-                                                <img src="{{ $photo->display_url }}" alt="Miniatura {{ $i + 1 }}" loading="lazy" class="h-full w-full object-cover">
+                                                <img src="{{ $photo->display_url }}" alt="Miniatura {{ $i + 1 }}" loading="lazy" decoding="async" class="h-full w-full object-cover">
                                             </button>
                                         @endforeach
                                     </div>

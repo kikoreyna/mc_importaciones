@@ -81,7 +81,7 @@
                             <div class="mt-4 grid grid-cols-3 gap-2 sm:grid-cols-4">
                                 @foreach ($package->photos as $photo)
                                     <a href="{{ $photo->display_url }}" target="_blank" rel="noopener" class="aspect-square cursor-pointer overflow-hidden rounded-lg border border-slate-200 bg-slate-100">
-                                        <img src="{{ $photo->display_url }}" alt="Foto del paquete" loading="lazy" class="h-full w-full object-cover transition hover:scale-105">
+                                        <img src="{{ $photo->display_url }}" alt="Foto del paquete" loading="lazy" decoding="async" class="h-full w-full object-cover transition hover:scale-105">
                                     </a>
                                 @endforeach
                             </div>

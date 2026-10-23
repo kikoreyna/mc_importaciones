@@ -28,7 +28,11 @@ class PackagePhoto extends Model
     {
         if ($this->path && config('filesystems.disks.s3.bucket')) {
             try {
-                return Storage::disk('s3')->temporaryUrl($this->path, now()->addMinutes(10));
+                // La expiración se redondea a ventanas de 6 h para que la URL se repita y el navegador pueda cachear la foto.
+                $window = 6 * 3600;
+                $expiresAt = now()->setTimestamp((intdiv(time(), $window) + 2) * $window);
+
+                return Storage::disk('s3')->temporaryUrl($this->path, $expiresAt);
             } catch (Throwable) {
             }
         }

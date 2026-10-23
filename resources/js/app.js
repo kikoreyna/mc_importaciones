@@ -1,5 +1,58 @@
 import './bootstrap';
 
+const PHOTO_MAX_SIDE = 1600;
+const PHOTO_QUALITY = 0.8;
+
+// Si el navegador no puede decodificar la imagen (p. ej. HEIC) se envía el original.
+const compressPhoto = async (file) => {
+	if (!file.type.startsWith('image/') || file.type === 'image/gif') return file;
+
+	try {
+		const bitmap = await createImageBitmap(file, { imageOrientation: 'from-image' });
+		const scale = Math.min(1, PHOTO_MAX_SIDE / Math.max(bitmap.width, bitmap.height));
+		const canvas = document.createElement('canvas');
+		canvas.width = Math.round(bitmap.width * scale);
+		canvas.height = Math.round(bitmap.height * scale);
+		canvas.getContext('2d').drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+		bitmap.close();
+
+		const blob = await new Promise((resolve) => canvas.toBlob(resolve, 'image/jpeg', PHOTO_QUALITY));
+		if (!blob || blob.size >= file.size) return file;
+
+		return new File([blob], file.name.replace(/\.[^.]+$/, '') + '.jpg', { type: 'image/jpeg', lastModified: file.lastModified });
+	} catch {
+		return file;
+	}
+};
+
+document.addEventListener('submit', async (event) => {
+	const form = event.target;
+	const input = form.querySelector?.('input[type="file"][name="photos[]"]');
+
+	if (!input || !input.files.length || form.dataset.photosCompressed) return;
+
+	event.preventDefault();
+	const submitter = event.submitter;
+	const originalLabel = submitter?.textContent;
+	if (submitter) {
+		submitter.disabled = true;
+		submitter.textContent = 'Optimizando fotos...';
+	}
+
+	try {
+		const transfer = new DataTransfer();
+		for (const file of input.files) transfer.items.add(await compressPhoto(file));
+		input.files = transfer.files;
+	} finally {
+		form.dataset.photosCompressed = '1';
+		if (submitter) {
+			submitter.disabled = false;
+			submitter.textContent = originalLabel;
+		}
+		form.requestSubmit(submitter ?? undefined);
+	}
+});
+
 const navbarToggle = document.querySelector('[data-navbar-toggle]');
 const navbarLinks = document.getElementById('navbar-links');
 

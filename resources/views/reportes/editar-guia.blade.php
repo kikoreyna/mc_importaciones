@@ -39,7 +39,7 @@
                         <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
                             @foreach ($package->photos as $photo)
                                 <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                    <img src="{{ $photo->display_url }}" alt="Fotografía de {{ $package->guia_principal }}" class="h-32 w-full object-cover">
+                                    <img src="{{ $photo->display_url }}" alt="Fotografía de {{ $package->guia_principal }}" loading="lazy" decoding="async" class="h-32 w-full object-cover">
                                     @if (auth()->user()->isAdministrator())
                                         <form action="{{ route('reports.comparison.photo.destroy', $photo) }}" method="POST" class="p-2" onsubmit="return confirm('¿Eliminar esta fotografía? Esta acción no se puede deshacer.');">
                                             @csrf

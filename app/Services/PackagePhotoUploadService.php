@@ -26,7 +26,7 @@ class PackagePhotoUploadService
             $folder = 'packages/' . $package->id;
             $filename = uniqid('', true) . '-' . $this->sanitizeFilename($file->getClientOriginalName());
             try {
-                $path = $file->storeAs($folder, $filename, $disk);
+                $path = Storage::disk($disk)->putFileAs($folder, $file, $filename, ['CacheControl' => 'private, max-age=31536000, immutable']);
             } catch (Throwable $exception) {
                 Log::error('No se pudo guardar la foto del paquete.', [
                     'package_id' => $package->id,
