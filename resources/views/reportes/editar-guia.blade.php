@@ -20,13 +20,13 @@
             @include('components.flash-messages')
 
             <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div class="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
+                <div class="mb-5 grid grid-cols-2 gap-3">
                     <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Color</p><p class="mt-1 text-sm font-semibold"><x-package-color :package="$package" /></p></div>
-                    <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Paquetes</p><p class="mt-1 text-sm font-semibold">{{ $package->total_paquetes }}</p></div>
                     <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Recibida USA</p><p class="mt-1 text-sm font-semibold">{{ $package->created_at?->format('d/m/Y H:i') }}</p></div>
                 </div>
 
                     <div class="flex flex-col gap-2 sm:flex-row">
+                        <a href="{{ route('documentacion.index', ['guia' => $package->id]) }}" class="flex-1 cursor-pointer rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-blue-700">Editar documentación</a>
                         <a href="{{ route('reports.comparison') }}" class="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Volver al comparativo</a>
                     </div>
 

@@ -55,6 +55,7 @@
                         <th class="px-4 py-3 font-semibold">Transportadora</th>
                         <th class="px-4 py-3 font-semibold">Cliente</th>
                         <th class="px-4 py-3 font-semibold">Secuencia de cajas</th>
+                        <th class="px-4 py-3 font-semibold">Color</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-100">
@@ -98,9 +99,12 @@
                                     <span class="mt-1 block text-xs text-slate-500">{{ $package->guia_master }}</span>
                                 @endif
                             </td>
+                            <td class="px-4 py-3">
+                                <x-package-color :package="$package" />
+                            </td>
                         </tr>
                     @empty
-                        <tr><td colspan="5" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
+                        <tr><td colspan="6" class="px-4 py-8 text-center text-slate-500">No hay paquetes que coincidan con los filtros.</td></tr>
                     @endforelse
                 </tbody>
             </table>
