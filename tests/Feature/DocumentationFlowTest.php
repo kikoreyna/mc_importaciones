@@ -138,15 +138,16 @@ class DocumentationFlowTest extends TestCase
             ->assertSee('Documentada');
     }
 
-    public function test_bodega_does_not_revert_a_documented_guide(): void
+    public function test_documented_guide_stays_yellow_until_bodega_mex_scans_it(): void
     {
         $package = Package::create(['guia_principal' => 'DOC-1', 'documented_at' => now()]);
+        $this->assertSame('amarillo', $package->color);
 
         $this->actingAs(User::factory()->create(['role' => 'bodega_mex']))
             ->post(route('bodega.store'), ['guia_principal' => 'DOC-1'])
             ->assertRedirect();
 
         $this->assertSame('verde', $package->fresh()->color);
-        $this->assertNull($package->fresh()->received_mex_at);
+        $this->assertNotNull($package->fresh()->documented_at);
     }
 }

@@ -42,12 +42,12 @@ class Package extends Model
         ];
     }
 
-    // Azul: recibido en USA, amarillo: recibido en bodega MEX, verde: documentado.
+    // Azul: solo USA; amarillo: pasó por bodega MEX o se documentó sin pasar por ella; verde: ambas cosas.
     public static function colorFor(mixed $documentedAt, mixed $receivedMexAt): string
     {
         return match (true) {
-            $documentedAt !== null => 'verde',
-            $receivedMexAt !== null => 'amarillo',
+            $documentedAt !== null && $receivedMexAt !== null => 'verde',
+            $documentedAt !== null || $receivedMexAt !== null => 'amarillo',
             default => 'azul',
         };
     }
@@ -75,8 +75,10 @@ class Package extends Model
     public function scopeWithColor($query, string $color)
     {
         return match ($color) {
-            'verde' => $query->whereNotNull('documented_at'),
-            'amarillo' => $query->whereNull('documented_at')->whereNotNull('received_mex_at'),
+            'verde' => $query->whereNotNull('documented_at')->whereNotNull('received_mex_at'),
+            'amarillo' => $query->where(fn ($outer) => $outer
+                ->where(fn ($q) => $q->whereNull('documented_at')->whereNotNull('received_mex_at'))
+                ->orWhere(fn ($q) => $q->whereNotNull('documented_at')->whereNull('received_mex_at'))),
             'azul' => $query->whereNull('documented_at')->whereNull('received_mex_at'),
             default => $query,
         };

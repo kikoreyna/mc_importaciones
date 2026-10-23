@@ -20,7 +20,7 @@ class PackageComparisonController extends Controller
         $fecha = $validated['fecha'] ?? today()->toDateString();
         $grupo = $validated['grupo'] ?? null;
         $baseQuery = Package::query()->when($fecha, fn ($query) => $query->whereDate('created_at', $fecha));
-        $pendingQuery = Package::query()->withColor('azul');
+        $pendingQuery = Package::query()->whereNull('received_mex_at');
         $receivedInUsa = (clone $baseQuery)->count();
         $receivedInMexico = (clone $baseQuery)->receivedInMexico()->count();
         $pendingInMexico = (clone $pendingQuery)->count();

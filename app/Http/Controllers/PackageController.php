@@ -100,10 +100,6 @@ class PackageController extends Controller
             return back()->with('error', 'La guía no existe en el sistema. Debe registrarse primero en USA.');
         }
 
-        if ($package->documented_at) {
-            return redirect()->route('bodega.index')->with('success', 'La guía ya está documentada; se mantiene su color verde.');
-        }
-
         if (! $package->received_mex_at) {
             $package->markReceivedInMexico();
         }
