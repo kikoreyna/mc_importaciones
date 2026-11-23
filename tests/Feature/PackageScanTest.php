@@ -52,6 +52,137 @@ class PackageScanTest extends TestCase
         $response->assertOk();
     }
 
+    public function test_package_lookup_matches_primary_secondary_and_master_guides(): void
+    {
+        $package = Package::create([
+            'guia_principal' => 'USA-LOOKUP-1',
+            'guia_secundaria' => 'SEC-LOOKUP-1',
+            'guia_master' => 'MASTER-LOOKUP-1',
+        ]);
+
+        foreach (['USA-LOOKUP-1', 'SEC-LOOKUP-1', 'MASTER-LOOKUP-1'] as $guide) {
+            $this->getJson(route('packages.lookup', ['q' => $guide]))
+                ->assertOk()
+                ->assertExactJson([
+                    'found' => true,
+                    'package' => [
+                        'id' => $package->id,
+                        'guia_principal' => 'USA-LOOKUP-1',
+                        'guia_secundaria' => 'SEC-LOOKUP-1',
+                        'guia_master' => 'MASTER-LOOKUP-1',
+                    ],
+                ]);
+        }
+
+        $this->getJson(route('packages.lookup', ['q' => 'NO-EXISTE']))
+            ->assertOk()
+            ->assertExactJson(['found' => false]);
+    }
+
+    public function test_can_add_secondary_and_master_guides_to_an_existing_package_from_scanner(): void
+    {
+        $package = Package::create(['guia_principal' => 'USA-GUIDES-RETURN']);
+
+        $this->post(route('packages.guides.scan.store', $package), [
+            'guide_type' => 'secondary',
+            'guide_action' => 'add',
+            'guia_secundaria' => 'SEC-GUIDES-RETURN',
+        ])->assertRedirect(route('packages.index'));
+
+        $this->post(route('packages.guides.scan.store', $package), [
+            'guide_type' => 'master',
+            'guide_action' => 'add',
+            'guia_master' => 'MASTER-GUIDES-RETURN',
+        ])->assertRedirect(route('packages.index'));
+
+        $this->assertDatabaseHas('packages', [
+            'id' => $package->id,
+            'guia_secundaria' => 'SEC-GUIDES-RETURN',
+            'guia_master' => 'MASTER-GUIDES-RETURN',
+        ]);
+    }
+
+    public function test_scanner_cannot_replace_an_existing_or_reuse_another_packages_guide(): void
+    {
+        $existing = Package::create([
+            'guia_principal' => 'USA-GUIDE-EXISTING',
+            'guia_secundaria' => 'SEC-GUIDE-EXISTING',
+        ]);
+        $target = Package::create(['guia_principal' => 'USA-GUIDE-TARGET']);
+
+        $this->post(route('packages.guides.scan.store', $existing), [
+            'guide_type' => 'secondary',
+            'guide_action' => 'add',
+            'guia_secundaria' => 'SEC-REPLACEMENT',
+        ])->assertSessionHasErrors('guia_secundaria');
+
+        $this->post(route('packages.guides.scan.store', $target), [
+            'guide_type' => 'master',
+            'guide_action' => 'add',
+            'guia_master' => 'USA-GUIDE-EXISTING',
+        ])->assertSessionHasErrors('guia_master');
+
+        $this->assertDatabaseHas('packages', [
+            'id' => $existing->id,
+            'guia_secundaria' => 'SEC-GUIDE-EXISTING',
+        ]);
+        $this->assertDatabaseHas('packages', [
+            'id' => $target->id,
+            'guia_master' => null,
+        ]);
+    }
+
+    public function test_can_correct_existing_guides_and_record_the_changes(): void
+    {
+        $package = Package::create([
+            'guia_principal' => 'USA-CORRECT-GUIDES',
+            'guia_secundaria' => 'SEC-INCORRECTA',
+            'guia_master' => 'MASTER-INCORRECTA',
+        ]);
+
+        $this->post(route('packages.guides.scan.store', $package), [
+            'guide_type' => 'secondary',
+            'guide_action' => 'correct',
+            'guia_secundaria' => 'SEC-CORRECTA',
+        ])->assertRedirect(route('packages.index'));
+
+        $this->post(route('packages.guides.scan.store', $package), [
+            'guide_type' => 'master',
+            'guide_action' => 'correct',
+            'guia_master' => 'MASTER-CORRECTA',
+        ])->assertRedirect(route('packages.index'));
+
+        $this->assertDatabaseHas('packages', [
+            'id' => $package->id,
+            'guia_secundaria' => 'SEC-CORRECTA',
+            'guia_master' => 'MASTER-CORRECTA',
+        ]);
+
+        $changes = $package->logs()->where('action', 'actualizada')->orderBy('id')->get()->pluck('changes')->all();
+        $this->assertSame('SEC-INCORRECTA', $changes[0]['Guía secundaria'][0]);
+        $this->assertSame('SEC-CORRECTA', $changes[0]['Guía secundaria'][1]);
+        $this->assertSame('MASTER-INCORRECTA', $changes[1]['Guía máster'][0]);
+        $this->assertSame('MASTER-CORRECTA', $changes[1]['Guía máster'][1]);
+    }
+
+    public function test_adding_photos_from_the_scanner_returns_to_usa_reception(): void
+    {
+        Storage::fake('local');
+        $package = Package::create(['guia_principal' => 'USA-PHOTOS-RETURN']);
+
+        $this->post(route('packages.photos.scan.store', $package), [
+            'photos' => [UploadedFile::fake()->create('photo.jpg', 10, 'image/jpeg')],
+        ])->assertRedirect(route('packages.index'));
+
+        $this->assertCount(1, $package->fresh()->photos);
+
+        $this->post(route('packages.photos.store', $package), [
+            'photos' => [UploadedFile::fake()->create('photo-registered.jpg', 10, 'image/jpeg')],
+        ])->assertRedirect(route('packages.registered'));
+
+        $this->assertCount(2, $package->fresh()->photos);
+    }
+
     public function test_package_starts_as_received_after_scan(): void
     {
         $response = $this->post('/packages', [

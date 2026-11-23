@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 async codigo => {
                     campoCodigo.value = codigo;
                     await detenerScanner();
+                    campoCodigo.dispatchEvent(new Event('change', { bubbles: true }));
                 },
                 () => {}
             );

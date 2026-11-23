@@ -26,9 +26,12 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:administrador,supervisor,bodega_usa')->group(function () {
         Route::get('/packages', [PackageController::class, 'index'])->name('packages.index');
+        Route::get('/packages/lookup', [PackageController::class, 'lookup'])->name('packages.lookup');
         Route::post('/packages', [PackageController::class, 'store'])->name('packages.store');
         Route::get('/paquetes-registrados', [PackageController::class, 'registeredIndex'])->name('packages.registered');
         Route::post('/paquetes-registrados/{package}/fotos', [PackageController::class, 'addPhotos'])->name('packages.photos.store');
+        Route::post('/packages/{package}/photos-from-scan', [PackageController::class, 'addPhotosFromScanner'])->name('packages.photos.scan.store');
+        Route::post('/packages/{package}/guides-from-scan', [PackageController::class, 'addGuideFromScanner'])->name('packages.guides.scan.store');
     });
 
     Route::middleware('role:administrador,supervisor')->group(function () {
