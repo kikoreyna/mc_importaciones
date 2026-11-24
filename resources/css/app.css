@@ -243,6 +243,35 @@ textarea:disabled {
     background-size: 16px 16px;
 }
 
+.camera-scanner-reader {
+    width: 100%;
+    max-width: 48rem;
+    margin-inline: auto;
+    background-color: #111827;
+}
+
+.camera-scanner-reader #reader__scan_region {
+    width: 100% !important;
+    min-height: 0 !important;
+}
+
+.camera-scanner-reader video {
+    display: block;
+    width: 100% !important;
+    height: auto !important;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+}
+
+.camera-scanner-reader #reader__dashboard_section {
+    padding: 0.75rem !important;
+}
+
+.camera-scanner-reader #reader__dashboard_section button,
+.camera-scanner-reader #reader__dashboard_section select {
+    min-height: 2.75rem;
+}
+
 .table > :not(caption) > * > * {
     vertical-align: middle;
 }

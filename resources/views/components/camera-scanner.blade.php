@@ -33,7 +33,8 @@
         </button>
     </div>
 
-    <div id="{{ $readerId }}" class="mt-2 mw-100 overflow-hidden rounded-4 border border-secondary-subtle bg-light" style="display:none;"></div>
+    <div id="{{ $readerId }}" class="camera-scanner-reader mt-2 overflow-hidden rounded-4 border border-secondary-subtle" style="display:none;"></div>
+    <p class="mt-2 small text-body-secondary">Centra todo el código en la imagen. Si cuesta leerlo, usa la linterna o ajusta el zoom cuando estén disponibles.</p>
 
     <button
         type="button"
@@ -61,14 +62,37 @@ document.addEventListener('DOMContentLoaded', () => {
         botonEscanear.style.display = 'none';
         botonDetener.style.display = 'inline-block';
 
-        scanner = new Html5Qrcode(@json($readerId));
-
         try {
+            scanner = new Html5Qrcode(@json($readerId), {
+                formatsToSupport: [
+                    Html5QrcodeSupportedFormats.QR_CODE,
+                    Html5QrcodeSupportedFormats.CODE_128,
+                    Html5QrcodeSupportedFormats.CODE_39,
+                    Html5QrcodeSupportedFormats.CODE_93,
+                    Html5QrcodeSupportedFormats.DATA_MATRIX,
+                    Html5QrcodeSupportedFormats.ITF,
+                    Html5QrcodeSupportedFormats.EAN_13,
+                    Html5QrcodeSupportedFormats.EAN_8,
+                    Html5QrcodeSupportedFormats.PDF_417,
+                ],
+            });
+
             await scanner.start(
-                { facingMode: 'environment' },
+                {
+                    facingMode: { ideal: 'environment' },
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 },
+                },
                 {
                     fps: 10,
-                    qrbox: { width: 250, height: 150 }
+                    qrbox: (viewfinderWidth, viewfinderHeight) => {
+                        const width = Math.floor(Math.min(viewfinderWidth * 0.9, 600));
+                        const height = Math.floor(Math.min(viewfinderHeight * 0.7, width * 0.75));
+
+                        return { width, height };
+                    },
+                    showTorchButtonIfSupported: true,
+                    showZoomSliderIfSupported: true,
                 },
                 async codigo => {
                     campoCodigo.value = codigo;
