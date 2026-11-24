@@ -56,6 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const campoCodigo = document.getElementById(@json($inputId));
 
     let scanner = null;
+    let codigoCandidato = null;
+    let lecturasCandidato = 0;
 
     botonEscanear.addEventListener('click', async () => {
         if (!window.isSecureContext) {
@@ -68,6 +70,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        codigoCandidato = null;
+        lecturasCandidato = 0;
         lector.style.display = 'block';
         botonEscanear.style.display = 'none';
         botonDetener.style.display = 'inline-block';
@@ -101,12 +105,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     showZoomSliderIfSupported: true,
                 },
                 async codigo => {
+                    if (codigo !== codigoCandidato) {
+                        codigoCandidato = codigo;
+                        lecturasCandidato = 1;
+                        return;
+                    }
+
+                    lecturasCandidato++;
+                    if (lecturasCandidato < 2) {
+                        return;
+                    }
+
                     campoCodigo.value = codigo;
                     await detenerScanner();
                     campoCodigo.dispatchEvent(new Event('change', { bubbles: true }));
                 },
                 () => {}
             );
+
+            try {
+                await scanner.applyVideoConstraints({
+                    width: { ideal: 1920 },
+                    height: { ideal: 1080 },
+                });
+            } catch (error) {
+                console.warn('La cámara no permitió aumentar la resolución:', error);
+            }
 
             const zoom = scanner.getRunningTrackCapabilities().zoom;
             if (zoom && typeof zoom.min === 'number' && typeof zoom.max === 'number' && zoom.max > zoom.min) {
@@ -150,6 +174,8 @@ document.addEventListener('DOMContentLoaded', () => {
         lector.style.display = 'none';
         botonEscanear.style.removeProperty('display');
         botonDetener.style.display = 'none';
+        codigoCandidato = null;
+        lecturasCandidato = 0;
     }
 });
 </script>
