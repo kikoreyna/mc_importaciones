@@ -107,6 +107,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 () => {}
             );
+
+            const zoom = scanner.getRunningTrackCapabilities().zoom;
+            if (zoom && typeof zoom.min === 'number' && typeof zoom.max === 'number' && zoom.max > zoom.min) {
+                try {
+                    await scanner.applyVideoConstraints({
+                        advanced: [{ zoom: Math.min(Math.max(2, zoom.min), zoom.max) }],
+                    });
+                } catch (error) {
+                    console.warn('La cámara no permitió aplicar el zoom inicial:', error);
+                }
+            }
         } catch (error) {
             console.error('Error al iniciar el escáner:', error);
             const errorName = error?.name;
