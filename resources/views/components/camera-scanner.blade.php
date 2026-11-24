@@ -56,8 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const campoCodigo = document.getElementById(@json($inputId));
 
     let scanner = null;
-    let codigoCandidato = null;
-    let lecturasCandidato = 0;
 
     botonEscanear.addEventListener('click', async () => {
         if (!window.isSecureContext) {
@@ -70,8 +68,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        codigoCandidato = null;
-        lecturasCandidato = 0;
         lector.style.display = 'block';
         botonEscanear.style.display = 'none';
         botonDetener.style.display = 'inline-block';
@@ -105,17 +101,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     showZoomSliderIfSupported: true,
                 },
                 async codigo => {
-                    if (codigo !== codigoCandidato) {
-                        codigoCandidato = codigo;
-                        lecturasCandidato = 1;
-                        return;
-                    }
-
-                    lecturasCandidato++;
-                    if (lecturasCandidato < 2) {
-                        return;
-                    }
-
                     campoCodigo.value = codigo;
                     await detenerScanner();
                     campoCodigo.dispatchEvent(new Event('change', { bubbles: true }));
@@ -174,8 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
         lector.style.display = 'none';
         botonEscanear.style.removeProperty('display');
         botonDetener.style.display = 'none';
-        codigoCandidato = null;
-        lecturasCandidato = 0;
     }
 });
 </script>
