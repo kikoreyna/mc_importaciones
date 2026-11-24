@@ -58,6 +58,16 @@ document.addEventListener('DOMContentLoaded', () => {
     let scanner = null;
 
     botonEscanear.addEventListener('click', async () => {
+        if (!window.isSecureContext) {
+            alert('Para usar la cámara, abre el sitio mediante una conexión HTTPS.');
+            return;
+        }
+
+        if (!navigator.mediaDevices?.getUserMedia) {
+            alert('Este navegador no permite acceder a la cámara. Usa una versión actualizada de Chrome o Safari.');
+            return;
+        }
+
         lector.style.display = 'block';
         botonEscanear.style.display = 'none';
         botonDetener.style.display = 'inline-block';
@@ -78,11 +88,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
 
             await scanner.start(
-                {
-                    facingMode: { ideal: 'environment' },
-                    width: { ideal: 1920 },
-                    height: { ideal: 1080 },
-                },
+                { facingMode: 'environment' },
                 {
                     fps: 10,
                     qrbox: (viewfinderWidth, viewfinderHeight) => {
@@ -102,7 +108,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 () => {}
             );
         } catch (error) {
-            alert('No se pudo acceder a la cámara.');
+            console.error('Error al iniciar el escáner:', error);
+            const errorName = error?.name;
+            const message = errorName === 'NotAllowedError' || errorName === 'PermissionDeniedError'
+                ? 'El navegador denegó el permiso de cámara. Habilítalo en los permisos del sitio y vuelve a intentar.'
+                : errorName === 'NotFoundError' || errorName === 'DevicesNotFoundError'
+                    ? 'No se encontró una cámara disponible en este dispositivo.'
+                    : errorName === 'NotReadableError' || errorName === 'TrackStartError'
+                        ? 'La cámara está ocupada por otra aplicación. Ciérrala e intenta nuevamente.'
+                        : `No se pudo iniciar la cámara${error?.message ? `: ${error.message}` : '.'}`;
+            alert(message);
             await detenerScanner();
         }
     });
