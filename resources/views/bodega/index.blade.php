@@ -6,39 +6,39 @@
     <title>Recepción en bodega</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-100 text-slate-900">
-    <div class="w-full px-4 py-6">
+<body class="bg-body-tertiary text-dark">
+    <div class="w-100 px-3 py-4">
         @include('components.navbar')
     </div>
 
-    <div class="w-full max-w-2xl mx-auto px-4 py-6">
-        <div class="mb-6">
-            <p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">BODEGA</p>
-            <h1 class="text-2xl font-bold mt-2 flex items-center gap-3">
+    <div class="w-100 content-medium mx-auto px-3 py-4">
+        <div class="mb-5">
+            <p class="small text-uppercase letter-spaced text-primary fw-semibold">BODEGA</p>
+            <h1 class="fs-4 fw-bold mt-2 d-flex align-items-center gap-2">
                 Recepción
-                <span id="pending-counter" class="rounded-full px-3 py-1 text-sm font-semibold" style="background-color: #facc15; color: #422006" title="Guías por recibir">{{ $pendingCount }}</span>
+                <span id="pending-counter" class="rounded-pill px-2 py-1 small fw-semibold" style="background-color: #facc15; color: #422006" title="Guías por recibir">{{ $pendingCount }}</span>
             </h1>
         </div>
 
         @if (session('warning'))
-            <div class="bg-amber-100 border border-amber-300 text-amber-900 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+            <div class="bg-warning-subtle border border-warning-subtle text-warning-emphasis px-3 py-2 rounded-4 mb-4 small fw-medium">
                 {{ session('warning') }}
             </div>
         @endif
 
         @if (session('success'))
-            <div class="bg-emerald-100 border border-emerald-300 text-emerald-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+            <div class="bg-success-subtle border border-success-subtle text-success px-3 py-2 rounded-4 mb-4 small fw-medium">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+            <div class="bg-danger-subtle border border-secondary-subtle text-danger px-3 py-2 rounded-4 mb-4 small fw-medium">
                 {{ session('error') }}
             </div>
         @endif
 
-        <form action="{{ route('bodega.store') }}" method="POST" class="bg-white rounded-2xl shadow-sm border border-slate-200 p-4 space-y-4">
+        <form action="{{ route('bodega.store') }}" method="POST" class="bg-white rounded-4 shadow-sm border border-secondary-subtle p-3 stack-gap-4">
             @csrf
 
             <x-camera-scanner
@@ -48,7 +48,7 @@
                 placeholder="Guía principal"
             />
 
-            <button type="submit" class="w-full bg-blue-600 text-white px-5 py-3.5 rounded-xl font-semibold hover:bg-blue-700 active:bg-blue-800">
+            <button type="submit" class="btn btn-primary w-100 bg-primary text-white px-4 py-3 rounded-4 fw-semibold hover-bg-primary">
                 Validar guía
             </button>
         </form>

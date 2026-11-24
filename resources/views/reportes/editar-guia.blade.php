@@ -6,66 +6,66 @@
     <title>Administrar guía</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-100 text-slate-900">
-    <div class="w-full px-4 py-6">
+<body class="bg-body-tertiary text-dark">
+    <div class="w-100 px-3 py-4">
         @include('components.navbar')
 
-        <main class="w-full max-w-2xl mx-auto">
-            <div class="mb-6">
-                <p class="text-xs font-semibold uppercase tracking-[0.2em] text-blue-600">ADMINISTRACIÓN DE GUÍA</p>
-                <h1 class="mt-2 text-2xl font-bold md:text-3xl">{{ $package->guia_principal }}</h1>
-                <p class="mt-1 text-sm text-slate-500">Administra las fotografías o elimina esta guía.</p>
+        <main class="w-100 content-medium mx-auto">
+            <div class="mb-5">
+                <p class="small fw-semibold text-uppercase letter-spaced text-primary">ADMINISTRACIÓN DE GUÍA</p>
+                <h1 class="mt-2 fs-4 fw-bold fs-3">{{ $package->guia_principal }}</h1>
+                <p class="mt-1 small text-secondary">Administra las fotografías o elimina esta guía.</p>
             </div>
 
             @include('components.flash-messages')
 
-            <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div class="mb-5 grid grid-cols-2 gap-3">
-                    <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Color</p><p class="mt-1 text-sm font-semibold"><x-package-color :package="$package" /></p></div>
-                    <div class="rounded-xl bg-slate-50 p-3"><p class="text-xs text-slate-500">Recibida USA</p><p class="mt-1 text-sm font-semibold">{{ $package->created_at?->format('d/m/Y H:i') }}</p></div>
+            <section class="rounded-4 border border-secondary-subtle bg-white p-4 shadow-sm">
+                <div class="mb-4 row g-3 row-cols-2 g-2">
+                    <div class="rounded-4 bg-light p-2"><p class="small text-secondary">Color</p><p class="mt-1 small fw-semibold"><x-package-color :package="$package" /></p></div>
+                    <div class="rounded-4 bg-light p-2"><p class="small text-secondary">Recibida USA</p><p class="mt-1 small fw-semibold">{{ $package->created_at?->format('d/m/Y H:i') }}</p></div>
                 </div>
 
-                    <div class="flex flex-col gap-2 sm:flex-row">
-                        <a href="{{ route('documentacion.index', ['guia' => $package->id]) }}" class="flex-1 cursor-pointer rounded-xl bg-blue-600 px-4 py-3 text-center text-sm font-semibold text-white hover:bg-blue-700">Editar documentación</a>
-                        <a href="{{ route('reports.comparison') }}" class="flex-1 rounded-xl border border-slate-300 px-4 py-3 text-center text-sm font-semibold text-slate-700 hover:bg-slate-50">Volver al comparativo</a>
+                    <div class="d-flex flex-column gap-2 flex-sm-row">
+                        <a href="{{ route('documentacion.index', ['guia' => $package->id]) }}" class="btn btn-primary flex-fill cursor-pointer rounded-4 bg-primary px-3 py-2 text-center small fw-semibold text-white hover-bg-primary">Editar documentación</a>
+                        <a href="{{ route('reports.comparison') }}" class="flex-fill rounded-4 border border-secondary-subtle px-3 py-2 text-center small fw-semibold text-body hover-bg-light">Volver al comparativo</a>
                     </div>
 
-                <div class="my-6 border-t border-slate-200 pt-5">
-                    <div class="mb-3">
-                        <h2 class="font-semibold">Fotografías de la guía</h2>
-                        <p class="mt-1 text-sm text-slate-500">El administrador puede eliminar fotografías individuales.</p>
+                <div class="my-5 border-top border-secondary-subtle pt-4">
+                    <div class="mb-2">
+                        <h2 class="fw-semibold">Fotografías de la guía</h2>
+                        <p class="mt-1 small text-secondary">El administrador puede eliminar fotografías individuales.</p>
                     </div>
                     @if ($package->photos->isNotEmpty())
-                        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                        <div class="row g-3 row-cols-2 g-2 row-cols-sm-3">
                             @foreach ($package->photos as $photo)
-                                <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
-                                    <img src="{{ $photo->display_url }}" alt="Fotografía de {{ $package->guia_principal }}" loading="lazy" decoding="async" class="h-32 w-full object-cover">
+                                <div class="overflow-hidden rounded-4 border border-secondary-subtle bg-light">
+                                    <img src="{{ $photo->display_url }}" alt="Fotografía de {{ $package->guia_principal }}" loading="lazy" decoding="async" class="h-32 w-100 object-fit-cover">
                                     @if (auth()->user()->isAdministrator())
                                         <form action="{{ route('reports.comparison.photo.destroy', $photo) }}" method="POST" class="p-2" onsubmit="return confirm('¿Eliminar esta fotografía? Esta acción no se puede deshacer.');">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="w-full rounded-lg bg-red-600 px-3 py-2 text-xs font-semibold text-white hover:bg-red-700">Eliminar foto</button>
+                                            <button type="submit" class="btn btn-danger w-100 rounded-3 bg-danger px-2 py-2 small fw-semibold text-white">Eliminar foto</button>
                                         </form>
                                     @endif
                                 </div>
                             @endforeach
                         </div>
                     @else
-                        <p class="rounded-xl bg-slate-50 p-4 text-sm text-slate-500">Esta guía no tiene fotografías.</p>
+                        <p class="rounded-4 bg-light p-3 small text-secondary">Esta guía no tiene fotografías.</p>
                     @endif
                 </div>
 
                 @if (auth()->user()->isAdministrator())
-                    <div class="flex flex-col gap-3 rounded-xl border border-red-200 bg-red-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div class="d-flex flex-column gap-2 rounded-4 border border-secondary-subtle bg-danger-subtle p-3 flex-sm-row align-items-sm-center justify-content-sm-between">
                         <div>
-                            <p class="text-sm font-semibold text-red-900">Zona de administrador</p>
-                            <p class="mt-1 text-xs text-red-700">Desde aquí puedes enviar esta guía a la papelera.</p>
+                            <p class="small fw-semibold text-danger-emphasis">Zona de administrador</p>
+                            <p class="mt-1 small text-danger">Desde aquí puedes enviar esta guía a la papelera.</p>
                         </div>
                         <form action="{{ route('reports.comparison.destroy', $package) }}" method="POST" onsubmit="return confirm('¿Enviar esta guía a la papelera? Podrás conservarla para auditoría.');">
                             @csrf
                             @method('DELETE')
                             <input type="hidden" name="return_to" value="{{ $returnTo }}">
-                            <button type="submit" class="w-full rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-red-700 sm:w-auto">Enviar a papelera</button>
+                            <button type="submit" class="btn btn-danger w-100 rounded-3 bg-danger px-3 py-2 small fw-semibold text-white w-sm-auto">Enviar a papelera</button>
                         </form>
                     </div>
                 @endif

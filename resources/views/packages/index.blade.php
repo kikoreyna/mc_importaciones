@@ -8,31 +8,31 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased" style="font-family: 'Inter', ui-sans-serif, system-ui, sans-serif">
-    <div class="w-full px-4 py-6">
+<body class="bg-light text-dark" style="font-family: 'Inter', ui-sans-serif, system-ui, sans-serif">
+    <div class="w-100 px-3 py-4">
         @include('components.navbar')
     </div>
 
-    <div class="w-full max-w-4xl mx-auto px-4 py-6 md:px-6">
-        <div class="mb-6 flex flex-wrap items-end justify-between gap-4">
+    <div class="w-100 content-wide mx-auto px-3 py-4 px-md-5">
+        <div class="mb-5 d-flex flex-wrap align-items-end justify-content-between gap-3">
             <div>
-                <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">USA</p>
-                <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Recepción de guía</h1>
-                <p class="mt-1 text-sm text-slate-500">Escanea la guía, toma las fotos y guarda el registro.</p>
+                <p class="small fw-semibold text-uppercase letter-spaced text-primary">USA</p>
+                <h1 class="mt-1 fs-4 fw-bold tracking-tight text-dark fs-3">Recepción de guía</h1>
+                <p class="mt-1 small text-secondary">Escanea la guía, toma las fotos y guarda el registro.</p>
             </div>
-            <a href="{{ route('packages.registered') }}" class="inline-flex cursor-pointer items-center rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-blue-700">
+            <a href="{{ route('packages.registered') }}" class="btn btn-primary d-inline-flex cursor-pointer align-items-center rounded-3 bg-primary px-3 py-2 small fw-semibold text-white shadow-sm hover-bg-primary">
                 Ver paquetes registrados
             </a>
         </div>
 
         @if (session('success'))
-            <div class="mb-5 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-medium text-green-800">
+            <div class="mb-4 rounded-4 border border-secondary-subtle bg-success-subtle px-3 py-2 small fw-medium text-success">
                 {{ session('success') }}
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="mb-5 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-800">
+            <div class="mb-4 rounded-4 border border-secondary-subtle bg-danger-subtle px-3 py-2 small fw-medium text-danger">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -45,17 +45,17 @@
             data-guide-upload-url="{{ route('packages.guides.scan.store', ['package' => '__PACKAGE_ID__']) }}"
             method="POST"
             enctype="multipart/form-data"
-            class="space-y-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-6"
+            class="stack-gap-5 rounded-4 border border-secondary-subtle bg-white p-4 shadow-sm p-md-5"
         >
             @csrf
             <input id="guide-type" type="hidden" name="guide_type" disabled>
             <input id="guide-action" type="hidden" name="guide_action" disabled>
 
-            <p id="lookup-error" class="hidden rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800" role="alert"></p>
-            <p id="guide-scan-prompt" class="hidden rounded-lg border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-800" role="status"></p>
+            <p id="lookup-error" class="d-none rounded-3 border border-secondary-subtle bg-danger-subtle px-2 py-2 small text-danger" role="alert"></p>
+            <p id="guide-scan-prompt" class="d-none rounded-3 border border-primary-subtle bg-primary-subtle px-2 py-2 small text-primary" role="status"></p>
 
-            <div class="space-y-4">
-                <p class="border-b border-slate-100 pb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Datos de la guía</p>
+            <div class="stack-gap-4">
+                <p class="border-bottom border-light pb-2 small fw-semibold text-uppercase letter-spaced text-secondary">Datos de la guía</p>
 
                 <x-camera-scanner
                     id="usa-guide-scanner"
@@ -64,68 +64,68 @@
                     placeholder="Escanee o ingrese la guía principal"
                 />
 
-                <div class="grid gap-4 sm:grid-cols-2">
+                <div class="row g-3 g-3 row-cols-sm-2">
                     <div id="secondary-guide-field">
-                        <label for="guia_secundaria" class="mb-1.5 block text-sm font-medium text-slate-700">Guía secundaria</label>
-                        <input id="guia_secundaria" name="guia_secundaria" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-3 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="Opcional">
+                        <label for="guia_secundaria" class="mb-2 d-block small fw-medium text-body">Guía secundaria</label>
+                        <input id="guia_secundaria" name="guia_secundaria" type="text" class="form-control w-100 rounded-4 border border-secondary-subtle px-2 py-2" placeholder="Opcional">
                     </div>
                     <div id="master-guide-field">
-                        <label for="guia_master" class="mb-1.5 block text-sm font-medium text-slate-700">Guía máster</label>
-                        <input id="guia_master" name="guia_master" type="text" class="w-full rounded-xl border border-slate-300 px-3 py-3 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500" placeholder="Opcional">
+                        <label for="guia_master" class="mb-2 d-block small fw-medium text-body">Guía máster</label>
+                        <input id="guia_master" name="guia_master" type="text" class="form-control w-100 rounded-4 border border-secondary-subtle px-2 py-2" placeholder="Opcional">
                     </div>
                 </div>
             </div>
 
             <div id="photos-section">
-                <p class="mb-3 border-b border-slate-100 pb-2 text-xs font-semibold uppercase tracking-widest text-slate-500">Fotos</p>
-                <label for="photos" class="inline-flex h-11 w-full cursor-pointer items-center justify-center rounded-xl bg-slate-700 px-6 font-semibold text-white shadow-sm hover:bg-slate-800 active:scale-[0.99] sm:w-auto">
+                <p class="mb-2 border-bottom border-light pb-2 small fw-semibold text-uppercase letter-spaced text-secondary">Fotos</p>
+                <label for="photos" class="d-inline-flex h-11 w-100 cursor-pointer align-items-center justify-content-center rounded-4 bg-primary px-4 fw-semibold text-white shadow-sm active-scale w-sm-auto">
                     <span id="photo-label">Tomar foto</span>
                 </label>
-                <input id="photos" name="photos[]" type="file" multiple accept="image/*" capture="environment" class="hidden">
-                <p id="photo-count" class="mt-2 text-xs text-slate-500">Puedes tomar varias fotos antes de guardar la guía.</p>
-                <div id="preview" class="mt-3 grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6"></div>
+                <input id="photos" name="photos[]" type="file" multiple accept="image/*" capture="environment" class="d-none">
+                <p id="photo-count" class="mt-2 small text-secondary">Puedes tomar varias fotos antes de guardar la guía.</p>
+                <div id="preview" class="mt-2 row g-3 row-cols-3 g-2 row-cols-sm-4 row-cols-md-6"></div>
             </div>
 
-            <div class="flex justify-end border-t border-slate-100 pt-5">
-                <button id="save-guide" type="submit" class="w-full cursor-pointer rounded-xl bg-blue-600 px-8 py-3 font-semibold text-white shadow-sm hover:bg-blue-700 active:bg-blue-800 sm:w-auto">
+            <div class="d-flex justify-content-end border-top border-light pt-4">
+                <button id="save-guide" type="submit" class="btn btn-primary w-100 cursor-pointer rounded-4 bg-primary px-4 py-2 fw-semibold text-white shadow-sm hover-bg-primary w-sm-auto">
                     Guardar guía
                 </button>
             </div>
         </form>
     </div>
 
-    <div id="duplicate-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/60 p-4" role="dialog" aria-modal="true" aria-labelledby="duplicate-modal-title">
-        <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 id="duplicate-modal-title" class="text-lg font-bold text-slate-900">Guía ya registrada</h2>
-            <p id="duplicate-modal-message" class="mt-2 text-sm text-slate-600"></p>
-            <p id="duplicate-guide-details" class="mt-2 text-xs text-slate-500"></p>
-            <p class="mt-3 text-sm font-medium text-slate-800">¿Qué desea agregar a esta guía?</p>
-            <div class="mt-5 grid gap-2">
-                <button id="duplicate-add-photos" type="button" class="cursor-pointer rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">
+    <div id="duplicate-modal" class="position-fixed inset-0 z-modal-layer d-none align-items-center justify-content-center bg-dark bg-opacity-50 p-3" role="dialog" aria-modal="true" aria-labelledby="duplicate-modal-title">
+        <div class="w-100 content-narrow rounded-4 bg-white p-4 shadow-lg">
+            <h2 id="duplicate-modal-title" class="fs-5 fw-bold text-dark">Guía ya registrada</h2>
+            <p id="duplicate-modal-message" class="mt-2 small text-secondary"></p>
+            <p id="duplicate-guide-details" class="mt-2 small text-secondary"></p>
+            <p class="mt-2 small fw-medium text-dark">¿Qué desea agregar a esta guía?</p>
+            <div class="mt-4 row g-3 g-2">
+                <button id="duplicate-add-photos" type="button" class="btn btn-primary cursor-pointer rounded-3 bg-primary px-3 py-2 small fw-semibold text-white hover-bg-primary">
                     Agregar fotos
                 </button>
-                <button id="duplicate-add-secondary" type="button" class="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">
+                <button id="duplicate-add-secondary" type="button" class="btn btn-outline-secondary cursor-pointer rounded-3 px-3 py-2 small fw-semibold hover-bg-light">
                     Agregar guía secundaria
                 </button>
-                <button id="duplicate-add-master" type="button" class="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 disabled:cursor-not-allowed disabled:bg-slate-100 disabled:text-slate-400">
+                <button id="duplicate-add-master" type="button" class="btn btn-outline-secondary cursor-pointer rounded-3 px-3 py-2 small fw-semibold hover-bg-light">
                     Agregar guía máster
                 </button>
-                <button id="duplicate-cancel" type="button" class="mt-1 cursor-pointer rounded-lg px-4 py-2 text-sm font-semibold text-slate-500 hover:bg-slate-50">
+                <button id="duplicate-cancel" type="button" class="btn btn-outline-secondary mt-1 cursor-pointer rounded-3 px-3 py-2 small fw-semibold hover-bg-light">
                     Cancelar
                 </button>
             </div>
         </div>
     </div>
 
-    <div id="correct-guide-modal" class="fixed inset-0 z-[60] hidden items-center justify-center bg-slate-900/60 p-4" role="dialog" aria-modal="true" aria-labelledby="correct-guide-title">
-        <div class="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl">
-            <h2 id="correct-guide-title" class="text-lg font-bold text-slate-900">Confirmar corrección</h2>
-            <p id="correct-guide-message" class="mt-3 text-sm text-slate-600"></p>
-            <div class="mt-6 flex justify-end gap-3">
-                <button id="correct-guide-cancel" type="button" class="cursor-pointer rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50">
+    <div id="correct-guide-modal" class="position-fixed inset-0 z-modal-layer-high d-none align-items-center justify-content-center bg-dark bg-opacity-50 p-3" role="dialog" aria-modal="true" aria-labelledby="correct-guide-title">
+        <div class="w-100 content-narrow rounded-4 bg-white p-4 shadow-lg">
+            <h2 id="correct-guide-title" class="fs-5 fw-bold text-dark">Confirmar corrección</h2>
+            <p id="correct-guide-message" class="mt-2 small text-secondary"></p>
+            <div class="mt-5 d-flex justify-content-end gap-2">
+                <button id="correct-guide-cancel" type="button" class="btn btn-outline-secondary cursor-pointer rounded-3 px-3 py-2 small fw-semibold hover-bg-light">
                     Volver
                 </button>
-                <button id="correct-guide-confirm" type="button" class="cursor-pointer rounded-lg bg-amber-600 px-4 py-2 text-sm font-semibold text-white hover:bg-amber-700">
+                <button id="correct-guide-confirm" type="button" class="btn btn-warning cursor-pointer rounded-3 bg-warning px-3 py-2 small fw-semibold text-dark">
                     Confirmar reemplazo
                 </button>
             </div>
@@ -183,7 +183,7 @@
                 const img = document.createElement('img');
                 img.src = URL.createObjectURL(file);
                 img.alt = `Foto ${index + 1}`;
-                img.className = 'aspect-square w-full object-cover rounded-lg border border-slate-200';
+                img.className = 'aspect-square w-100 object-fit-cover rounded-3 border border-secondary-subtle';
                 preview.appendChild(img);
             });
         };
@@ -211,8 +211,8 @@
             masterButton.disabled = false;
             secondaryButton.textContent = packageData.guia_secundaria ? 'Corregir guía secundaria' : 'Agregar guía secundaria';
             masterButton.textContent = packageData.guia_master ? 'Corregir guía máster' : 'Agregar guía máster';
-            duplicateModal.classList.remove('hidden');
-            duplicateModal.classList.add('flex');
+            duplicateModal.classList.remove('d-none');
+            duplicateModal.classList.add('d-flex');
             document.getElementById('duplicate-add-photos').focus();
         };
 
@@ -229,7 +229,7 @@
                 return matchingPackage;
             }
 
-            lookupError.classList.add('hidden');
+            lookupError.classList.add('d-none');
             pendingLookupValue = value;
             pendingLookup = (async () => {
                 const url = new URL(@json(route('packages.lookup')), window.location.origin);
@@ -254,7 +254,7 @@
                 return await pendingLookup;
             } catch (error) {
                 lookupError.textContent = error.message;
-                lookupError.classList.remove('hidden');
+                lookupError.classList.remove('d-none');
                 throw error;
             } finally {
                 pendingLookup = null;
@@ -268,10 +268,10 @@
         };
 
         const resetDuplicateFlow = () => {
-            duplicateModal.classList.add('hidden');
-            duplicateModal.classList.remove('flex');
-            correctionModal.classList.add('hidden');
-            correctionModal.classList.remove('flex');
+            duplicateModal.classList.add('d-none');
+            duplicateModal.classList.remove('d-flex');
+            correctionModal.classList.add('d-none');
+            correctionModal.classList.remove('d-flex');
             matchingPackage = null;
             checkedValue = null;
             guiaPrincipal.value = '';
@@ -299,10 +299,10 @@
             confirmCorrectionSubmit = false;
             guiaSecundaria.placeholder = 'Opcional';
             guiaMaster.placeholder = 'Opcional';
-            photosSection.classList.remove('hidden');
-            secondaryGuideContainer.classList.remove('hidden', 'rounded-xl', 'border-2', 'border-blue-300', 'bg-blue-50', 'p-3');
-            masterGuideContainer.classList.remove('hidden', 'rounded-xl', 'border-2', 'border-blue-300', 'bg-blue-50', 'p-3');
-            guideScanPrompt.classList.add('hidden');
+            photosSection.classList.remove('d-none');
+            secondaryGuideContainer.classList.remove('d-none', 'rounded-4', 'border-2', 'border-primary-subtle', 'bg-primary-subtle', 'p-3');
+            masterGuideContainer.classList.remove('d-none', 'rounded-4', 'border-2', 'border-primary-subtle', 'bg-primary-subtle', 'p-3');
+            guideScanPrompt.classList.add('d-none');
             addPhotosMode = false;
             addGuideMode = false;
             guideField = null;
@@ -324,10 +324,10 @@
             guideField.value = '';
             guideField.placeholder = guideAction === 'correct' ? `Actual: ${previousGuideValue}` : 'Escanee la guía';
 
-            secondaryGuideContainer.classList.toggle('hidden', !isSecondary);
-            masterGuideContainer.classList.toggle('hidden', isSecondary);
+            secondaryGuideContainer.classList.toggle('d-none', !isSecondary);
+            masterGuideContainer.classList.toggle('d-none', isSecondary);
             const activeGuideContainer = isSecondary ? secondaryGuideContainer : masterGuideContainer;
-            activeGuideContainer.classList.add('rounded-xl', 'border-2', 'border-blue-300', 'bg-blue-50', 'p-3');
+            activeGuideContainer.classList.add('rounded-4', 'border-2', 'border-primary-subtle', 'bg-primary-subtle', 'p-3');
             form.action = form.dataset.guideUploadUrl.replace('__PACKAGE_ID__', matchingPackage.id);
             guiaPrincipal.readOnly = true;
             guiaSecundaria.disabled = !isSecondary;
@@ -337,14 +337,14 @@
             guideTypeInput.disabled = false;
             guideActionInput.value = guideAction;
             guideActionInput.disabled = false;
-            photosSection.classList.add('hidden');
+            photosSection.classList.add('d-none');
             addGuideMode = true;
             addPhotosMode = false;
             submitButton.textContent = isSecondary ? 'Guardar guía secundaria' : 'Guardar guía máster';
             guideScanPrompt.textContent = `Escanee la guía ${isSecondary ? 'secundaria' : 'máster'} y después guárdela.`;
-            guideScanPrompt.classList.remove('hidden');
-            duplicateModal.classList.add('hidden');
-            duplicateModal.classList.remove('flex');
+            guideScanPrompt.classList.remove('d-none');
+            duplicateModal.classList.add('d-none');
+            duplicateModal.classList.remove('d-flex');
             guideField.focus();
             activeGuideContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
         };
@@ -374,7 +374,7 @@
                 if (!input.files.length) {
                     event.preventDefault();
                     lookupError.textContent = 'Seleccione al menos una foto para agregar.';
-                    lookupError.classList.remove('hidden');
+                    lookupError.classList.remove('d-none');
                 }
                 return;
             }
@@ -383,13 +383,13 @@
                 if (!guideField || !guideField.value.trim()) {
                     event.preventDefault();
                     lookupError.textContent = 'Escanee la guía antes de guardarla.';
-                    lookupError.classList.remove('hidden');
+                    lookupError.classList.remove('d-none');
                 } else if (guideAction === 'correct') {
                     event.preventDefault();
                     const guideLabel = guideTypeInput.value === 'secondary' ? 'secundaria' : 'máster';
                     correctionMessage.textContent = `Se reemplazará la guía ${guideLabel} "${previousGuideValue}" por "${guideField.value.trim()}". ¿Confirma el cambio?`;
-                    correctionModal.classList.remove('hidden');
-                    correctionModal.classList.add('flex');
+                    correctionModal.classList.remove('d-none');
+                    correctionModal.classList.add('d-flex');
                     document.getElementById('correct-guide-confirm').focus();
                 }
                 return;
@@ -420,8 +420,8 @@
             addPhotosMode = true;
             submitButton.textContent = 'Agregar fotos';
             photoLabelText.textContent = 'Tomar fotos adicionales';
-            duplicateModal.classList.add('hidden');
-            duplicateModal.classList.remove('flex');
+            duplicateModal.classList.add('d-none');
+            duplicateModal.classList.remove('d-flex');
             photoCapturePending = true;
             photoLabel.click();
         });
@@ -430,13 +430,13 @@
         document.getElementById('duplicate-add-master').addEventListener('click', () => prepareGuideAddition('master'));
         document.getElementById('duplicate-cancel').addEventListener('click', resetDuplicateFlow);
         document.getElementById('correct-guide-cancel').addEventListener('click', () => {
-            correctionModal.classList.add('hidden');
-            correctionModal.classList.remove('flex');
+            correctionModal.classList.add('d-none');
+            correctionModal.classList.remove('d-flex');
             guideField?.focus();
         });
         document.getElementById('correct-guide-confirm').addEventListener('click', () => {
-            correctionModal.classList.add('hidden');
-            correctionModal.classList.remove('flex');
+            correctionModal.classList.add('d-none');
+            correctionModal.classList.remove('d-flex');
             confirmCorrectionSubmit = true;
             form.requestSubmit(submitButton);
         });

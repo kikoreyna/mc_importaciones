@@ -14,31 +14,31 @@
 @endphp
 
 <div>
-    <label for="{{ $inputId }}" class="mb-1.5 block text-sm font-medium">{{ $label }}</label>
+    <label for="{{ $inputId }}" class="mb-2 d-block small fw-medium">{{ $label }}</label>
 
-    <div class="my-2 flex flex-col gap-2 sm:flex-row">
+    <div class="my-2 d-flex flex-column gap-2 flex-sm-row">
         <input
             type="text"
             id="{{ $inputId }}"
             name="{{ $name }}"
-            class="w-full flex-1 rounded-xl border border-slate-300 px-3 py-3 text-base focus:border-transparent focus:ring-2 focus:ring-blue-500"
+            class="form-control w-100 flex-fill rounded-4 border border-secondary-subtle px-2 py-2"
             autocomplete="off"
             placeholder="{{ $placeholder }}"
             value="{{ $value }}"
             required
         >
 
-        <button type="button" id="{{ $scanButtonId }}" class="h-12.5 w-full rounded-xl bg-blue-600 px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-blue-700 active:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 sm:w-auto sm:shrink-0 xl:hidden">
+        <button type="button" id="{{ $scanButtonId }}" class="btn btn-primary h-12.5 w-100 rounded-4 bg-primary px-3 small fw-semibold text-white shadow-sm transition-soft hover-bg-primary w-sm-auto flex-sm-shrink-1 d-xl-none">
             Escanear
         </button>
     </div>
 
-    <div id="{{ $readerId }}" class="mt-3 max-w-100 overflow-hidden rounded-xl border border-slate-200 bg-slate-50" style="display:none;"></div>
+    <div id="{{ $readerId }}" class="mt-2 mw-100 overflow-hidden rounded-4 border border-secondary-subtle bg-light" style="display:none;"></div>
 
     <button
         type="button"
         id="{{ $stopButtonId }}"
-        class="mt-2 rounded-xl bg-red-600 px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-red-700 active:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+        class="btn btn-danger mt-2 rounded-4 bg-danger px-3 py-2 small fw-semibold text-white shadow-sm transition-soft"
         style="display:none;"
     >
         Detener cámara

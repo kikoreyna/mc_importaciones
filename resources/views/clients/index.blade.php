@@ -6,23 +6,23 @@
     <title>Clientes</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="bg-slate-100 text-slate-900">
-    <div class="w-full px-4 py-6">
+<body class="bg-body-tertiary text-dark">
+    <div class="w-100 px-3 py-4">
         @include('components.navbar')
-        <div class="mb-6 flex items-center justify-between gap-4">
-            <div><p class="text-xs uppercase tracking-[0.2em] text-blue-600 font-semibold">ADMINISTRACIÓN</p><h1 class="text-2xl font-bold mt-2">Clientes</h1></div>
-            <a href="{{ route('clients.create') }}" class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-semibold text-white hover:bg-blue-700">Nuevo cliente</a>
+        <div class="mb-5 d-flex align-items-center justify-content-between gap-3">
+            <div><p class="small text-uppercase letter-spaced text-primary fw-semibold">ADMINISTRACIÓN</p><h1 class="fs-4 fw-bold mt-2">Clientes</h1></div>
+            <a href="{{ route('clients.create') }}" class="btn btn-primary rounded-3 bg-primary px-3 py-2 small fw-semibold text-white hover-bg-primary">Nuevo cliente</a>
         </div>
         @include('components.flash-messages')
-        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+        <div class="overflow-hidden rounded-4 border border-secondary-subtle bg-white shadow-sm">
             <div class="divide-y divide-slate-100">
                 @forelse ($clients as $client)
-                    <div class="flex flex-wrap items-center justify-between gap-4 p-4">
-                        <div><p class="font-semibold">{{ $client->nombre }}</p><p class="text-sm text-slate-500">{{ $client->alias ?: 'Sin alias' }} · {{ $client->partner?->alias ?: ($client->partner?->nombre ?: 'Sin socio') }}</p></div>
-                        <div class="flex items-center gap-2"><a href="{{ route('clients.edit', $client) }}" class="rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold hover:bg-slate-50">Editar</a><form action="{{ route('clients.destroy', $client) }}" method="POST" onsubmit="return confirm('¿Eliminar este cliente?');">@csrf @method('DELETE')<button class="rounded-lg bg-red-600 px-3 py-2 text-sm font-semibold text-white hover:bg-red-700">Eliminar</button></form></div>
+                    <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 p-3">
+                        <div><p class="fw-semibold">{{ $client->nombre }}</p><p class="small text-secondary">{{ $client->alias ?: 'Sin alias' }} · {{ $client->partner?->alias ?: ($client->partner?->nombre ?: 'Sin socio') }}</p></div>
+                        <div class="d-flex align-items-center gap-2"><a href="{{ route('clients.edit', $client) }}" class="rounded-3 border border-secondary-subtle px-2 py-2 small fw-semibold hover-bg-light">Editar</a><form action="{{ route('clients.destroy', $client) }}" method="POST" onsubmit="return confirm('¿Eliminar este cliente?');">@csrf @method('DELETE')<button class="btn btn-danger rounded-3 bg-danger px-2 py-2 small fw-semibold text-white">Eliminar</button></form></div>
                     </div>
                 @empty
-                    <p class="p-6 text-sm text-slate-500">No hay clientes registrados.</p>
+                    <p class="p-4 small text-secondary">No hay clientes registrados.</p>
                 @endforelse
             </div>
         </div>

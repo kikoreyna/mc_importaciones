@@ -8,71 +8,71 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=inter:400,500,600,700&display=swap" rel="stylesheet">
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased" style="font-family: 'Inter', ui-sans-serif, system-ui, sans-serif">
-    <div class="w-full px-4 py-6">
+<body class="bg-light text-dark" style="font-family: 'Inter', ui-sans-serif, system-ui, sans-serif">
+    <div class="w-100 px-3 py-4">
         @include('components.navbar')
 
-        <div class="mb-6">
-            <p class="text-xs font-semibold uppercase tracking-widest text-blue-600">Documentación</p>
-            <h1 class="mt-1 text-2xl font-bold tracking-tight text-slate-900 md:text-3xl">Edición de guía</h1>
+        <div class="mb-5">
+            <p class="small fw-semibold text-uppercase letter-spaced text-primary">Documentación</p>
+            <h1 class="mt-1 fs-4 fw-bold tracking-tight text-dark fs-3">Edición de guía</h1>
         </div>
 
         @if (session('success'))
-            <div class="bg-green-100 border border-green-300 text-green-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+            <div class="bg-success-subtle border border-secondary-subtle text-success px-3 py-2 rounded-4 mb-4 small fw-medium">
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="bg-red-100 border border-red-300 text-red-800 px-4 py-3 rounded-xl mb-5 text-sm font-medium">
+            <div class="bg-danger-subtle border border-secondary-subtle text-danger px-3 py-2 rounded-4 mb-4 small fw-medium">
                 {{ session('error') }}
             </div>
         @endif
 
-        <div class="grid grid-cols-1 gap-6">
+        <div class="row g-3 row-cols-1 g-4">
             @if ($package)
-                <div class="flex flex-wrap items-center justify-between gap-3">
-                    <div class="flex items-center gap-2">
+                <div class="d-flex flex-wrap align-items-center justify-content-between gap-2">
+                    <div class="d-flex align-items-center gap-2">
                         @if ($posicion > 1)
-                            <a id="previous-package" href="{{ route('documentacion.index', ['posicion' => $posicion - 1]) }}" class="rounded-xl border border-slate-500 bg-transparent px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100">&lsaquo; Anterior</a>
+                            <a id="previous-package" href="{{ route('documentacion.index', ['posicion' => $posicion - 1]) }}" class="rounded-4 border border-secondary bg-transparent px-3 py-2 small fw-semibold text-secondary">&lsaquo; Anterior</a>
                         @else
-                            <span class="cursor-not-allowed rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-300">&lsaquo; Anterior</span>
+                            <span class="cursor-not-allowed rounded-4 border border-secondary-subtle px-3 py-2 small fw-semibold text-secondary">&lsaquo; Anterior</span>
                         @endif
 
                         @if ($posicion < $total)
-                            <a id="next-package" href="{{ route('documentacion.index', ['posicion' => $posicion + 1]) }}" class="rounded-xl border border-slate-500 bg-transparent px-4 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100">Siguiente &rsaquo;</a>
+                            <a id="next-package" href="{{ route('documentacion.index', ['posicion' => $posicion + 1]) }}" class="rounded-4 border border-secondary bg-transparent px-3 py-2 small fw-semibold text-secondary">Siguiente &rsaquo;</a>
                         @else
-                            <span class="cursor-not-allowed rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-semibold text-slate-300">Siguiente &rsaquo;</span>
+                            <span class="cursor-not-allowed rounded-4 border border-secondary-subtle px-3 py-2 small fw-semibold text-secondary">Siguiente &rsaquo;</span>
                         @endif
                     </div>
-                    <span id="package-position" class="w-fit rounded-full px-4 py-1.5 text-sm font-semibold {{ $package->documented_at ? '' : 'bg-amber-100 text-amber-800' }}" @if ($package->documented_at) style="background-color: #dcfce7; color: #166534" @endif>{{ $package->documented_at ? 'Documentada' : $posicion . '/' . $total . ' sin documentar' }}</span>
+                    <span id="package-position" @class(['w-fit rounded-pill px-3 py-2 small fw-semibold', 'bg-warning-subtle text-warning-emphasis' => ! $package->documented_at]) @if ($package->documented_at) style="background-color: #dcfce7; color: #166534" @endif>{{ $package->documented_at ? 'Documentada' : $posicion . '/' . $total . ' sin documentar' }}</span>
                 </div>
 
-                <div class="grid grid-cols-1 gap-6 lg:grid-cols-12">
-                    <div class="min-w-0 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6 lg:col-span-4">
-                        <div class="mb-4 pt-1 border-b border-slate-200 pb-3">
-                            <p class="text-xs font-semibold uppercase tracking-widest text-slate-500">Edición</p>
+                <div class="row g-3 row-cols-1 g-4 row-cols-lg-12">
+                    <div class="min-w-0 bg-white rounded-4 border border-secondary-subtle shadow-sm p-3 p-md-5 col-lg-4">
+                        <div class="mb-3 pt-1 border-bottom border-secondary-subtle pb-2">
+                            <p class="small fw-semibold text-uppercase letter-spaced text-secondary">Edición</p>
                         </div>
 
-                        <form id="documentation-form" action="{{ route('documentacion.store') }}" method="POST" class="space-y-4">
+                        <form id="documentation-form" action="{{ route('documentacion.store') }}" method="POST" class="stack-gap-4">
                             @csrf
                             <input type="hidden" name="guia_principal" value="{{ $package->guia_principal }}">
                             <input type="hidden" name="posicion" value="{{ $posicion }}">
 
                             <div>
-                                <label class="block text-sm font-medium mb-1.5">Guía principal</label>
-                                <div id="edicion-guia-principal" tabindex="0" class="w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-3 text-base font-medium focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                <label class="d-block small fw-medium mb-2">Guía principal</label>
+                                <div id="edicion-guia-principal" tabindex="0" class="w-100 border border-secondary-subtle bg-light rounded-4 px-2 py-2 fw-medium">
                                     {{ $package->guia_principal }}
                                 </div>
                             </div>
 
                             <div>
-                                <label for="guia_secundaria" class="block text-sm font-medium mb-1.5">Guía secundaria</label>
-                                <input id="guia_secundaria" name="guia_secundaria" type="text" value="{{ old('guia_secundaria', $package->guia_secundaria ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+                                <label for="guia_secundaria" class="d-block small fw-medium mb-2">Guía secundaria</label>
+                                <input id="guia_secundaria" name="guia_secundaria" type="text" value="{{ old('guia_secundaria', $package->guia_secundaria ?? '') }}" class="form-control w-100 border border-secondary-subtle rounded-4 px-2 py-2" placeholder="Opcional">
                             </div>
 
                             <div>
-                                <label for="client_search" class="block text-sm font-medium mb-1.5">Cliente</label>
+                                <label for="client_search" class="d-block small fw-medium mb-2">Cliente</label>
                                 @php
                                     $selectedClientId = old('client_id', $package->client_id ?? '');
                                     $selectedClient = $clients->firstWhere('id', $selectedClientId);
@@ -80,12 +80,12 @@
                                         ? $selectedClient->nombre . ($selectedClient->alias ? ' | ' . $selectedClient->alias : '')
                                         : old('client_search', '');
                                 @endphp
-                                <div class="relative">
-                                    <input id="client_search" name="client_search" type="text" value="{{ $selectedClientLabel }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Escribe nombre, alias o código" autocomplete="off">
-                                    <div id="clients_list" class="absolute z-20 mt-1 hidden max-h-56 w-full overflow-y-auto rounded-xl border border-slate-200 bg-white shadow-lg"></div>
+                                <div class="position-relative">
+                                    <input id="client_search" name="client_search" type="text" value="{{ $selectedClientLabel }}" class="form-control w-100 border border-secondary-subtle rounded-4 px-2 py-2" placeholder="Escribe nombre, alias o código" autocomplete="off">
+                                    <div id="clients_list" class="position-absolute z-modal-layer mt-1 d-none max-h-56 w-100 overflow-y-auto rounded-4 border border-secondary-subtle bg-white shadow"></div>
                                 </div>
                                 <input id="client_id" name="client_id" type="hidden" value="{{ $selectedClientId }}">
-                                <div id="clients_data" class="hidden">
+                                <div id="clients_data" class="d-none">
                                     @foreach ($clients as $client)
                                         <button type="button" data-id="{{ $client->id }}" data-partner-id="{{ $client->partner_id ?? '' }}" data-label="{{ $client->nombre }}{{ $client->alias ? ' | ' . $client->alias : '' }}" data-search="{{ strtolower($client->nombre . ' ' . ($client->alias ?? '')) }}">{{ $client->nombre }}{{ $client->alias ? ' | ' . $client->alias : '' }}</button>
                                     @endforeach
@@ -93,8 +93,8 @@
                             </div>
 
                             <div>
-                                <label for="partner_id" class="block text-sm font-medium mb-1.5">Socio</label>
-                                <select id="partner_selector" name="partner_selector" {{ $selectedClient?->partner_id ? 'disabled' : '' }} class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:bg-slate-100 disabled:text-slate-500">
+                                <label for="partner_id" class="d-block small fw-medium mb-2">Socio</label>
+                                <select id="partner_selector" name="partner_selector" {{ $selectedClient?->partner_id ? 'disabled' : '' }} class="form-select w-100 border border-secondary-subtle rounded-4 px-2 py-2">
                                     <option value="">Selecciona un socio</option>
                                     @foreach ($partners as $partner)
                                         <option value="{{ $partner->id }}" {{ old('partner_id', $package->partner_id) == $partner->id ? 'selected' : '' }}>
@@ -106,11 +106,11 @@
                             </div>
 
                             <div>
-                                <label for="transportadora" class="block text-sm font-medium mb-1.5">Transportadora</label>
+                                <label for="transportadora" class="d-block small fw-medium mb-2">Transportadora</label>
                                 @php
                                     $selectedTransportadora = old('transportadora', $package->transportadora ?? '');
                                 @endphp
-                                <select id="transportadora" name="transportadora" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                <select id="transportadora" name="transportadora" class="form-select w-100 border border-secondary-subtle rounded-4 px-2 py-2">
                                     <option value="">Selecciona una transportadora</option>
                                     @if ($selectedTransportadora && ! $transportadoras->contains('nombre', $selectedTransportadora))
                                         <option value="{{ $selectedTransportadora }}" selected>{{ $selectedTransportadora }} (actual)</option>
@@ -124,23 +124,23 @@
                             </div>
 
                             <div>
-                                <label for="guia_master" class="block text-sm font-medium mb-1.5">Guía máster</label>
-                                <input id="guia_master" name="guia_master" type="text" value="{{ old('guia_master', $package->guia_master ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Opcional">
+                                <label for="guia_master" class="d-block small fw-medium mb-2">Guía máster</label>
+                                <input id="guia_master" name="guia_master" type="text" value="{{ old('guia_master', $package->guia_master ?? '') }}" class="form-control w-100 border border-secondary-subtle rounded-4 px-2 py-2" placeholder="Opcional">
                             </div>
 
-                            <div class="grid grid-cols-2 gap-4">
+                            <div class="row g-3 row-cols-2 g-3">
                                 <div>
-                                    <label for="caja_numero" class="block text-sm font-medium mb-1.5">Caja #</label>
-                                    <input id="caja_numero" name="caja_numero" type="number" min="1" value="{{ old('caja_numero', $package->caja_numero ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="1">
+                                    <label for="caja_numero" class="d-block small fw-medium mb-2">Caja #</label>
+                                    <input id="caja_numero" name="caja_numero" type="number" min="1" value="{{ old('caja_numero', $package->caja_numero ?? '') }}" class="form-control w-100 border border-secondary-subtle rounded-4 px-2 py-2" placeholder="1">
                                 </div>
                                 <div>
-                                    <label for="total_cajas" class="block text-sm font-medium mb-1.5">Total de cajas</label>
-                                    <input id="total_cajas" name="total_cajas" type="number" min="1" value="{{ old('total_cajas', $package->total_cajas ?? '') }}" class="w-full border border-slate-300 rounded-xl px-3 py-3 text-base focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="5">
+                                    <label for="total_cajas" class="d-block small fw-medium mb-2">Total de cajas</label>
+                                    <input id="total_cajas" name="total_cajas" type="number" min="1" value="{{ old('total_cajas', $package->total_cajas ?? '') }}" class="form-control w-100 border border-secondary-subtle rounded-4 px-2 py-2" placeholder="5">
                                 </div>
                             </div>
 
-                            <div class="pt-5 mt-3 border-t-2 border-slate-200">
-                                <button id="actualizar-guia" type="submit" class="block w-fit mx-auto cursor-pointer bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-base shadow-sm hover:bg-blue-700 active:bg-blue-800">
+                            <div class="pt-4 mt-2 border-top border-2 border-secondary-subtle">
+                                <button id="actualizar-guia" type="submit" class="btn btn-primary d-block w-fit mx-auto cursor-pointer bg-primary text-white px-4 py-2 rounded-4 fw-semibold shadow-sm hover-bg-primary">
                                     Actualizar Guia
                                 </button>
                             </div>
@@ -148,44 +148,44 @@
                     </div>
 
                     @if ($package->photos->isNotEmpty())
-                        <div class="min-w-0 bg-white rounded-2xl border border-slate-200 shadow-sm p-4 md:p-6 lg:col-span-8">
+                        <div class="min-w-0 bg-white rounded-4 border border-secondary-subtle shadow-sm p-3 p-md-5 col-lg-8">
                             @php
                                 $photos = collect($package->photos->all());
                                 $firstPhoto = $photos->first();
                             @endphp
 
                             @if ($firstPhoto)
-                                <div id="photo-stage" class="relative aspect-4/3 w-full animate-pulse overflow-hidden rounded-xl border border-slate-200 bg-slate-200">
-                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="h-full w-full cursor-zoom-in object-contain transition-transform duration-200">
+                                <div id="photo-stage" class="position-relative aspect-4-3 w-100 placeholder-glow overflow-hidden rounded-4 border border-secondary-subtle bg-secondary-subtle">
+                                    <img id="package-photo" src="{{ $firstPhoto->display_url }}" alt="Foto de paquete" class="h-100 w-100 cursor-zoom-in object-fit-contain transition-soft duration-200">
 
-                                    <div class="absolute left-3 top-3 flex gap-2">
-                                        <button type="button" id="rotate-photo" class="cursor-pointer rounded-full bg-slate-700 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-slate-800">Rotar</button>
-                                        <a id="open-photo" href="{{ $firstPhoto->display_url }}" target="_blank" rel="noopener" class="cursor-pointer rounded-full bg-slate-700 px-3 py-1 text-xs font-semibold text-white shadow-sm hover:bg-slate-800">Abrir</a>
+                                    <div class="position-absolute left-3 top-3 d-flex gap-2">
+                                        <button type="button" id="rotate-photo" class="btn btn-secondary cursor-pointer rounded-pill bg-secondary px-2 py-1 small fw-semibold text-white shadow-sm">Rotar</button>
+                                        <a id="open-photo" href="{{ $firstPhoto->display_url }}" target="_blank" rel="noopener" class="btn btn-secondary btn-sm cursor-pointer rounded-pill bg-secondary px-2 py-1 small fw-semibold text-white shadow-sm">Abrir</a>
                                     </div>
 
                                     @if ($photos->count() > 1)
-                                        <button type="button" id="prev-photo" class="absolute left-3 top-1/2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600/90 text-xl font-bold text-white shadow-sm hover:bg-blue-700" aria-label="Anterior">&lsaquo;</button>
-                                        <button type="button" id="next-photo" class="absolute right-3 top-1/2 flex h-10 w-10 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600/90 text-xl font-bold text-white shadow-sm hover:bg-blue-700" aria-label="Siguiente">&rsaquo;</button>
+                                        <button type="button" id="prev-photo" class="btn btn-primary position-absolute left-3 top-1/2 d-flex h-10 w-10 translate-middle-y cursor-pointer align-items-center justify-content-center rounded-pill bg-primary fs-5 fw-bold text-white shadow-sm hover-bg-primary" aria-label="Anterior">&lsaquo;</button>
+                                        <button type="button" id="next-photo" class="btn btn-primary position-absolute right-3 top-1/2 d-flex h-10 w-10 translate-middle-y cursor-pointer align-items-center justify-content-center rounded-pill bg-primary fs-5 fw-bold text-white shadow-sm hover-bg-primary" aria-label="Siguiente">&rsaquo;</button>
                                     @endif
                                 </div>
 
                                 @if ($photos->count() > 1)
-                                    <div class="mt-3 flex gap-2 overflow-x-auto pb-1">
+                                    <div class="mt-2 d-flex gap-2 overflow-x-auto pb-1">
                                         @foreach ($photos as $i => $photo)
-                                            <button type="button" data-thumb="{{ $i }}" class="aspect-square h-16 w-16 shrink-0 cursor-pointer overflow-hidden rounded-lg border-2 border-transparent bg-slate-100 focus:outline-none">
-                                                <img src="{{ $photo->display_url }}" alt="Miniatura {{ $i + 1 }}" loading="lazy" decoding="async" class="h-full w-full object-cover">
+                                            <button type="button" data-thumb="{{ $i }}" class="btn btn-light aspect-square h-16 w-16 flex-shrink-0 cursor-pointer overflow-hidden rounded-3 border-2 border-transparent bg-body-tertiary p-0">
+                                                <img src="{{ $photo->display_url }}" alt="Miniatura {{ $i + 1 }}" loading="lazy" decoding="async" class="h-100 w-100 object-fit-cover">
                                             </button>
                                         @endforeach
                                     </div>
                                 @endif
 
-                                <div id="photo-lightbox" class="fixed inset-0 z-50 hidden items-center justify-center bg-slate-900/90 p-4" role="dialog" aria-modal="true">
-                                    <button type="button" id="lightbox-close" class="absolute right-4 top-4 cursor-pointer rounded-full bg-blue-600 px-4 py-1.5 text-lg font-bold text-white hover:bg-blue-700" aria-label="Cerrar">&times;</button>
+                                <div id="photo-lightbox" class="position-fixed inset-0 z-modal-layer d-none align-items-center justify-content-center bg-dark bg-opacity-75 p-3" role="dialog" aria-modal="true">
+                                    <button type="button" id="lightbox-close" class="btn btn-primary position-absolute right-4 top-4 cursor-pointer rounded-pill bg-primary px-3 py-2 fs-5 fw-bold text-white hover-bg-primary" aria-label="Cerrar">&times;</button>
                                     @if ($photos->count() > 1)
-                                        <button type="button" id="lightbox-prev" class="absolute left-4 top-1/2 flex h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white hover:bg-blue-700" aria-label="Anterior">&lsaquo;</button>
-                                        <button type="button" id="lightbox-next" class="absolute right-4 top-1/2 flex h-12 w-12 -translate-y-1/2 cursor-pointer items-center justify-center rounded-full bg-blue-600 text-2xl font-bold text-white hover:bg-blue-700" aria-label="Siguiente">&rsaquo;</button>
+                                        <button type="button" id="lightbox-prev" class="btn btn-primary position-absolute left-4 top-1/2 d-flex h-12 w-12 translate-middle-y cursor-pointer align-items-center justify-content-center rounded-pill bg-primary fs-4 fw-bold text-white hover-bg-primary" aria-label="Anterior">&lsaquo;</button>
+                                        <button type="button" id="lightbox-next" class="btn btn-primary position-absolute right-4 top-1/2 d-flex h-12 w-12 translate-middle-y cursor-pointer align-items-center justify-content-center rounded-pill bg-primary fs-4 fw-bold text-white hover-bg-primary" aria-label="Siguiente">&rsaquo;</button>
                                     @endif
-                                    <img id="lightbox-img" src="" alt="Foto ampliada" class="max-h-full max-w-full cursor-zoom-in rounded-lg object-contain transition-transform duration-200">
+                                    <img id="lightbox-img" src="" alt="Foto ampliada" class="mh-100 mw-100 cursor-zoom-in rounded-3 object-fit-contain transition-soft duration-200">
                                 </div>
 
                                 <script>
@@ -201,7 +201,7 @@
                                         let rotation = 0;
                                         let zoomed = false;
 
-                                        const clearLoading = () => stage.classList.remove('animate-pulse', 'bg-slate-200');
+                                        const clearLoading = () => stage.classList.remove('placeholder-glow', 'bg-secondary-subtle');
                                         if (image.complete) clearLoading(); else image.addEventListener('load', clearLoading);
 
                                         const render = () => {
@@ -212,10 +212,10 @@
                                             openLink.href = photos[index];
                                             thumbs.forEach((t, i) => {
                                                 const active = i === index;
-                                                t.classList.toggle('border-blue-600', active);
+                                                t.classList.toggle('border-primary', active);
                                                 t.classList.toggle('border-transparent', !active);
                                             });
-                                            if (!box.classList.contains('hidden')) {
+                                            if (!box.classList.contains('d-none')) {
                                                 boxImg.src = photos[index];
                                                 boxImg.style.transform = '';
                                             }
@@ -232,10 +232,10 @@
                                             boxImg.src = photos[index];
                                             boxImg.style.transform = '';
                                             zoomed = false;
-                                            box.classList.remove('hidden');
-                                            box.classList.add('flex');
+                                            box.classList.remove('d-none');
+                                            box.classList.add('d-flex');
                                         };
-                                        const closeBox = () => { box.classList.add('hidden'); box.classList.remove('flex'); };
+                                        const closeBox = () => { box.classList.add('d-none'); box.classList.remove('d-flex'); };
 
                                         document.getElementById('prev-photo')?.addEventListener('click', () => go(-1));
                                         document.getElementById('next-photo')?.addEventListener('click', () => go(1));
@@ -280,14 +280,14 @@
                             @endif
                         </div>
                     @else
-                        <div class="flex aspect-4/3 min-w-0 items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-white p-4 text-center text-sm font-medium text-slate-500 shadow-sm md:p-6 lg:col-span-8">
+                        <div class="d-flex aspect-4-3 min-w-0 align-items-center justify-content-center rounded-4 border border-dashed border-secondary-subtle bg-white p-3 text-center small fw-medium text-secondary shadow-sm p-md-5 col-lg-8">
                             Este paquete no tiene fotos disponibles.
                         </div>
                 @endif
                 </div>
 
             @else
-                <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-6 text-center text-sm font-medium text-emerald-700">
+                <div class="rounded-4 border border-secondary-subtle bg-success-subtle p-4 text-center small fw-medium text-success">
                     No hay paquetes pendientes por documentar.
                 </div>
             @endif
@@ -320,7 +320,7 @@
         const clientOptions = Array.from(document.querySelectorAll('#clients_data button'));
 
         if (clientSearch && clientId && partnerId && partnerSelector && clientsList) {
-            const hideClients = () => clientsList.classList.add('hidden');
+            const hideClients = () => clientsList.classList.add('d-none');
 
             const selectClient = (option) => {
                 clientSearch.value = option.dataset.label;
@@ -339,12 +339,12 @@
                     .filter((option) => !searchValue || option.dataset.search.includes(searchValue))
                     .forEach((option) => {
                         const item = option.cloneNode(true);
-                        item.className = 'block w-full border-b border-slate-100 px-3 py-2 text-left text-sm text-slate-700 last:border-0 hover:bg-blue-50';
+                        item.className = 'd-block w-100 border-bottom border-light px-2 py-2 text-start small text-body hover-bg-primary';
                         item.addEventListener('click', () => selectClient(option));
                         clientsList.appendChild(item);
                     });
 
-                clientsList.classList.toggle('hidden', clientsList.children.length === 0);
+                clientsList.classList.toggle('d-none', clientsList.children.length === 0);
             };
 
             clientSearch.addEventListener('focus', renderClients);

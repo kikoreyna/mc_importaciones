@@ -1,4 +1,5 @@
 import './bootstrap';
+import 'bootstrap';
 
 const PHOTO_MAX_SIDE = 1600;
 const PHOTO_QUALITY = 0.8;
@@ -53,59 +54,6 @@ document.addEventListener('submit', async (event) => {
 	}
 });
 
-const navbarToggle = document.querySelector('[data-navbar-toggle]');
-const navbarLinks = document.getElementById('navbar-links');
-
-if (navbarToggle && navbarLinks) {
-	const closeNavbar = () => {
-		navbarLinks.classList.remove('is-open');
-		navbarToggle.setAttribute('aria-expanded', 'false');
-		navbarToggle.setAttribute('aria-label', 'Abrir menú');
-	};
-
-	navbarToggle.addEventListener('click', () => {
-		const isExpanded = navbarToggle.getAttribute('aria-expanded') === 'true';
-
-		navbarLinks.classList.toggle('is-open', !isExpanded);
-		navbarToggle.setAttribute('aria-expanded', String(!isExpanded));
-		navbarToggle.setAttribute('aria-label', isExpanded ? 'Abrir menú' : 'Cerrar menú');
-	});
-
-	navbarLinks.addEventListener('click', (event) => {
-		if (event.target.closest('a')) {
-			closeNavbar();
-		}
-	});
-
-	document.addEventListener('keydown', (event) => {
-		if (event.key === 'Escape' && navbarToggle.getAttribute('aria-expanded') === 'true') {
-			closeNavbar();
-			navbarToggle.focus();
-		}
-	});
-}
-
-const navGroups = document.querySelectorAll('[data-nav-group]');
-
-navGroups.forEach((group) => {
-	group.addEventListener('toggle', () => {
-		if (!group.open) return;
-		navGroups.forEach((other) => {
-			if (other !== group) other.open = false;
-		});
-	});
-});
-
-document.addEventListener('click', (event) => {
-	navGroups.forEach((group) => {
-		if (!group.contains(event.target)) group.open = false;
-	});
-});
-
-document.addEventListener('keydown', (event) => {
-	if (event.key === 'Escape') navGroups.forEach((group) => { group.open = false; });
-});
-
 const companyFavicon = document.createElement('link');
 companyFavicon.rel = 'icon';
 companyFavicon.type = 'image/png';
@@ -129,8 +77,8 @@ if (logoForm) {
 
 	const setStatus = (message, isError = false) => {
 		status.textContent = message;
-		status.classList.toggle('text-red-700', isError);
-		status.classList.toggle('text-slate-500', !isError);
+		status.classList.toggle('text-danger', isError);
+		status.classList.toggle('text-body-secondary', !isError);
 	};
 
 	const setFile = (input, file) => {
@@ -233,10 +181,10 @@ if (logoForm) {
 		setFile(faviconOutput, await canvasFile(faviconCanvas, 'company-favicon.png'));
 		preview.src = canvas.toDataURL('image/png');
 		faviconPreview.src = faviconCanvas.toDataURL('image/png');
-		preview.classList.remove('hidden');
-		faviconPreview.classList.remove('hidden');
-		currentLogo?.classList.add('hidden');
-		currentFavicon?.classList.add('hidden');
+		preview.classList.remove('d-none');
+		faviconPreview.classList.remove('d-none');
+		currentLogo?.classList.add('d-none');
+		currentFavicon?.classList.add('d-none');
 		setStatus('Vista previa lista. Al guardar se actualizarán el logo y el favicon.');
 		processedSource = file;
 	};
@@ -247,10 +195,10 @@ if (logoForm) {
 		if (!file) {
 			logoOutput.value = '';
 			faviconOutput.value = '';
-			preview.classList.add('hidden');
-			faviconPreview.classList.add('hidden');
-			currentLogo?.classList.remove('hidden');
-			currentFavicon?.classList.remove('hidden');
+			preview.classList.add('d-none');
+			faviconPreview.classList.add('d-none');
+			currentLogo?.classList.remove('d-none');
+			currentFavicon?.classList.remove('d-none');
 			setStatus('');
 			return Promise.resolve();
 		}

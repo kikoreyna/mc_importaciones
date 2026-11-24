@@ -9,6 +9,6 @@
     [$hex, $label] = $styles[$package->color];
 @endphp
 
-<span {{ $attributes->merge(['class' => 'inline-flex items-center']) }} title="{{ $label }}" aria-label="{{ $label }}">
-    <span class="inline-block h-4 w-4 shrink-0 rounded-full" style="background-color: {{ $hex }}"></span>
+<span {{ $attributes->merge(['class' => 'd-inline-flex align-items-center']) }} title="{{ $label }}" aria-label="{{ $label }}">
+    <span class="d-inline-block h-4 w-4 flex-shrink-0 rounded-pill" style="background-color: {{ $hex }}"></span>
 </span>

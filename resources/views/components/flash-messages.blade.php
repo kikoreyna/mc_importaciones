@@ -1,9 +1,9 @@
 @if (session('success'))
-    <div class="mb-5 rounded-xl border border-emerald-300 bg-emerald-100 px-4 py-3 text-sm font-medium text-emerald-800">{{ session('success') }}</div>
+    <div class="mb-4 rounded-4 border border-success-subtle bg-success-subtle px-3 py-2 small fw-medium text-success">{{ session('success') }}</div>
 @endif
 @if (session('error'))
-    <div class="mb-5 rounded-xl border border-red-300 bg-red-100 px-4 py-3 text-sm font-medium text-red-800">{{ session('error') }}</div>
+    <div class="mb-4 rounded-4 border border-secondary-subtle bg-danger-subtle px-3 py-2 small fw-medium text-danger">{{ session('error') }}</div>
 @endif
 @if ($errors->any())
-    <div class="mb-5 rounded-xl border border-red-300 bg-red-100 px-4 py-3 text-sm font-medium text-red-800">{{ $errors->first() }}</div>
+    <div class="mb-4 rounded-4 border border-secondary-subtle bg-danger-subtle px-3 py-2 small fw-medium text-danger">{{ $errors->first() }}</div>
 @endif
